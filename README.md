@@ -68,8 +68,8 @@ to the UART terminal. Here, "implement" means to do everything that is needed to
 schedule, i.e., network wake-up, clock and state synchronization, and schedule program execution.
 
 The firmware is ready to use in the sense that providing the schedule of interest (formulated 
-in the specialized language, see below) is enough to be able to compile and run the firmware with the
-specific schedule.
+in the specialized language, see [below](#communication-scheduling-and-checkpoints)) is enough 
+to be able to compile and run the firmware with the specific schedule.
 To demonstrate the process, the source code comes with a tutorial schedule that can be used 
 to test the tool chain and run a simple test on a few Nordic 
 [nRF52840 DK](https://www.nordicsemi.com/Products/Development-hardware/nRF52840-DK)
@@ -97,7 +97,7 @@ To do so, use the following steps:
 
    The ID is stored in the device's UICR area, so it is kept persistent and not asked for again 
    (also after re-programming). If you want to set a new ID, keep Button 1 pressed during boot-up,
-   which enforces the ID prompt. See [`main.c`](target/nrf52840/tutorial_ses/main.c) for the details.
+   which enforces the ID prompt. See [`main.c`](target/nrf52840/project_ses/main.c) for the details.
 
 5. When everything is set up, press Button 1 at node 1. This starts communication and generates 
    output at all terminals.
@@ -116,7 +116,7 @@ extract the relevant data, analyze it, and visualize it using [Glue](https://glu
 The following tools are used for these steps:
 
 * [`filter_logs.py`](host/filter_logs.py) extracts the relevant data from the log file(s). 
-  The data is encapsulated in so-called TRX records (TX/RX records), which appear in the 
+  The data is encapsulated in so-called *TRX records* (TX/RX records), which appear in the 
   log file(s) as fragmented BASE64 strings surrounded by special control characters.
   `filter_logs.py` extracts these records and stores them in a new file (`*-trx_filter.dat`) 
   with one record per line (still BASE64 encoded).
@@ -238,7 +238,7 @@ To use your own schedules on FlockLab:
 
 * Have a look at the implementation of the `NODE()` macro in [`schedule.inc`](target/nrf52840/project_ses/schedule.inc)
   to understand how node IDs are mapped from the schedule to the FlockLab observer IDs 
-  (see also [#node-id-mapping]()).
+  (see also [Node ID Mapping](#node-id-mapping)).
 
 
 ## Important Concepts
@@ -289,9 +289,9 @@ this point, the only chance is to mark the presence and position of a checkpoint
 the packet itself, at some predefined fixed position.
 This is realized by a one-byte marker placed with `TRX_data_checkpoint_marker` at 
 `TRX_CHECKPOINT_MARKER_POS` in each packet. `TRX_CHECKPOINT_MARKER_POS` is specified
-by the user in `schedule.inc` and determines the position of the marker relative to 
-the start or end of each packet's payload area (the latter can be beneficial for 
-packets with variable length).[^fn-marker]
+by the user in [`schedule.inc`](target/nrf52840/project_ses/schedule.inc) and determines 
+the position of the marker relative to the start or end of each packet's payload area 
+(the latter can be beneficial for packets with variable length).[^fn-marker]
 
 [^fn-marker]: Since the marker is contained in every packet, it could be generated 
 automatically without the need for an explicit `TRX_data_checkpoint_marker` statement
@@ -308,7 +308,7 @@ schedule program. TrafficBench is prepared to support such mappings at two place
 1. One can implement a mapping in [`main.c`](target/nrf52840/main.c) (by default, 
    an identity mapping is used here).
 
-2. One can implement a mapping via the `NODE()` macro in `schedule.inc`
+2. One can implement a mapping via the `NODE()` macro in [`schedule.inc`](target/nrf52840/project_ses/schedule.inc)
    (which requires consistent usage of `NODE()` or `NODES()` instead of absolute 
    numbers in the schedule, see [`schedule_template.inc`](target/nrf52840/schedule_template.inc)
    for details).
@@ -347,9 +347,9 @@ some potential changes of the architecture that would enable TrafficBench to sup
 a much wider range of applications. We plan to investigate this direction in the near 
 future to learn more about the challenges it brings along and find ways to solve them.
 
-In case of trouble with the current version, use the chance to compare your project 
-with the tutorial schedule and look closely at the differences. If you experience 
-significant issues or require additional features, please get in touch via e-mail.
+In case of problems, use the chance to compare your project with the tutorial schedule 
+and look closely at the differences. If you experience significant issues or require 
+additional features, please get in touch via e-mail.
 
 
 ## Research
