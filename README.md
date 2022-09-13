@@ -97,7 +97,7 @@ To do so, use the following steps:
 
    The ID is stored in the device's UICR area, so it is kept persistent and not asked for again 
    (also after re-programming). If you want to set a new ID, keep Button 1 pressed during boot-up,
-   which enforces the ID prompt. See [`main.c`](target/nrf52840/project_ses/main.c) for the details.
+   which enforces the ID prompt. See [`main.c`](target/nrf52840/main.c) for the details.
 
 5. When everything is set up, press Button 1 at node 1. This starts communication and generates 
    output at all terminals.
