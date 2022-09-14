@@ -221,19 +221,16 @@ main_loop:
 		TRX_SYNC_begin			transmitter=NODE(1), tx_delay=1000, rng_offset=0x01
 			TRX_data_fixed		1,2,3,4
 			TRX_data_random		len=4
-			TRX_data_checkpoint
 			TRX_data_checkpoint_marker
 		TRX_SYNC_end
 		TRX_SYNC_begin			transmitter=NODE(2), tx_delay=1000, rng_offset=0x01
 			TRX_data_fixed		1,2,3,4
 			TRX_data_random		len=4
-			TRX_data_checkpoint
 			TRX_data_checkpoint_marker
 		TRX_SYNC_end
 		TRX_SYNC_begin			transmitter=NODE(3), tx_delay=2000, rng_offset=0x02
 			TRX_data_fixed		5,6,7,8
 			TRX_data_random		len=4
-			TRX_data_checkpoint
 			TRX_data_checkpoint_marker
 		TRX_SYNC_end
 	TRX_GROUP_end
