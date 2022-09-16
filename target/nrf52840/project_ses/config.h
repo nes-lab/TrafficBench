@@ -37,6 +37,8 @@
 // which is critical when using preemptive multithreading (as we do). The simple solution
 // is to perform flushing in the scheduler's idle loop.
 // We use a relatively large trace buffer size to avoid losing messages in high-load situations.
+// ATTENTION: large trace buffer can make GPI_TRACE_FLUSH() calls long-running,
+// which can lead to TRX message losses (due to intermediate Rx buffer overflow)
 #define GPI_TRACE_MODE						(GPI_TRACE_MODE_TRACE | GPI_TRACE_MODE_FLUSH_NOAUTO)
 #define GPI_TRACE_BUFFER_NUM_ENTRIES		512 //128	// 64 bytes each (GPI_TRACE_BUFFER_ENTRY_SIZE)
 
@@ -47,6 +49,8 @@
 //#endif
 
 #define GPI_TRACE_BASE_SELECTION			GPI_TRACE_LOG_STANDARD
+//#define GPI_TRACE_USER_SELECTION			(GPI_TRACE_MSG_TYPE_ERROR | GPI_TRACE_MSG_TYPE_WARNING | GPI_TRACE_MSG_TYPE_INFO)
+#define GPI_TRACE_USER_SELECTION			GPI_TRACE_LOG_USER
 
 #define VA_SIZE_GRANULARITY					4
 

@@ -60,7 +60,10 @@
 #ifndef GPI_TRACE_BASE_SELECTION
 	#define GPI_TRACE_BASE_SELECTION	GPI_TRACE_LOG_STANDARD /*| GPI_TRACE_LOG_PROGRAM_FLOW*/
 #endif
-GPI_TRACE_CONFIG(deflate, GPI_TRACE_BASE_SELECTION | GPI_TRACE_LOG_USER);
+#ifndef GPI_TRACE_USER_SELECTION
+	#define GPI_TRACE_USER_SELECTION	GPI_TRACE_LOG_USER
+#endif
+GPI_TRACE_CONFIG(deflate, GPI_TRACE_BASE_SELECTION | GPI_TRACE_USER_SELECTION);
 
 //**************************************************************************************************
 //**** Includes ************************************************************************************

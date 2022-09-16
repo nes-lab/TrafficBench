@@ -58,7 +58,15 @@
 #ifndef GPI_TRACE_BASE_SELECTION
 	#define GPI_TRACE_BASE_SELECTION	(GPI_TRACE_LOG_STANDARD | GPI_TRACE_LOG_PROGRAM_FLOW)
 #endif
-GPI_TRACE_CONFIG(radio, GPI_TRACE_BASE_SELECTION | GPI_TRACE_LOG_USER | GPI_TRACE_LOG_FUNCTION_RETURN_MSG);
+#ifndef GPI_TRACE_USER_SELECTION
+	#define GPI_TRACE_USER_SELECTION	GPI_TRACE_LOG_USER
+#endif
+#if (GPI_TRACE_USER_SELECTION & GPI_TRACE_MSG_TYPE_VERBOSE)
+	#define TRACE_USER_SELECTION		(GPI_TRACE_USER_SELECTION | GPI_TRACE_LOG_FUNCTION_RETURN_MSG)
+#else
+	#define TRACE_USER_SELECTION		GPI_TRACE_USER_SELECTION
+#endif
+GPI_TRACE_CONFIG(radio, GPI_TRACE_BASE_SELECTION | TRACE_USER_SELECTION);
 
 //**************************************************************************************************
 //**** Includes ************************************************************************************

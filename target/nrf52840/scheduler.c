@@ -54,14 +54,17 @@
 #define TRACE_INFO		GPI_TRACE_MSG_TYPE_INFO
 #define TRACE_WARNING	GPI_TRACE_MSG_TYPE_WARNING
 #define TRACE_ERROR		GPI_TRACE_MSG_TYPE_ERROR
-#define TRACE_VERBOSE	GPI_TRACE_MSG_TYPE_VERBOSE
-#define TRACE_SCHEDULE	(GPI_TRACE_MSG_TYPE_VERBOSE | 1)
+#define TRACE_VERBOSE	(GPI_TRACE_MSG_TYPE_VERBOSE | 1)
+#define TRACE_SCHEDULE	(GPI_TRACE_MSG_TYPE_INFO | 2)
 
 // select active message groups, i.e., the messages to be printed (others will be dropped)
 #ifndef GPI_TRACE_BASE_SELECTION
 	#define GPI_TRACE_BASE_SELECTION	(GPI_TRACE_LOG_STANDARD | GPI_TRACE_LOG_PROGRAM_FLOW)
 #endif
-GPI_TRACE_CONFIG(scheduler, GPI_TRACE_BASE_SELECTION | GPI_TRACE_LOG_USER);
+#ifndef GPI_TRACE_USER_SELECTION
+	#define GPI_TRACE_USER_SELECTION	GPI_TRACE_LOG_USER
+#endif
+GPI_TRACE_CONFIG(scheduler, GPI_TRACE_BASE_SELECTION | GPI_TRACE_USER_SELECTION | (TRACE_SCHEDULE & ~GPI_TRACE_MSG_TYPE_INFO));
 
 //**************************************************************************************************
 //**** Includes ************************************************************************************
