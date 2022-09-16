@@ -471,6 +471,12 @@ for b64 in args.infile:
         pdu_bits = [0.0 if not x else 1.0 for x in itertools.chain.from_iterable(pdu_bits)]
         #pdu_bits = np.unpackbits(np.frombuffer(packet, dtype=np.uint8), bitorder='little')
 
+        # choose dummy timestamps in case no packet has been detected
+        if not trx_status["header_detected"]:
+            ref_lts = schedule_lts + len(header_bits) * TICKS_PER_BIT
+        if trx_status["timeout"]:
+            end_lts = rssi_end_lts if rssi_valid else ref_lts + 24 * TICKS_PER_BIT
+
         # compute timestamps
         # ATTENTION: subtracting schedule_lts early ensures correct datatype and wrap-around handling
         # (adding a standard Python integer can silently extend the bit width)
@@ -492,8 +498,9 @@ for b64 in args.infile:
         # send bitstream
         # ATTENTION: ts_header_begin marks the beginning of the first bit,
         # so we shift the timestamps to the middle of each bit (using simplified triangular bit shapes in the plot)
-        x = header_bits + pdu_bits
-        lognclient.send_samples(f"N{node_id} bitstream", (ts_header_begin / TICKS_PER_S) + (dt / 2), dt, bin_list_out(x))
+        if trx_status["header_detected"]:
+            x = header_bits + pdu_bits
+            lognclient.send_samples(f"N{node_id} bitstream", (ts_header_begin / TICKS_PER_S) + (dt / 2), dt, bin_list_out(x))
 
         # send RSSI data
         if rssi_valid and (0 == rssi_num_samples_missed) and (0 == rssi_status_field):
