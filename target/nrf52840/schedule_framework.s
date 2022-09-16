@@ -341,14 +341,17 @@ TICKS_PER_US = 16
 // open TRX group with multiple TRX instructions
 // ATTENTION: use of default timeout is deprecated, it is provided for compatibility reasons
 // (in prior versions, the timeout was specified at the first group member, not at TRX_GROUP_begin)
-.macro TRX_GROUP_begin timeout=0
+.macro TRX_GROUP_begin timeout=0, rssi_pretrigger_time=0, rssi_posttrigger_time=0, rssi_buffer_size=0
 	.subsection 0
 	//.byte	2
 	//.byte	(3999f - 3000f) / 4
 	//.zero	2
 	3000:
-	// store timeout for following group members
+	// store parameters for following group members
 	.set .LTRX_timeout, \timeout
+	.set .LTRX_rssi_buffer_size, \rssi_buffer_size
+	.set .LTRX_rssi_pretrigger_time, \rssi_pretrigger_time
+	.set .LTRX_rssi_posttrigger_time, \rssi_posttrigger_time
 .endm
 
 // close TRX group

@@ -376,10 +376,28 @@ For the included TRX_SYNC blocks, there are two restrictions:
     TRX_SYNC_begin). This is necessary because a receiving node cannot know in advance which of the 
 	packets (or if any at all) it will receive. The global timeout enables synchronous schedule
 	execution independent of the received packets.
+	For the same reason, the RSSI sampling control parameters are defined for the whole group
+	because a receiving node has to reserve the RSSI destination buffer before sampling starts.
 
 - timeout (m): listening timeout [us] to be used at receiver nodes (i.e. at all non-transmitters).
 	The timeout also determines the execution time of the TRX instruction (together with 
 	TRX_PRE_DELAY and TRX_POST_DELAY).
+
+- rssi_buffer_size (o): amount of space reserved as RSSI sample buffer for this TRX operation.
+	reserved space = 2 ^ <provided value>. default = 0 (use internal minimum).
+	
+- rssi_pretrigger_time (o): extra sampling time [us] before start of packet, 
+	i.e. time before packet for which RSSI samples should be kept. default = 0.
+	For internal reasons, the number of stored pretrigger samples can be a little bit (< 5) higher 
+	than specified. More important, it can be significantly lower if the received packet started 
+	before the pretrigger time has passed or if the reserved buffer is too small to keep all samples.
+	
+- rssi_posttrigger_time (o): extra sampling time [us] after end of packet. default = 0.
+	For internal reasons, the number of stored posttrigger samples can be a little bit (< 5) higher 
+	than specified. More important, it can be significantly lower if the specified timeout is reached
+	before the posttrigger time has passed (note that rssi_posttrigger_time > 0 requires to keep the 
+	receiver active for some extra time after the end of a received packet) or if the reserved buffer 
+	is too small to keep all samples.
 
 */
 //**************************************************************************************************
