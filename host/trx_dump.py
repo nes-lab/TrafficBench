@@ -312,9 +312,10 @@ for b64 in args.infile:
     # ATTENTION: this simple approach assumes that the first record from each node has high part 0
     if not node_id in gts_high:
         gts_high[node_id] = (schedule_gts, 0)
-    elif schedule_gts < gts_high[node_id][0]:
-        gts_high[node_id] = (schedule_gts, gts_high[node_id][1] + 1)
-    schedule_gts += gts_high[node_id][1] << 32
+    x = gts_high[node_id]
+    h = x[1] + (schedule_gts < x[0])
+    gts_high[node_id] = (schedule_gts, h)
+    schedule_gts += h << 32
 
     # if transmitter: compute CRC
     if ('TX' == TRX_Operation(operation)):
