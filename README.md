@@ -354,7 +354,8 @@ additional features, please get in touch via e-mail.
 
 ## Research
 
-TrafficBench has been developed in the [Networked Embedded Systems Lab](https://nes-lab.org) at [TU Dresden](https://tu-dresden.de). 
+TrafficBench has been developed in the [Networked Embedded Systems Lab](https://nes-lab.org) 
+at [TU Dresden](https://tu-dresden.de) and [University of Freiburg](https://uni-freiburg.de/en/). 
 Please visit <https://nes-lab.org> to find out more.
 
 
