@@ -57,6 +57,21 @@ ViTables (`vitables`), and Glue (`glue.xsh` in the [`host`](host/) subfolder).
   see [here](https://www.segger.com/news/segger-embedded-studio-ide-now-free-for-nordic-sdk-users/) 
   and [here](https://www.nordicsemi.com/Products/Development-tools/Segger-Embedded-Studio).
 
+### Problems and Troubleshooting
+
+We found that currently (Oct 22) some software components cause **trouble with Python > 3.8**.
+Specifically,
+
+* Starting Glue fails with error message `TypeError: setValue(self, int): argument 1 has unexpected type 'float'`.
+
+* Starting ViTables fails with error message `AttributeError: module 'collections' has no attribute 'Iterable'`.
+
+Both problems are known and fixed in the development versions of Glue and ViTables
+(see https://github.com/glue-viz/glue/pull/2266 and https://github.com/uvemas/ViTables/pull/109 for details),
+so hopefully there will be updates in the future. For the moment we recommend to **use Python 3.8**.
+(Alternatively, you can incorporate the fixes manually into the installed software versions.
+Do not use Glue > 1.2.4 because this causes other issues (see [requirements.txt](host/requirements.txt) for details)).
+
 
 ## Usage
 
