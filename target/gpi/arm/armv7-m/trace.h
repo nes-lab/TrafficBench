@@ -89,6 +89,28 @@
 // select whether TRACE buffer overflow detection is done on read or write side
 #define GPI_TRACE_OVERFLOW_ON_WRITE			0
 
+// maximum number of messages flushed by a single GPI_TRACE_FLUSH() call, 0 = unlimited
+// @details
+// In a single-threaded environment, each GPI_TRACE_FLUSH() call flushes at most
+// GPI_TRACE_BUFFER_NUM_ENTRIES messages, as this is the maximum number of messages in the 
+// buffer (older messages get lost in case). In a multi-threaded environment, it is possible
+// that new messages arrive while GPI_TRACE_FLUSH() is running, which can lead to the situation 
+// that a single GPI_TRACE_FLUSH() call outputs more than GPI_TRACE_BUFFER_NUM_ENTRIES messages 
+// (in the extreme case, GPI_TRACE_FLUSH() can run forever). This is critical as it can render
+// it impossible to estimate the runtime of GPI_TRACE_FLUSH().
+// To overcome this problem, GPI_TRACE_FLUSH_MAX_ENTRIES_PER_CALL can be used to limit the
+// maximum number of messages that are output by a single GPI_TRACE_FLUSH() call. Further,
+// if GPI_TRACE_FLUSH_MAX_ENTRIES_PER_CALL is set to a negative value -N then it limits the
+// number of messages to N and, additionally, processes only those messages that have already 
+// been in the buffer when GPI_TRACE_FLUSH() was entered (so messages arriving in parallel to
+// GPI_TRACE_FLUSH() are not handled in the current call).
+// NOTE: GPI_TRACE_FLUSH_MAX_ENTRIES_PER_CALL is not considered if GPI_TRACE_OVERFLOW_ON_WRITE
+// is active (TODO: change this).
+// TODO: this macro may be of interest for multiple platforms, so maybe move it to gpi/trace.h
+#ifndef GPI_TRACE_FLUSH_MAX_ENTRIES_PER_CALL
+	#define GPI_TRACE_FLUSH_MAX_ENTRIES_PER_CALL	GPI_TRACE_BUFFER_NUM_ENTRIES
+#endif
+
 // select if and how path part gets filtered out from file names
 #ifndef GPI_TRACE_FILTER_PATH
 	#define GPI_TRACE_FILTER_PATH			1

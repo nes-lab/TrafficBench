@@ -92,7 +92,11 @@ GPI_TRACE_CONFIG(logging, GPI_TRACE_BASE_SELECTION | GPI_TRACE_USER_SELECTION);
 #define TRACE_MSG(...)				do { GPI_TRACE_MSG(__VA_ARGS__); TRACE_AUTO_FLUSH(); } while (0)
 
 // enable/disable TRACE flush between chunks and consecutive records
-#define TRACE_INTERMEDIATE_FLUSH	1
+// can be used to output TRACE messages with about the same priority as log records (e.g. for
+// debugging purposes). Without TRACE_INTERMEDIATE_FLUSH, log records have higher priority.
+// Normally the latter is preferred, as losing TRACE messages is typically less critical than
+// losing log records.
+#define TRACE_INTERMEDIATE_FLUSH	0
 
 // special control characters
 // ATTENTION: We replace 0x04 (EOT) by 0x17 (ETB) because EOT gets filtered out by some (not all)
@@ -626,6 +630,16 @@ PT_THREAD(log_thread())
 		flush_log(NULL, NULL);
 		
 		// start transmission (print transmission header)
+		{
+			// add human-readable timestamp before the record
+			// this is optional and simplifies the alignment of log records with the TRACE message
+			// stream when evaluating log files. The timestamp has no influence of filter_logs.py.
+			// NOTE: Use sprintf() instead of printf() to avoid character by character output (see
+			// comments in _print() for details).
+			char timestamp[16];
+			sprintf(timestamp, "\n%u ", gpi_tick_fast_to_us(gpi_tick_fast_native()));
+			_print(timestamp);
+		}
 		_print(BEGIN_RECORD "TRX:\n");
 		
 		// start message segment (character chunk)

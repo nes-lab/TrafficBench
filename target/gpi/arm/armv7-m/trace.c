@@ -319,21 +319,44 @@ void gpi_trace_print_all_msgs()
 #endif
 
 #if !GPI_TRACE_OVERFLOW_ON_WRITE
+
 	static Gpi_Trace_Msg	s_msg;
 	msg = &s_msg;
+
+	#if (0 != GPI_TRACE_FLUSH_MAX_ENTRIES_PER_CALL)
+	
+		unsigned int		num_read_max;
+
+		#if (GPI_TRACE_FLUSH_MAX_ENTRIES_PER_CALL > 0)
+			num_read_max = num_read + GPI_TRACE_FLUSH_MAX_ENTRIES_PER_CALL;
+		#else
+			num_read_max = num_read + MIN(-GPI_TRACE_FLUSH_MAX_ENTRIES_PER_CALL, s_msg_queue_num_written - num_read);
+		#endif
+	
+	#endif
+	
 #endif
 
 	while (num_read != s_msg_queue_num_written)
 	{
 #if !GPI_TRACE_OVERFLOW_ON_WRITE
+
+		#if (0 != GPI_TRACE_FLUSH_MAX_ENTRIES_PER_CALL)
+			if (num_read == num_read_max)
+				break;
+		#endif
+
 		gpi_memcpy_dma_aligned(msg, &s_msg_queue[num_read % NUM_ELEMENTS(s_msg_queue)], sizeof(Gpi_Trace_Msg));
 
 		unsigned int num_open = s_msg_queue_num_writing - num_read;
 		if (num_open > NUM_ELEMENTS(s_msg_queue))
 		{
-			num_open -= NUM_ELEMENTS(s_msg_queue);
+			num_open = s_msg_queue_num_written - num_read;
 			num_read += num_open;
-
+			#if (0 != GPI_TRACE_FLUSH_MAX_ENTRIES_PER_CALL)
+				num_read_max = num_read;
+			#endif
+			
 			msg->msg = "!!! TRACE buffer overflow, %u message(s) lost !!!\n";
 			msg->var_args[0] = num_open;
 			msg->timestamp = 0;
