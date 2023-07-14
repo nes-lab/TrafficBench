@@ -1,5 +1,11 @@
 # TrafficBench
 
+---
+
+**Main Repo**: [https://gitlab.com/nes-lab/trafficbench](https://gitlab.com/nes-lab/trafficbench)
+
+---
+
 TrafficBench is a tool suite for the experimental exploration of concurrent packet transmissions 
 and their consequences (physical layer effects) in low-power wireless networks. It integrates 
 [RSSISpy](https://gitlab.com/nes-lab/rssispy), a software module that enables continuous RSSI 
@@ -33,7 +39,9 @@ You can also use the [Windows Subsystem for Linux](https://docs.microsoft.com/en
 Installation steps:
 
 1. Install [SEGGER Embedded Studio for ARM](https://www.segger.com/downloads/embedded-studio/#ESforARM) (SES).[^fn-ses] 
-   In our tests we have used SES version V6.34.
+   In our tests we have used SES version V7.30 and developed on V6.34.
+   Upon first compilation the software will ask for the package "CMSIS 5 CMSIS-Core Support".
+   Install package and restart the software.
    You do not need the nRF Connect SDK.
    Depending on your test environment, you may need the 
    [nRF Command Line Tools](https://www.nordicsemi.com/Products/Development-tools/nrf-command-line-tools)
