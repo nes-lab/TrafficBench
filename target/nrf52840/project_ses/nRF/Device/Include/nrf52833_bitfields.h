@@ -4683,7 +4683,7 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /* Bits 1..0 : Configuration of modulation control. */
 #define NFCT_MODULATIONCTRL_MODULATIONCTRL_Pos (0UL) /*!< Position of MODULATIONCTRL field. */
 #define NFCT_MODULATIONCTRL_MODULATIONCTRL_Msk (0x3UL << NFCT_MODULATIONCTRL_MODULATIONCTRL_Pos) /*!< Bit mask of MODULATIONCTRL field. */
-#define NFCT_MODULATIONCTRL_MODULATIONCTRL_Invalid (0x0UL) /*!< Invalid, defaults to same behaviour as for Internal */
+#define NFCT_MODULATIONCTRL_MODULATIONCTRL_Invalid (0x0UL) /*!< Invalid, defaults to same behavior as for Internal */
 #define NFCT_MODULATIONCTRL_MODULATIONCTRL_Internal (0x1UL) /*!< Use internal modulator only */
 #define NFCT_MODULATIONCTRL_MODULATIONCTRL_ModToGpio (0x2UL) /*!< Output digital modulation signal to a GPIO pin. */
 #define NFCT_MODULATIONCTRL_MODULATIONCTRL_InternalAndModToGpio (0x3UL) /*!< Use internal modulator and output digital modulation signal to a GPIO pin. */
@@ -6625,13 +6625,13 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define GPIO_LATCH_PIN0_Latched (1UL) /*!< Criteria has been met */
 
 /* Register: GPIO_DETECTMODE */
-/* Description: Select between default DETECT signal behaviour and LDETECT mode */
+/* Description: Select between default DETECT signal behavior and LDETECT mode */
 
-/* Bit 0 : Select between default DETECT signal behaviour and LDETECT mode */
+/* Bit 0 : Select between default DETECT signal behavior and LDETECT mode */
 #define GPIO_DETECTMODE_DETECTMODE_Pos (0UL) /*!< Position of DETECTMODE field. */
 #define GPIO_DETECTMODE_DETECTMODE_Msk (0x1UL << GPIO_DETECTMODE_DETECTMODE_Pos) /*!< Bit mask of DETECTMODE field. */
 #define GPIO_DETECTMODE_DETECTMODE_Default (0UL) /*!< DETECT directly connected to PIN DETECT signals */
-#define GPIO_DETECTMODE_DETECTMODE_LDETECT (1UL) /*!< Use the latched LDETECT behaviour */
+#define GPIO_DETECTMODE_DETECTMODE_LDETECT (1UL) /*!< Use the latched LDETECT behavior */
 
 /* Register: GPIO_PIN_CNF */
 /* Description: Description collection: Configuration of GPIO pins */
@@ -10714,7 +10714,7 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /* Register: RADIO_CCACTRL */
 /* Description: IEEE 802.15.4 clear channel assessment control */
 
-/* Bits 31..24 : Limit for occurances above CCACORRTHRES. When not equal to zero the corrolator based signal detect is enabled. */
+/* Bits 31..24 : Limit for occurrences above CCACORRTHRES. When not equal to zero the corrolator based signal detect is enabled. */
 #define RADIO_CCACTRL_CCACORRCNT_Pos (24UL) /*!< Position of CCACORRCNT field. */
 #define RADIO_CCACTRL_CCACORRCNT_Msk (0xFFUL << RADIO_CCACTRL_CCACORRCNT_Pos) /*!< Bit mask of CCACORRCNT field. */
 
@@ -13560,8 +13560,8 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /* Bit 0 : Overrun error */
 #define TWI_ERRORSRC_OVERRUN_Pos (0UL) /*!< Position of OVERRUN field. */
 #define TWI_ERRORSRC_OVERRUN_Msk (0x1UL << TWI_ERRORSRC_OVERRUN_Pos) /*!< Bit mask of OVERRUN field. */
-#define TWI_ERRORSRC_OVERRUN_NotPresent (0UL) /*!< Read: no overrun occured */
-#define TWI_ERRORSRC_OVERRUN_Present (1UL) /*!< Read: overrun occured */
+#define TWI_ERRORSRC_OVERRUN_NotPresent (0UL) /*!< Read: no overrun occurred */
+#define TWI_ERRORSRC_OVERRUN_Present (1UL) /*!< Read: overrun occurred */
 
 /* Register: TWI_ENABLE */
 /* Description: Enable TWI */

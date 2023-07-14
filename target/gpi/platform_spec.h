@@ -68,7 +68,7 @@
 	can be some	"less official" identifiers, but again they must be unique.
 
 	In case of a "standard" board connected to a custom environment (e.g. with application specific
-	GPIO connections) it is prefered to use the scheme <vendor>_<board>_<customization> with 
+	GPIO connections) it is preferred to use the scheme <vendor>_<board>_<customization> with
 	<vendor> and <board> as above and <customization> identifying the application specific usage.
 	If there is a need to distinguish such customizations, there should also be a PURE variant
 	(i.e., <vendor>_<board>_PURE) that identifies the base board used in a stand-alone manner.
@@ -76,7 +76,7 @@
 	It may be convenient to identify a family of boards from a different perspective, e.g.
 	plug-in cards for a specific hardware system or from a functionality point of view. If such
 	naming should be used, then it should not replace the <vendor>_<board>[_<customization>]
-	baseline. Instead, names following a different taxonomy should be added as aliases refering
+	baseline. Instead, names following a different taxonomy should be added as aliases referring
 	to the standard names.
 	
 	Example:

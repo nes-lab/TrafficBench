@@ -205,7 +205,7 @@ void gpi_radio_set_channel(int channel)
 		case BLE_125k:
 		case BLE_500k:
 		{
-			// ENABLE_EXTRA_CHANNELS adds three additional inofficial channels at the ISM band's
+			// ENABLE_EXTRA_CHANNELS adds three additional unofficial channels at the ISM band's
 			// boundaries, namely channel -1 at 2401 MHz, channel 40 at 2482 MHz, and channel 41
 			// at 2483 MHz. They are interesting (at least) for internal tests because they
 			// promise particularly little external interference. In detail:

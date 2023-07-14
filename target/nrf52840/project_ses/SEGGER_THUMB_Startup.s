@@ -144,7 +144,7 @@ Additional information:
 *  Function description
 *    Entry point for the startup code. 
 *    Usually called by the reset handler.
-*    Performs all initialisation, based on the entries in the 
+*    Performs all initialization, based on the entries in the
 *    linker-generated init table, then calls main().
 *    It is device independent, so there should not be any need for an 
 *    end-user to modify it.

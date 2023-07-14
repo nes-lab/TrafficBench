@@ -310,7 +310,7 @@ int __attribute__((weak)) __SEGGER_RTL_X_file_unget(FILE *stream, int c)
 
 #if GPI_ARCH_IS_CRT(SEGGER2)
 
-// Starting with SES 5.10 SEGGER included two runtime libaries: The legacy "Embedded Studio
+// Starting with SES 5.10 SEGGER included two runtime libraries: The legacy "Embedded Studio
 // Runtime Library" (GPI_ARCH_CRT_SEGGER1) and the "SEGGER Runtime Library" (GPI_ARCH_CRT_SEGGER2).
 // With SES 6.00 the legacy library has been removed (so SEGGER2 is the only remaining option),
 // and in some version <= 6.34 the Library I/O option "STD" has also been removed. To implement 
@@ -407,7 +407,7 @@ int __attribute__((weak)) __SEGGER_RTL_X_file_write(FILE *stream, const char *s,
 			tx_chain[tx_chain_num_written++ & TX_CHAIN_INDEX_MASK] = i;
 			
 			// do not leave int lock -> if thread gets interrupted for a long time,
-			// transmission could finish inbetween (we would have to check tx_chain_num_read
+			// transmission could finish in between (we would have to check tx_chain_num_read
 			// vs. tx_chain_num_written again, so savings in locked time would be marginal)
 			
 			// start transmitter if it is idle at present

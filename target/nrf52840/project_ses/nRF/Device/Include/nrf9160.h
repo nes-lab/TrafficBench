@@ -776,7 +776,7 @@ typedef struct {                                /*!< (@ 0xE0080000) TAD_S Struct
   __OM  uint32_t  CLOCKSTART;                   /*!< (@ 0x00000000) Start all trace and debug clocks.                          */
   __OM  uint32_t  CLOCKSTOP;                    /*!< (@ 0x00000004) Stop all trace and debug clocks.                           */
   __IM  uint32_t  RESERVED[318];
-  __IOM uint32_t  ENABLE;                       /*!< (@ 0x00000500) Enable debug domain and aquire selected GPIOs              */
+  __IOM uint32_t  ENABLE;                       /*!< (@ 0x00000500) Enable debug domain and acquire selected GPIOs              */
   __IOM TAD_PSEL_Type PSEL;                     /*!< (@ 0x00000504) Unspecified                                                */
   __IOM uint32_t  TRACEPORTSPEED;               /*!< (@ 0x00000518) Clocking options for the Trace Port debug interface        */
 } NRF_TAD_Type;                                 /*!< Size = 1308 (0x51c)                                                       */

@@ -1224,7 +1224,7 @@ PT_THREAD(execution_thread())
 				// NOTE: Another way of performing fast forward is to execute every TRX with
 				// dry_run = (gpi_tick_compare_fast_native(tick_global_to_local(program_state.pc_tick), now) < 0);
 				// or dry_run = (program_state.pc_tick < tick_local_to_global(now));
-				// It could be implemented in conjuction with some flag or similar that clearly marks
+				// It could be implemented in conjunction with some flag or similar that clearly marks
 				// if a TRX operation has been skipped. This could be advantageous when analyzing
 				// the log output (to distinguish if a packet has not been received due to
 				// transmission errors or due to sync / timing problems).
@@ -1333,7 +1333,7 @@ PT_THREAD(execution_thread())
 
 				// ATTENTION: The loops must run backwards to be consistent in cases where a node
 				// is selected as transmitter multiple times. (This should be avoided. However,
-				// since it is not catched at compile time, we must provide a defined behavior.)
+				// since it is not caught at compile time, we must provide a defined behavior.)
 				// Background: By the use of trx_group.tx[id], each transmitting node is assigned 
 				// to one instruction and transmitter index. Running backwards ensures that the
 				// first match is selected. The advantage of this behavior is as follows. If there 

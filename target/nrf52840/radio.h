@@ -74,7 +74,7 @@
 //**************************************************************************************************
 //***** Global Typedefs and Class Declarations *****************************************************
 
-// transmit acknowledgement marker
+// transmit acknowledgment marker
 typedef struct Tx_Ack
 {
 	const Radio_Packet		*packet;
@@ -118,7 +118,7 @@ typedef struct Rssi_Buffer
 //**************************************************************************************************
 //***** Global Variables ***************************************************************************
 
-// transmit acknowledgement marker
+// transmit acknowledgment marker
 extern Tx_Ack					tx_ack;
 
 // Rx intermediate trigger event marker

@@ -619,9 +619,9 @@ typedef struct {                                /*!< (@ 0x40004000) SPIS1 Struct
   */
 
 typedef struct {                                /*!< (@ 0x40006000) GPIOTE Structure                                           */
-  __OM  uint32_t  TASKS_OUT[4];                 /*!< (@ 0x00000000) Tasks asssociated with GPIOTE channels.                    */
+  __OM  uint32_t  TASKS_OUT[4];                 /*!< (@ 0x00000000) Tasks associated with GPIOTE channels.                    */
   __IM  uint32_t  RESERVED[60];
-  __IOM uint32_t  EVENTS_IN[4];                 /*!< (@ 0x00000100) Tasks asssociated with GPIOTE channels.                    */
+  __IOM uint32_t  EVENTS_IN[4];                 /*!< (@ 0x00000100) Tasks associated with GPIOTE channels.                    */
   __IM  uint32_t  RESERVED1[27];
   __IOM uint32_t  EVENTS_PORT;                  /*!< (@ 0x0000017C) Event generated from multiple pins.                        */
   __IM  uint32_t  RESERVED2[97];
@@ -690,7 +690,7 @@ typedef struct {                                /*!< (@ 0x40008000) TIMER0 Struc
   __IOM uint32_t  INTENCLR;                     /*!< (@ 0x00000308) Interrupt enable clear register.                           */
   __IM  uint32_t  RESERVED4[126];
   __IOM uint32_t  MODE;                         /*!< (@ 0x00000504) Timer Mode selection.                                      */
-  __IOM uint32_t  BITMODE;                      /*!< (@ 0x00000508) Sets timer behaviour.                                      */
+  __IOM uint32_t  BITMODE;                      /*!< (@ 0x00000508) Sets timer behavior.                                      */
   __IM  uint32_t  RESERVED5;
   __IOM uint32_t  PRESCALER;                    /*!< (@ 0x00000510) 4-bit prescaler to source clock frequency (max
                                                                     value 9). Source clock frequency is divided
@@ -1117,12 +1117,12 @@ typedef struct {                                /*!< (@ 0x10000000) FICR Structu
   __IM  uint32_t  CLENR0;                       /*!< (@ 0x00000028) Length of code region 0 in bytes.                          */
   __IM  uint32_t  PPFC;                         /*!< (@ 0x0000002C) Pre-programmed factory code present.                       */
   __IM  uint32_t  RESERVED2;
-  __IM  uint32_t  NUMRAMBLOCK;                  /*!< (@ 0x00000034) Number of individualy controllable RAM blocks.             */
+  __IM  uint32_t  NUMRAMBLOCK;                  /*!< (@ 0x00000034) Number of individually controllable RAM blocks.             */
   
   union {
     __IM  uint32_t SIZERAMBLOCKS;               /*!< (@ 0x00000038) Size of RAM blocks in bytes.                               */
     __IM  uint32_t SIZERAMBLOCK[4];             /*!< (@ 0x00000038) Deprecated array of size of RAM block in bytes.
-                                                                    This name is kept for backward compatinility
+                                                                    This name is kept for backward compatibility
                                                                     purposes. Use SIZERAMBLOCKS instead.                       */
   };
   __IM  uint32_t  RESERVED3[5];

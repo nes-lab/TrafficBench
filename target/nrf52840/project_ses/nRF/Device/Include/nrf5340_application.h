@@ -2,11 +2,11 @@
  * Copyright (c) 2010 - 2021, Nordic Semiconductor ASAAll rights reserved.Redistribution and use in sou
  * rce and binary forms, with or without modification,are permitted provided that the following conditi
  * ons are met:1. Redistributions of source code must retain the above copyright notice, this list of c
- * onditions and the following disclaimer.2. Redistributions in binary form, except as embedded into a 
+ * onditions and the following disclaimer.2. Redistributions in binary form, except as embedded into a
  * Nordic Semiconductor ASA integrated circuit in a product or a software update for such product, must
  * reproduce the above copyright notice, this list of conditions and the following disclaimer in the d
  * ocumentation and/or other materials provided with the distribution.3. Neither the name of Nordic Sem
- * iconductor ASA nor the names of its contributors may be used to endorse or promote products derived 
+ * iconductor ASA nor the names of its contributors may be used to endorse or promote products derived
  * from this software without specific prior written permission.4. This software, with or without modif
  * ication, must only be used with a Nordic Semiconductor ASA integrated circuit.5. Any software provid
  * ed in binary form under this license must not be reverse engineered, decompiled, modified and/or dis
@@ -1224,7 +1224,7 @@ typedef struct {                                /*!< (@ 0xE0080000) TAD_S Struct
   __OM  uint32_t  CLOCKSTART;                   /*!< (@ 0x00000004) Start all trace and debug clocks.                          */
   __OM  uint32_t  CLOCKSTOP;                    /*!< (@ 0x00000008) Stop all trace and debug clocks.                           */
   __IM  uint32_t  RESERVED1[317];
-  __IOM uint32_t  ENABLE;                       /*!< (@ 0x00000500) Enable debug domain and aquire selected GPIOs              */
+  __IOM uint32_t  ENABLE;                       /*!< (@ 0x00000500) Enable debug domain and acquire selected GPIOs              */
   __IOM TAD_PSEL_Type PSEL;                     /*!< (@ 0x00000504) Unspecified                                                */
   __IOM uint32_t  TRACEPORTSPEED;               /*!< (@ 0x00000518) Clocking options for the Trace Port debug interface
                                                                     Reset behavior is the same as debug components             */

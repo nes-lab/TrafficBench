@@ -167,20 +167,20 @@ def linear_to_dB(x):
 ####################################################################################################
 
 # compute nominal packet airtime
-# TODO: make it depedent from radio mode
+# TODO: make it dependent from radio mode
 def get_packet_airtime(pdu_crc_length):
 
 # 	switch (gpi_radio_get_mode())
 # 	{
 # 		// field lengths:	PREAMBLE	ADDRESS		CI		TERM1		PDU			CRC		TERM2
-# 		// allways [bit]:				 32							(2...258)*8		24
+# 		// always [bit]:				 32							(2...258)*8		24
 # 		// 1M:				 8, 8us		 32us		0		0						 24us	0
 # 		// 2M:				16, 8us		 16us		0		0						 12us	0
 # 		// 125k:			80,80us		256us		2,16us	3,24us					192us	3,24us
 # 		// 500k:			80,80us		256us		2,16us	3,24us					 48us	3, 6us
 # 		//
 # 		// PDU:				S0			LENGTH		S1		PAYLOAD
-# 		// allways [bit]:	8			8			0		(0...255)*8
+# 		// always [bit]:	8			8			0		(0...255)*8
 #
 # 		case BLE_1M:	airtime = GPI_TICK_US_TO_FAST( 8 +  32 +  0 +  0 +  16 +  24 +  0) + (GPI_TICK_US_TO_FAST(8) * payload_length);		break;
 # 		case BLE_2M:	airtime = GPI_TICK_US_TO_FAST( 8 +  16 +  0 +  0 +   8 +  12 +  0) + (GPI_TICK_US_TO_FAST(4) * payload_length);		break;
@@ -193,7 +193,7 @@ def get_packet_airtime(pdu_crc_length):
 
 ####################################################################################################
 
-# TODO: make it depedent from radio mode
+# TODO: make it dependent from radio mode
 def get_ref_delay():
     us = 8 + 32
     return us * TICKS_PER_US
@@ -223,7 +223,7 @@ def warn_rssi(r):
 # split RSSI stream into noise and signal segments and estimate power values
 # ATTENTION: current implementation assumes that there is a noise segment, followed by a signal
 # segment, followed by another noise segment. This means that there is no special handling for
-# overlayed packets with different lengths or time-shifts as well as transmissions with 
+# overlaid packets with different lengths or time-shifts as well as transmissions with
 # tx_carrier_period_1/2 > 0. The results will be wrong in such cases.
 # TODO: detect mentioned situations and warn if function is used in such cases
 def split_rssi(trx):

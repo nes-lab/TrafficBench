@@ -2255,7 +2255,7 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define LPCOMP_SHORTS_DOWN_STOP_Disabled (0UL) /*!< Shortcut disabled. */
 #define LPCOMP_SHORTS_DOWN_STOP_Enabled (1UL) /*!< Shortcut enabled. */
 
-/* Bit 1 : Shortcut between RADY event and STOP task. */
+/* Bit 1 : Shortcut between READY event and STOP task. */
 #define LPCOMP_SHORTS_READY_STOP_Pos (1UL) /*!< Position of READY_STOP field. */
 #define LPCOMP_SHORTS_READY_STOP_Msk (0x1UL << LPCOMP_SHORTS_READY_STOP_Pos) /*!< Bit mask of READY_STOP field. */
 #define LPCOMP_SHORTS_READY_STOP_Disabled (0UL) /*!< Shortcut disabled. */
@@ -2335,7 +2335,7 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /* Bit 0 : Result of last compare. Decision point SAMPLE task. */
 #define LPCOMP_RESULT_RESULT_Pos (0UL) /*!< Position of RESULT field. */
 #define LPCOMP_RESULT_RESULT_Msk (0x1UL << LPCOMP_RESULT_RESULT_Pos) /*!< Bit mask of RESULT field. */
-#define LPCOMP_RESULT_RESULT_Below (0UL) /*!< Input voltage is bellow the reference threshold. */
+#define LPCOMP_RESULT_RESULT_Below (0UL) /*!< Input voltage is below the reference threshold. */
 #define LPCOMP_RESULT_RESULT_Above (1UL) /*!< Input voltage is above the reference threshold. */
 
 /* Register: LPCOMP_ENABLE */
@@ -3181,25 +3181,25 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /* Register: POWER_RAMON */
 /* Description: Ram on/off. */
 
-/* Bit 17 : RAM block 1 behaviour in OFF mode. */
+/* Bit 17 : RAM block 1 behavior in OFF mode. */
 #define POWER_RAMON_OFFRAM1_Pos (17UL) /*!< Position of OFFRAM1 field. */
 #define POWER_RAMON_OFFRAM1_Msk (0x1UL << POWER_RAMON_OFFRAM1_Pos) /*!< Bit mask of OFFRAM1 field. */
 #define POWER_RAMON_OFFRAM1_RAM1Off (0UL) /*!< RAM block 1 OFF in OFF mode. */
 #define POWER_RAMON_OFFRAM1_RAM1On (1UL) /*!< RAM block 1 ON in OFF mode. */
 
-/* Bit 16 : RAM block 0 behaviour in OFF mode. */
+/* Bit 16 : RAM block 0 behavior in OFF mode. */
 #define POWER_RAMON_OFFRAM0_Pos (16UL) /*!< Position of OFFRAM0 field. */
 #define POWER_RAMON_OFFRAM0_Msk (0x1UL << POWER_RAMON_OFFRAM0_Pos) /*!< Bit mask of OFFRAM0 field. */
 #define POWER_RAMON_OFFRAM0_RAM0Off (0UL) /*!< RAM block 0 OFF in OFF mode. */
 #define POWER_RAMON_OFFRAM0_RAM0On (1UL) /*!< RAM block 0 ON in OFF mode. */
 
-/* Bit 1 : RAM block 1 behaviour in ON mode. */
+/* Bit 1 : RAM block 1 behavior in ON mode. */
 #define POWER_RAMON_ONRAM1_Pos (1UL) /*!< Position of ONRAM1 field. */
 #define POWER_RAMON_ONRAM1_Msk (0x1UL << POWER_RAMON_ONRAM1_Pos) /*!< Bit mask of ONRAM1 field. */
 #define POWER_RAMON_ONRAM1_RAM1Off (0UL) /*!< RAM block 1 OFF in ON mode. */
 #define POWER_RAMON_ONRAM1_RAM1On (1UL) /*!< RAM block 1 ON in ON mode. */
 
-/* Bit 0 : RAM block 0 behaviour in ON mode. */
+/* Bit 0 : RAM block 0 behavior in ON mode. */
 #define POWER_RAMON_ONRAM0_Pos (0UL) /*!< Position of ONRAM0 field. */
 #define POWER_RAMON_ONRAM0_Msk (0x1UL << POWER_RAMON_ONRAM0_Pos) /*!< Bit mask of ONRAM0 field. */
 #define POWER_RAMON_ONRAM0_RAM0Off (0UL) /*!< RAM block 0 OFF in ON mode. */
@@ -3217,25 +3217,25 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /* Register: POWER_RAMONB */
 /* Description: Ram on/off. */
 
-/* Bit 17 : RAM block 3 behaviour in OFF mode. */
+/* Bit 17 : RAM block 3 behavior in OFF mode. */
 #define POWER_RAMONB_OFFRAM3_Pos (17UL) /*!< Position of OFFRAM3 field. */
 #define POWER_RAMONB_OFFRAM3_Msk (0x1UL << POWER_RAMONB_OFFRAM3_Pos) /*!< Bit mask of OFFRAM3 field. */
 #define POWER_RAMONB_OFFRAM3_RAM3Off (0UL) /*!< RAM block 3 OFF in OFF mode. */
 #define POWER_RAMONB_OFFRAM3_RAM3On (1UL) /*!< RAM block 3 ON in OFF mode. */
 
-/* Bit 16 : RAM block 2 behaviour in OFF mode. */
+/* Bit 16 : RAM block 2 behavior in OFF mode. */
 #define POWER_RAMONB_OFFRAM2_Pos (16UL) /*!< Position of OFFRAM2 field. */
 #define POWER_RAMONB_OFFRAM2_Msk (0x1UL << POWER_RAMONB_OFFRAM2_Pos) /*!< Bit mask of OFFRAM2 field. */
 #define POWER_RAMONB_OFFRAM2_RAM2Off (0UL) /*!< RAM block 2 OFF in OFF mode. */
 #define POWER_RAMONB_OFFRAM2_RAM2On (1UL) /*!< RAM block 2 ON in OFF mode. */
 
-/* Bit 1 : RAM block 3 behaviour in ON mode. */
+/* Bit 1 : RAM block 3 behavior in ON mode. */
 #define POWER_RAMONB_ONRAM3_Pos (1UL) /*!< Position of ONRAM3 field. */
 #define POWER_RAMONB_ONRAM3_Msk (0x1UL << POWER_RAMONB_ONRAM3_Pos) /*!< Bit mask of ONRAM3 field. */
 #define POWER_RAMONB_ONRAM3_RAM3Off (0UL) /*!< RAM block 33 OFF in ON mode. */
 #define POWER_RAMONB_ONRAM3_RAM3On (1UL) /*!< RAM block 3 ON in ON mode. */
 
-/* Bit 0 : RAM block 2 behaviour in ON mode. */
+/* Bit 0 : RAM block 2 behavior in ON mode. */
 #define POWER_RAMONB_ONRAM2_Pos (0UL) /*!< Position of ONRAM2 field. */
 #define POWER_RAMONB_ONRAM2_Msk (0x1UL << POWER_RAMONB_ONRAM2_Pos) /*!< Bit mask of ONRAM2 field. */
 #define POWER_RAMONB_ONRAM2_RAM2Off (0UL) /*!< RAM block 2 OFF in ON mode. */
@@ -4415,9 +4415,9 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /* Bits 1..0 : Radio data rate and modulation setting. Decision point: TXEN or RXEN task. */
 #define RADIO_MODE_MODE_Pos (0UL) /*!< Position of MODE field. */
 #define RADIO_MODE_MODE_Msk (0x3UL << RADIO_MODE_MODE_Pos) /*!< Bit mask of MODE field. */
-#define RADIO_MODE_MODE_Nrf_1Mbit (0x00UL) /*!< 1Mbit/s Nordic propietary radio mode. */
-#define RADIO_MODE_MODE_Nrf_2Mbit (0x01UL) /*!< 2Mbit/s Nordic propietary radio mode. */
-#define RADIO_MODE_MODE_Nrf_250Kbit (0x02UL) /*!< 250kbit/s Nordic propietary radio mode. */
+#define RADIO_MODE_MODE_Nrf_1Mbit (0x00UL) /*!< 1Mbit/s Nordic proprietary radio mode. */
+#define RADIO_MODE_MODE_Nrf_2Mbit (0x01UL) /*!< 2Mbit/s Nordic proprietary radio mode. */
+#define RADIO_MODE_MODE_Nrf_250Kbit (0x02UL) /*!< 250kbit/s Nordic proprietary radio mode. */
 #define RADIO_MODE_MODE_Ble_1Mbit (0x03UL) /*!< 1Mbit/s Bluetooth Low Energy */
 
 /* Register: RADIO_PCNF0 */
@@ -5513,15 +5513,15 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define TIMER_MODE_MODE_Counter (1UL) /*!< Timer in Counter mode. */
 
 /* Register: TIMER_BITMODE */
-/* Description: Sets timer behaviour. */
+/* Description: Sets timer behavior. */
 
-/* Bits 1..0 : Sets timer behaviour ro be like the implementation of a timer with width as indicated. */
+/* Bits 1..0 : Sets timer behavior to be like the implementation of a timer with width as indicated. */
 #define TIMER_BITMODE_BITMODE_Pos (0UL) /*!< Position of BITMODE field. */
 #define TIMER_BITMODE_BITMODE_Msk (0x3UL << TIMER_BITMODE_BITMODE_Pos) /*!< Bit mask of BITMODE field. */
-#define TIMER_BITMODE_BITMODE_16Bit (0x00UL) /*!< 16-bit timer behaviour. */
-#define TIMER_BITMODE_BITMODE_08Bit (0x01UL) /*!< 8-bit timer behaviour. */
-#define TIMER_BITMODE_BITMODE_24Bit (0x02UL) /*!< 24-bit timer behaviour. */
-#define TIMER_BITMODE_BITMODE_32Bit (0x03UL) /*!< 32-bit timer behaviour. */
+#define TIMER_BITMODE_BITMODE_16Bit (0x00UL) /*!< 16-bit timer behavior. */
+#define TIMER_BITMODE_BITMODE_08Bit (0x01UL) /*!< 8-bit timer behavior. */
+#define TIMER_BITMODE_BITMODE_24Bit (0x02UL) /*!< 24-bit timer behavior. */
+#define TIMER_BITMODE_BITMODE_32Bit (0x03UL) /*!< 32-bit timer behavior. */
 
 /* Register: TIMER_PRESCALER */
 /* Description: 4-bit prescaler to source clock frequency (max value 9). Source clock frequency is divided by 2^SCALE. */

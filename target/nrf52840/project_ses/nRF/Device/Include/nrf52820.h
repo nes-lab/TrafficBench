@@ -764,7 +764,7 @@ typedef struct {                                /*!< (@ 0x50000000) P0 Structure
   __IOM uint32_t  LATCH;                        /*!< (@ 0x00000520) Latch register indicating what GPIO pins that
                                                                     have met the criteria set in the PIN_CNF[n].SENSE
                                                                     registers                                                  */
-  __IOM uint32_t  DETECTMODE;                   /*!< (@ 0x00000524) Select between default DETECT signal behaviour
+  __IOM uint32_t  DETECTMODE;                   /*!< (@ 0x00000524) Select between default DETECT signal behavior
                                                                     and LDETECT mode                                           */
   __IM  uint32_t  RESERVED1[118];
   __IOM uint32_t  PIN_CNF[32];                  /*!< (@ 0x00000700) Description collection: Configuration of GPIO

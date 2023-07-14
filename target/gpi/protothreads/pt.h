@@ -112,7 +112,7 @@ struct pt {
  * This macro is used to declare the starting point of a
  * protothread. It should be placed at the start of the function in
  * which the protothread runs. All C statements above the PT_BEGIN()
- * invokation will be executed each time the protothread is scheduled.
+ * invocation will be executed each time the protothread is scheduled.
  *
  * \param pt A pointer to the protothread control structure.
  *
