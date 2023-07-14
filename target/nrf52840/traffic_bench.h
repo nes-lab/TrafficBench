@@ -87,7 +87,7 @@ typedef struct __attribute__((packed)) Checkpoint_Data
 	uint16_t	schedule_pc;
 	uint32_t	schedule_clock;
 	uint32_t	schedule_rng_state;
-	
+
 } Checkpoint_Data;
 
 //**************************************************************************************************
@@ -100,13 +100,13 @@ typedef enum Opcode
 	opSLEEP,
 //	opCHANGE_RADIO_MODE,
 	opBRANCH	= 200,
-	
+
 } Opcode;
 
 typedef struct /*__attribute__((packed))*/ Params_SLEEP
 {
 	uint32_t		delay;
-	
+
 } Params_SLEEP;
 
 typedef enum Params_TRX_Desc_Type
@@ -134,7 +134,7 @@ typedef struct /*__attribute__((packed))*/ Params_TRX
 	uint8_t			num_transmitters;
 	uint8_t			transmitter_ids[0];
 	//uint16_t		payload_descriptor_list_size;
-	
+
 	struct __attribute__((packed))
 	{
 		uint8_t			size;		// size of descriptor (not of corresponding payload chunk)
@@ -144,36 +144,36 @@ typedef struct /*__attribute__((packed))*/ Params_TRX
 			struct __attribute__((packed))
 			{
 				uint8_t		data[0];
-				
+
 			}			fixed;
-			
+
 			struct __attribute__((packed))
 			{
 				uint8_t		num_bytes;
-				
+
 			}			random;
 		};
 	}				payload_descriptors[0];
-	
+
 } Params_TRX;
 
 typedef union Instruction_Params
 {
 	Params_SLEEP	SLEEP;
 	Params_TRX		TRX;
-	
+
 } Instruction_Params;
 
 // 32-bit machine instruction
 typedef struct Schedule_Entry
 {
 	uint8_t				opcode;
-	
+
 	// immediate parameters
 	union __attribute__((packed))
 	{
 		//uint8_t  		params_raw[3];
-		
+
 		struct __attribute__((packed))
 		{
 			uint8_t		__padding__;		// for alignment
@@ -184,24 +184,24 @@ typedef struct Schedule_Entry
 		{
 			uint8_t		__reserved__;
 			int16_t		offset;
-			
+
 		} BRANCH;
-		
+
 		struct __attribute__((packed))
 		{
 			int8_t		group_offset;
 			uint16_t	params_ptr;
-			
+
 		} TRX;
 
 		//struct __attribute__((packed))
 		//{
 		//	uint8_t		num_entries;
 		//	uint16_t	__reserved__;
-			
+
 		//} TRX_GROUP;
 	};
-	
+
 } Schedule_Entry;
 
 // static options provided in the schedule
@@ -254,7 +254,7 @@ PT_THREAD(log_thread());
 static inline void scheduler_wake_at(Gpi_Fast_Tick_Native tick)
 {
 	radio_wake_at(tick);
-	
+
 	// in response, trigger_radio_event() triggers the scheduler (see there)
 }
 

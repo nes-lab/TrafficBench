@@ -40,7 +40,7 @@
  ***************************************************************************************************
 
  	@details
-	
+
 	TODO
 
  **************************************************************************************************/
@@ -171,7 +171,7 @@ static ALWAYS_INLINE int gpi_int_lock()
 
 	REORDER_BARRIER();
 	__DMB();
-	
+
 	return ie;
 }
 
@@ -198,7 +198,7 @@ static ALWAYS_INLINE void gpi_int_unlock(int ie)
 static ALWAYS_INLINE void gpi_atomic_or(volatile unsigned int *p, unsigned int mask)
 {
 	#if _GPI_ARM_USE_UNBLOCKING_SYNC
-	
+
 		register int	tmp1, tmp2;
 
 		REORDER_BARRIER();
@@ -225,15 +225,15 @@ static ALWAYS_INLINE void gpi_atomic_or(volatile unsigned int *p, unsigned int m
 		);
 
 		REORDER_BARRIER();
-		
+
 	#else
 
 		register int ie = gpi_int_lock();
-		
+
 		*p |= mask;
 
 		gpi_int_unlock(ie);
-		
+
 	#endif
 }
 
@@ -242,7 +242,7 @@ static ALWAYS_INLINE void gpi_atomic_or(volatile unsigned int *p, unsigned int m
 static ALWAYS_INLINE void gpi_atomic_and(volatile unsigned int *p, unsigned int mask)
 {
 	#if _GPI_ARM_USE_UNBLOCKING_SYNC
-	
+
 		register int	tmp1, tmp2;
 
 		REORDER_BARRIER();
@@ -269,15 +269,15 @@ static ALWAYS_INLINE void gpi_atomic_and(volatile unsigned int *p, unsigned int 
 		);
 
 		REORDER_BARRIER();
-		
+
 	#else
 
 		register int ie = gpi_int_lock();
-		
+
 		*p &= mask;
 
 		gpi_int_unlock(ie);
-		
+
 	#endif
 }
 
@@ -294,7 +294,7 @@ static ALWAYS_INLINE void gpi_atomic_clear(volatile unsigned int *p, unsigned in
 {
 	// if performance is extremely critical, one can copy the code from gpi_atomic_and()
 	// and replace "and" by "bic" instead of manually inverting the mask as done here
-	
+
 	gpi_atomic_and(p, ~mask);
 }
 

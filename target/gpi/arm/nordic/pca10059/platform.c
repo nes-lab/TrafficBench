@@ -85,7 +85,7 @@ GPI_RESOURCE_RESERVE_SHARED(NRF_UARTE, 0);
 
 #define WARNING(msg)	WARNING2(GCC warning msg)
 #define WARNING2(msg)	_Pragma (#msg)
-	
+
 // issue default value warnings (see platform.h for details)
 #ifdef _GPI_STDOUT_UART_BAUDRATE_DEFAULT_WARNING
 	WARNING(_GPI_STDOUT_UART_BAUDRATE_DEFAULT_WARNING)
@@ -238,7 +238,7 @@ static inline void uart_init(uint32_t baudrate)
 	#else
 		NRF_UARTE0->INTEN = 0;
 	#endif
-	
+
 	// start UART
 	NRF_UARTE0->ENABLE = BV_BY_NAME(UARTE_ENABLE_ENABLE, Enabled);
 }
@@ -364,7 +364,7 @@ void gpi_platform_init()
 	NRF_P0->OUTSET = BV(6); // active low
 
 	// P0.07 (M2) : n.c.
-	
+
 	// P0.08 (N1): LED2_R
 	NRF_P0->PIN_CNF[8] =
 		BV_BY_NAME(GPIO_PIN_CNF_DIR, Output)		|
@@ -440,7 +440,7 @@ void gpi_platform_init()
 	// P0.29 / AIN5 (A10): a.s.
 	// P0.30 / AIN6 (B9) : n.c.
 	// P0.31 / AIN7 (A8) : a.s.
-	
+
 	// P1.00 (AD22): a.s. / TRACEDATA0
 	// P1.01 (Y23) : a.s.
 	// P1.02 (W24) : a.s.
@@ -476,7 +476,7 @@ void gpi_platform_init()
 
 	// application specific connections of PC10059 based FlockLab target
 	#if GPI_ARCH_IS_BOARD(FLOCKLAB_nRF5)
-	
+
 		// P0.13 (AD8): LED1 (FlockLab GPIO signal name)
 		NRF_P0->PIN_CNF[13] =
 			BV_BY_NAME(GPIO_PIN_CNF_DIR, Output)		|
@@ -485,7 +485,7 @@ void gpi_platform_init()
 			BV_BY_NAME(GPIO_PIN_CNF_DRIVE, S0S1)		|
 			BV_BY_NAME(GPIO_PIN_CNF_SENSE, Disabled);
 		NRF_P0->OUTCLR = BV(13);
-		
+
 		// P0.15 (AD10): LED2 (FlockLab GPIO signal name)
 		NRF_P0->PIN_CNF[15] =
 			BV_BY_NAME(GPIO_PIN_CNF_DIR, Output)		|
@@ -494,7 +494,7 @@ void gpi_platform_init()
 			BV_BY_NAME(GPIO_PIN_CNF_DRIVE, S0S1)		|
 			BV_BY_NAME(GPIO_PIN_CNF_SENSE, Disabled);
 		NRF_P0->OUTCLR = BV(15);
-		
+
 		// P0.17 (AD12): LED3 (FlockLab GPIO signal name)
 		NRF_P0->PIN_CNF[17] =
 			BV_BY_NAME(GPIO_PIN_CNF_DIR, Output)		|
@@ -503,7 +503,7 @@ void gpi_platform_init()
 			BV_BY_NAME(GPIO_PIN_CNF_DRIVE, S0S1)		|
 			BV_BY_NAME(GPIO_PIN_CNF_SENSE, Disabled);
 		NRF_P0->OUTCLR = BV(17);
-		
+
 		// P0.20 (AD16): INT1 (FlockLab GPIO signal name)
 		NRF_P0->PIN_CNF[20] =
 			BV_BY_NAME(GPIO_PIN_CNF_DIR, Output)		|
@@ -512,7 +512,7 @@ void gpi_platform_init()
 			BV_BY_NAME(GPIO_PIN_CNF_DRIVE, S0S1)		|
 			BV_BY_NAME(GPIO_PIN_CNF_SENSE, Disabled);
 		NRF_P0->OUTCLR = BV(20);
-		
+
 		// P0.22 (AD18): INT2 (FlockLab GPIO signal name)
 		NRF_P0->PIN_CNF[22] =
 			BV_BY_NAME(GPIO_PIN_CNF_DIR, Output)		|
@@ -521,21 +521,21 @@ void gpi_platform_init()
 			BV_BY_NAME(GPIO_PIN_CNF_DRIVE, S0S1)		|
 			BV_BY_NAME(GPIO_PIN_CNF_SENSE, Disabled);
 		NRF_P0->OUTCLR = BV(22);
-		
+
 		// P0.24 (AD20): UART RXD
 		NRF_P0->PIN_CNF[24] =
 			BV_BY_NAME(GPIO_PIN_CNF_DIR, Input)			|
 			BV_BY_NAME(GPIO_PIN_CNF_INPUT, Connect)		|
 			BV_BY_NAME(GPIO_PIN_CNF_PULL, Pullup)		|
 			BV_BY_NAME(GPIO_PIN_CNF_SENSE, Disabled);
-		
+
 		// P0.29 / AIN5 (A10): SIG2 (FlockLab GPIO signal name)
 		NRF_P0->PIN_CNF[29] =
 			BV_BY_NAME(GPIO_PIN_CNF_DIR, Input)			|
 			BV_BY_NAME(GPIO_PIN_CNF_INPUT, Connect)		|
 			BV_BY_NAME(GPIO_PIN_CNF_PULL, Disabled)		|
 			BV_BY_NAME(GPIO_PIN_CNF_SENSE, Disabled);
-			
+
 		// P0.31 / AIN7 (A8): SIG1 (FlockLab GPIO signal name)
 		NRF_P0->PIN_CNF[31] =
 			BV_BY_NAME(GPIO_PIN_CNF_DIR, Input)			|
@@ -553,7 +553,7 @@ void gpi_platform_init()
 			BV_BY_NAME(GPIO_PIN_CNF_SENSE, Disabled);
 
 	#endif	// GPI_ARCH_IS_BOARD(FLOCKLAB_nRF5)
-	
+
 
 	// init clock system
 	// NOTE: this should be done before initializing other peripherals

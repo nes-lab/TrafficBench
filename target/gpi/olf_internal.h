@@ -81,7 +81,7 @@
 	// We cannot solve that, but to mitigate the performance penalty a bit, we declare the
 	// functions without inline in favor of the optimization (so the size dependency is still
 	// resolved at runtime, but at least more efficient).
-	#define _GPI_SIZE_DISPATCHER_DECL	static __attribute__((optimize("Og"))) 
+	#define _GPI_SIZE_DISPATCHER_DECL	static __attribute__((optimize("Og")))
 #else
 	#define _GPI_SIZE_DISPATCHER_DECL	static inline __attribute__((always_inline))
 #endif

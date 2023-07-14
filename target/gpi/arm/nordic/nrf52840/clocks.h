@@ -197,7 +197,7 @@ static ALWAYS_INLINE Gpi_Fast_Tick_Native gpi_tick_fast_native(void)
 static ALWAYS_INLINE Gpi_Fast_Tick_Extended gpi_tick_fast_extended(void)
 {
 	ASSERT_CT(sizeof(Gpi_Fast_Tick_Extended) == sizeof(Gpi_Fast_Tick_Native));
-	
+
 	return gpi_tick_fast_native();
 }
 
@@ -209,7 +209,7 @@ static ALWAYS_INLINE Gpi_Hybrid_Tick gpi_tick_fast_to_hybrid(Gpi_Fast_Tick_Nativ
 	// use the full function(ality) if format extension/conversion is necessary
 	ASSERT_CT(sizeof(Gpi_Hybrid_Tick) == sizeof(Gpi_Fast_Tick_Native));
 	ASSERT_CT(GPI_HYBRID_CLOCK_RATE == GPI_FAST_CLOCK_RATE);
-	
+
 	return fast_tick;
 }
 
@@ -254,7 +254,7 @@ static ALWAYS_INLINE uint32_t gpi_tick_hybrid_to_us(Gpi_Hybrid_Tick ticks)
 			GPI_HYBRID_CLOCK_RATE_unsupported);
 
 		return ticks / (GPI_HYBRID_CLOCK_RATE / 1000000);
-	
+
 	#else
 
 		ASSERT_CT(

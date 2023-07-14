@@ -81,7 +81,7 @@ typedef struct Tx_Ack
 	uint32_t				timestamp_ref;			// ADDRESS, SFD, etc.
 	uint32_t				timestamp_end;
 	volatile uint_fast8_t	done;
-	
+
 } Tx_Ack;
 
 //**************************************************************************************************
@@ -91,7 +91,7 @@ typedef struct Rssi_Buffer
 {
 	// NOTE: members are ordered such that struct is packed
 	// (to save space in rssi_space, which can contain quite a few header entries)
-	
+
 	uint32_t		timestamp_rssi_end;		// timestamp of last sample
 	uint32_t		num_written;
 	uint32_t		num_missed;
@@ -108,9 +108,9 @@ typedef struct Rssi_Buffer
 		};
 	};
 	int16_t			temperature;			// stored to enable temperature compensation
-	
+
 	uint32_t		_padding_[0];			// word-align samples[]
-	
+
 	uint8_t			samples[0];				// size follows from size_msb
 
 } Rssi_Buffer;
@@ -156,8 +156,8 @@ Gpi_Fast_Tick_Native	radio_start_tx(
 							const Radio_Packet		*packet);
 
 Gpi_Fast_Tick_Native	radio_start_rx(
-							Gpi_Fast_Tick_Native	start_tick, 
-							Gpi_Fast_Tick_Native	timeout, 
+							Gpi_Fast_Tick_Native	start_tick,
+							Gpi_Fast_Tick_Native	timeout,
 							int_fast16_t			intermediate_trigger_pos,
 							uint8_t					intermediate_trigger_preset_content,
 							uint_fast32_t			min_rssi_buffer_size,
@@ -169,7 +169,7 @@ Gpi_Fast_Tick_Native	radio_start_rx(
 // update rssi_space_num_written_radio from the outside in a safe way,
 // e.g. to regain buffer space after postprocessing has finished
 void					radio_update_rssi_num_written(
-							uint32_t				rx_queue_num_read, 
+							uint32_t				rx_queue_num_read,
 							uint32_t				rssi_space_num_written_radio);
 
 // drop all rssi data,

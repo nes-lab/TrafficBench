@@ -40,29 +40,29 @@
  ***************************************************************************************************
 
  	@details
-	
+
 	Usage (in a nutshell):
-	
+
 		* declare resources with GPI_RESOURCE_DECLARE(<type> [, <numbers>]);
-		
+
 		* reserve resources with GPI_RESOURCE_RESERVE(<type> [, <numbers>]);
-		
+
 		* if a resource is used by multiple partners, reserve it with GPI_RESOURCE_RESERVE_SHARED()
 		  (instead of GPI_RESOURCE_RESERVE()) at each partner
-		  
+
 		* Syntactically, <type> must be a valid identifier. <numbers> is a comma-separated list of
 		  up to five numbers. If <numbers> is provided, then it holds:
-		  
+
 			* preprocessor macros in <numbers> are expanded
-			
+
 			* each <number> must resolve to a literal number that can be part of an identifier
 			  (may be relaxed in the future)
 
 	Background
 
-	Basic idea: Each software module marks used (occupied) hardware resources. Based on these 
-	markers, automatic checks ensure that there are no resource conflicts between different 
-	software modules. Specifically,	if two or more modules mark the same resource, the check 
+	Basic idea: Each software module marks used (occupied) hardware resources. Based on these
+	markers, automatic checks ensure that there are no resource conflicts between different
+	software modules. Specifically,	if two or more modules mark the same resource, the check
 	generates some kind of error (e.g. compilation error, linker error, runtime assertion).
 
 	To avoid undetected conflicts due to typos, existing resources should be explicitly declared.
@@ -71,11 +71,11 @@
 	of <type> and <numbers> (instead of just writing <type>_<numbers>) enables macro expansion
 	on <numbers>, which has some advantages in practice.
 
-	Deciding about what is a single resource, i.e. the granularity of declarations, is a difficult 
-	issue in general. Coarse declarations hinder usage of subcomponents in different modules, 
+	Deciding about what is a single resource, i.e. the granularity of declarations, is a difficult
+	issue in general. Coarse declarations hinder usage of subcomponents in different modules,
 	while fine-grained declarations hardly cover higher-level dependencies. For example, think
-	of a hardware timer unit with multiple capture/compare (CC) blocks. Defining the whole timer 
-	as one resource hinders usage of individual CC blocks in different modules. On the other hand, 
+	of a hardware timer unit with multiple capture/compare (CC) blocks. Defining the whole timer
+	as one resource hinders usage of individual CC blocks in different modules. On the other hand,
 	defining the CC blocks as individual resources hides the fact that all of them depend on the
 	same counter, prescaler, etc.
 
@@ -84,7 +84,7 @@
 	resource is marked as non-SHARED in any module. Semantically, GPI_RESOURCE_RESERVE_SHARED
 	should express that the specific usage of the resource is compatible with the usage of the
 	same resource at other places where it has been reserved SHARED (it states that other uses
-	are explicitly considered). 
+	are explicitly considered).
 	With this definition in mind, the timer example could be handled as follows:
 	* Declare resources for both, the timer as a whole and the CC blocks.
 	* Reserve CC blocks with GPI_RESOURCE_RESERVE(), i.e. non-SHARED.
@@ -93,7 +93,7 @@
 	not disturb each other. If anybody adds a new software module and tries to reserve the same
 	timer with GPI_RESOURCE_RESERVE(), then an error appears, telling the author that the timer
 	is already in use. The author can then check if the new module uses the timer in a compatible
-	way. If so, she can replace GPI_RESOURCE_RESERVE by GPI_RESOURCE_RESERVE_SHARED in the new 
+	way. If so, she can replace GPI_RESOURCE_RESERVE by GPI_RESOURCE_RESERVE_SHARED in the new
 	module, otherwise she must not use this timer instance.
 
  **************************************************************************************************/
@@ -134,7 +134,7 @@
 #endif
 
 // With GPI_RESOURCE_CHECK_DECLARATION = 2 it is important to ensure that resource reservations
-// do not get optimized away by the linker. To support this, we put the relevant output in a 
+// do not get optimized away by the linker. To support this, we put the relevant output in a
 // special section, which can be explicitly marked as "keep" in the build environment.
 // Background: If a reservation is optimized away, then the linker will not try to resolve
 // the contained reference to the resource declaration. That is to say, it will not be checked
@@ -205,7 +205,7 @@
 
 	// We use a special common variable to (a) enable the coexistence of multiple SHARED
 	// reservations, but (b) prohibit mixed SHARED and non-SHARED reservations.
-	// The additional typedef is necessary to catch the case of some resource being reserved 
+	// The additional typedef is necessary to catch the case of some resource being reserved
 	// first SHARED and afterwards non-SHARED in the same file while not being reserved
 	// anywhere else. In this case, the variable declaration in RESERVE() overwrites the
 	// attributes of the declaration in RESERVE_SHARED(), which avoids the common/non-common
@@ -218,21 +218,21 @@
 	// Doing this with normal (non-common) variables would throw compiler or linker errors
 	// (if the linker is configured to do so, which is typically the case in embedded development).
 	// Note that this concept is different from weak symbols.
-	
+
 	#define _GPI_RESOURCE_RESERVE_SHARED(id)					\
 		/* global marker variable, declared as common */		\
 		const gpi_resource_declaration_ ## id __attribute__((common))	\
 			gpi_resource_reservation_ ## id;					\
 		/* additional typedef used to catch SHARED and non-SHARED in same module */	\
 		typedef char gpi_resource_reservation_ ## id ## _
-	
+
 	#define _GPI_RESOURCE_RESERVE(id)							\
 		/* global marker variable, declared as non-common */	\
 		const gpi_resource_declaration_ ## id _GPI_RESOURCE_SECTION_DECL	\
 			gpi_resource_reservation_ ## id = 1;				\
 		/* additional typedef used to catch SHARED and non-SHARED in same module */	\
 		typedef long gpi_resource_reservation_ ## id ## _
-	
+
 #elif (2 == GPI_RESOURCE_CHECK_DECLARATION)
 
 	#define _GPI_RESOURCE_DECLARE(id)							\
@@ -245,7 +245,7 @@
 	// (2) We assume that memory consumption is not an issue (typically). On one hand,
 	//     resource checks do not use much memory (and only flash ROM if configured right),
 	//     on the other hand they can be deactivated in the release build.
-		
+
 	#define _GPI_RESOURCE_RESERVE_SHARED(id)					\
 		extern const char gpi_resource_declaration_ ## id [];	\
 		/* local marker, throws error if resource declaration is missing */	\
@@ -257,7 +257,7 @@
 			gpi_resource_reservation_ ## id;					\
 		/* additional typedef used to catch SHARED and non-SHARED in same module */	\
 		typedef char gpi_resource_reservation_ ## id ## _
-	
+
 	#define _GPI_RESOURCE_RESERVE(id)							\
 		extern const char gpi_resource_declaration_ ## id [];	\
 		/* global marker variable, declared as non-common */	\
@@ -277,14 +277,14 @@
 			gpi_resource_reservation_ ## id;					\
 		/* additional typedef used to catch SHARED and non-SHARED in same module */	\
 		typedef char gpi_resource_reservation_ ## id ## _
-	
+
 	#define _GPI_RESOURCE_RESERVE(id)							\
 		/* global marker variable, declared as non-common */	\
 		const char _GPI_RESOURCE_SECTION_DECL					\
 			gpi_resource_reservation_ ## id = 1;				\
 		/* additional typedef used to catch SHARED and non-SHARED in same module */	\
 		typedef long gpi_resource_reservation_ ## id ## _
-	
+
 #endif
 
 //**************************************************************************************************

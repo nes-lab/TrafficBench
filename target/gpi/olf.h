@@ -40,7 +40,7 @@
  ***************************************************************************************************
 
  	@details
-	
+
 	TODO
 
  **************************************************************************************************/
@@ -55,7 +55,7 @@
 // note: it would be nice to include that after the declarations below, but that would prevent
 // the platform specific code from selectively implementing functions as (static) inline
 #include "gpi/platform_spec.h"
-#include GPI_PLATFORM_PATH(olf.h)		
+#include GPI_PLATFORM_PATH(olf.h)
 
 #include <stdint.h>
 

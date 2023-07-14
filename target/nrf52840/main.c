@@ -144,7 +144,7 @@ int main()
 	gpi_radio_ble_set_access_address(~0x8E89BED6);	// TODO
 	// perform application specific radio init
 	radio_init();
-	
+
 	GPI_TRACE_FLUSH();
 	printf("System started.\n");
 
@@ -152,17 +152,17 @@ int main()
 	physical_node_id = FLOCKLAB_NODE_ID;
 	GPI_TRACE_MSG(TRACE_INFO, "FLOCKLAB_NODE_ID = %u", physical_node_id);
 	GPI_TRACE_FLUSH();
-	
+
 	// if not set by testbed's programming toolchain
 	if (0 == physical_node_id)
 	{
 		// must not happen on FlockLab
 		assert((0 != physical_node_id) || !GPI_ARCH_IS_BOARD(FLOCKLAB_nRF5));
-		
+
 		uint16_t	data[2];
 
 		// in the following we assume that program runs on nRF DK nodes on developer's desk
-		
+
 		// pressing Button 1 during bootup can be used to enforce console prompt
 		if (gpi_button_read(GPI_BUTTON(1)))
 			data[0] = 0;
@@ -179,7 +179,7 @@ int main()
 			}
 			else GPI_TRACE_MSG(TRACE_INFO, "non-volatile config is invalid");
 		}
-		
+
 		// if signature is invalid
 		while (0 == physical_node_id)
 		{
@@ -267,4 +267,3 @@ int main()
 
 //**************************************************************************************************
 //**************************************************************************************************
-

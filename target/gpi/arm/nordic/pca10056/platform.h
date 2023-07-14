@@ -122,7 +122,7 @@
 		#define _GPI_ARM_NRF_STDOUT_BUFFER_SLOT_SIZE_DEFAULT_WARNING	\
 			"GPI_ARM_NRF_STDOUT_BUFFER_SLOT_SIZE undefined, default = 4"
 	#endif
-	
+
 #endif
 
 //**************************************************************************************************

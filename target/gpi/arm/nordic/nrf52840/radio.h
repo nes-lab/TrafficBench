@@ -79,7 +79,7 @@ typedef enum Gpi_Radio_Mode_tag
 	BLE_2M			= 3,
 	BLE_125k		= 4,	// long range mode, Tx 125 kbit/s, Rx 125 or 500 kbit/s (automatic)
 	BLE_500k		= 5		// long range mode, Tx 500 kbit/s, Rx 125 or 500 kbit/s (automatic)
-	
+
 } Gpi_Radio_Mode;
 
 //**************************************************************************************************

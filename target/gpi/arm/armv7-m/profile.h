@@ -148,7 +148,7 @@ typedef struct Gpi_Profile_Desc_
 	Gpi_Profile_Buffer_Entry	*buffer;
 	uint32_t					buffer_length;
 	const char					*module_name;
-		
+
 } Gpi_Profile_Desc;
 
 //**************************************************************************************************
@@ -157,7 +157,7 @@ typedef struct Gpi_Profile_Ticket_
 {
 	Gpi_Profile_Desc	*desc;
 	uint_fast32_t		index;
-	
+
 } Gpi_Profile_Ticket;
 
 //**************************************************************************************************

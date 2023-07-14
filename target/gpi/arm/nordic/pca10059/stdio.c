@@ -120,15 +120,15 @@ static void * const RAM_SEGMENT_END   = (void*)0x20040000;
 
 	ASSERT_CT_STATIC(GPI_ARM_NRF_STDOUT_BUFFER_SLOT_SIZE < 256, GPI_ARM_NRF_STDOUT_BUFFER_SLOT_SIZE_must_not_exceed_255);
 		// tx_buffer_len is uint8_t
-		
+
 	static char				tx_buffer[GPI_ARM_NRF_STDOUT_BUFFER_NUM_SLOTS][GPI_ARM_NRF_STDOUT_BUFFER_SLOT_SIZE];
 	static uint8_t			tx_buffer_len[NUM_ELEMENTS(tx_buffer)];
 	static uint32_t			tx_buffer_free_map	= -1u >> (32 - NUM_ELEMENTS(tx_buffer));
-	
+
 	static uint8_t			tx_chain[1u << (MSB(NUM_ELEMENTS(tx_buffer) - 1) + 1)];
 	static uint_fast32_t	tx_chain_num_written = 0;
 	static uint_fast32_t	tx_chain_num_read = 0;
-	
+
 	static uint_fast8_t		is_tx_running = 0;
 
 	ASSERT_CT_STATIC(IS_POWER_OF_2(NUM_ELEMENTS(tx_chain)));
@@ -218,15 +218,15 @@ static inline unsigned int gpi_uart_read(void *s, unsigned int max_len)
 
 	if (max_len > 0xffff)
 		max_len = 0xffff;
-		
+
 	NRF_UARTE0->RXD.PTR = (uintptr_t)s;
 	NRF_UARTE0->RXD.MAXCNT = max_len;
 
 	NRF_UARTE0->EVENTS_ENDRX = 0;
 	NRF_UARTE0->EVENTS_ERROR = 0;
-	
+
 	NRF_UARTE0->TASKS_STARTRX = 1;
-	
+
 	while (!(NRF_UARTE0->EVENTS_ENDRX));
 
 	return (NRF_UARTE0->EVENTS_ERROR) ? 0 : max_len;
@@ -305,7 +305,7 @@ int __attribute__((weak)) __SEGGER_RTL_X_file_unget(FILE *stream, int c)
 	// see <https://wiki.segger.com/Embedded_Studio_Library_IO> for an example
 	return EOF;
 }
-	
+
 #endif	// GPI_ARCH_IS_OS(NONE) && GPI_ARCH_IS_CRT(SEGGER2)
 
 //**************************************************************************************************
@@ -320,7 +320,7 @@ int __attribute__((weak)) __SEGGER_RTL_X_file_unget(FILE *stream, int c)
 // Starting with SES 5.10 SEGGER included two runtime libraries: The legacy "Embedded Studio
 // Runtime Library" (GPI_ARCH_CRT_SEGGER1) and the "SEGGER Runtime Library" (GPI_ARCH_CRT_SEGGER2).
 // With SES 6.00 the legacy library has been removed (so SEGGER2 is the only remaining option),
-// and in some version <= 6.34 the Library I/O option "STD" has also been removed. To implement 
+// and in some version <= 6.34 the Library I/O option "STD" has also been removed. To implement
 // UART-based stdio, one now has to select Library I/O option "None" and provide a set of
 // __SEGGER_RTL_X_file_... functions (done here). The details can be found in
 // <https://wiki.segger.com/Embedded_Studio_Library_IO>.
@@ -334,7 +334,7 @@ int __attribute__((weak)) __SEGGER_RTL_X_file_write(FILE *stream, const char *s,
 {
 	if ((stream != stdout) && (stream != stderr))
 		return EOF;
-	
+
 // advanced interrupt driven implementation that enables higher level of async I/O
 #if GPI_STDOUT_INTERRUPT_ENABLED
 
@@ -347,9 +347,9 @@ int __attribute__((weak)) __SEGGER_RTL_X_file_write(FILE *stream, const char *s,
 	{
 		// NOTE: gpi_int_(un)lock() implicitly functions as a REORDER_BARRIER(),
 		// so we can save additional explicit barriers in the following
-		
+
 		// wait for a free slot in the transmit buffer pool
-		// ATTENTION: If is_tx_running then some slot will become free in the near future in case 
+		// ATTENTION: If is_tx_running then some slot will become free in the near future in case
 		// buffer is full. If !is_tx_running then number of used slots <= max. number of nested calls.
 		// Hence, NUM_ELEMENTS(tx_buffer) should be configured to be >= max. number of nested calls.
 		// Otherwise this waiting loop can cause a deadlock.
@@ -362,17 +362,17 @@ int __attribute__((weak)) __SEGGER_RTL_X_file_write(FILE *stream, const char *s,
 
 			i = gpi_get_lsb(tx_buffer_free_map);
 
-			// The config settings should ensure that NUM_ELEMENTS(tx_buffer) >= max. number of 
+			// The config settings should ensure that NUM_ELEMENTS(tx_buffer) >= max. number of
 			// nested calls (see above). To be on the safe side, we catch exceedings with an
 			// infinite loop trap. We do not use assert() because assert() probably would try
 			// to print something out, but the print stack is the origin of the problem.
 			#ifndef NDEBUG
 				while (!((i >= 0) || is_tx_running));
 			#endif
-		
+
 			if (i >= 0)
 				tx_buffer_free_map &= ~(1u << i);
-		
+
 			gpi_int_unlock(ie);
 		}
 
@@ -388,11 +388,11 @@ int __attribute__((weak)) __SEGGER_RTL_X_file_write(FILE *stream, const char *s,
 			{
 				if (n < 2)
 					break;
-					
+
 				*d++ = '\r';
 				n--;
 			}
-			
+
 			*d++ = *s++;
 		}
 		tx_buffer_len[i] = sizeof(tx_buffer[0]) - n;
@@ -400,13 +400,13 @@ int __attribute__((weak)) __SEGGER_RTL_X_file_write(FILE *stream, const char *s,
 		// push buffer slot index to transmit chain (= Tx FIFO)
 		{
 			ie = gpi_int_lock();
-		
+
 			tx_chain[tx_chain_num_written++ & TX_CHAIN_INDEX_MASK] = i;
-			
+
 			// do not leave int lock -> if thread gets interrupted for a long time,
 			// transmission could finish in between (we would have to check tx_chain_num_read
 			// vs. tx_chain_num_written again, so savings in locked time would be marginal)
-			
+
 			// start transmitter if it is idle at present
 			// (otherwise transmission continues automatically, handled by the ISR)
 			if (!is_tx_running)
@@ -417,7 +417,7 @@ int __attribute__((weak)) __SEGGER_RTL_X_file_write(FILE *stream, const char *s,
 				NRF_UARTE0->TASKS_STARTTX = 1;
 				is_tx_running = 1;
 			}
-		
+
 			gpi_int_unlock(ie);
 		}
 	}
@@ -493,7 +493,7 @@ int __attribute__((weak)) __SEGGER_RTL_X_file_write(FILE *stream, const char *s,
 // Hence, to ensure that putchar redirects here it is not safe to declare __putchar alone
 // (if the definition shall be weak), as this would not safely overwrite the definition from
 // thumb_crt0.s. Instead we provide (non-weak) debug_putchar() (to catch thumb_crt0.s) plus
-// weak __putchar(). This is somewhat dirty as debug_putchar() is meant to be the low-level 
+// weak __putchar(). This is somewhat dirty as debug_putchar() is meant to be the low-level
 // debug output routine and should not be overwritten in general.
 
 int __putchar(int c, __printf_tag_ptr file) __attribute__((weak, alias("debug_putchar")));
@@ -540,7 +540,7 @@ int __attribute__((weak)) __SEGGER_RTL_X_file_read(FILE *stream, char *s, unsign
 {
 	if (stdin != stream)
 		return EOF;
-	
+
 #if 1
 	len = gpi_uart_read(s, len);
 #else
@@ -566,7 +566,7 @@ int __attribute__((weak)) getchar()
 	uint8_t	c;
 
 	while (!gpi_uart_read(&c, 1));
-	
+
 	return c;
 }
 

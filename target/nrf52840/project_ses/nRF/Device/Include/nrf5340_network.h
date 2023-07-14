@@ -2,19 +2,19 @@
  * Copyright (c) 2010 - 2021, Nordic Semiconductor ASAAll rights reserved.Redistribution and use in sou
  * rce and binary forms, with or without modification,are permitted provided that the following conditi
  * ons are met:1. Redistributions of source code must retain the above copyright notice, this list of c
- * onditions and the following disclaimer.2. Redistributions in binary form, except as embedded into a 
+ * onditions and the following disclaimer.2. Redistributions in binary form, except as embedded into a
  * Nordic Semiconductor ASA integrated circuit in a product or a software update for such product, must
  * reproduce the above copyright notice, this list of conditions and the following disclaimer in the d
  * ocumentation and/or other materials provided with the distribution.3. Neither the name of Nordic Sem
- * iconductor ASA nor the names of its contributors may be used to endorse or promote products derived 
+ * iconductor ASA nor the names of its contributors may be used to endorse or promote products derived
  * from this software without specific prior written permission.4. This software, with or without modif
  * ication, must only be used with a Nordic Semiconductor ASA integrated circuit.5. Any software provid
  * ed in binary form under this license must not be reverse engineered, decompiled, modified and/or dis
  * assembled.THIS SOFTWARE IS PROVIDED BY NORDIC SEMICONDUCTOR ASA "AS IS" AND ANY EXPRESSOR IMPLIED WA
- * RRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIESOF MERCHANTABILITY, NONINFRINGEMENT, 
+ * RRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIESOF MERCHANTABILITY, NONINFRINGEMENT,
  * AND FITNESS FOR A PARTICULAR PURPOSE AREDISCLAIMED. IN NO EVENT SHALL NORDIC SEMICONDUCTOR ASA OR CO
  * NTRIBUTORS BELIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, ORCONSEQUENTIAL DAMAGE
- * S (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTEGOODS OR SERVICES; LOSS OF USE, DATA, OR 
+ * S (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTEGOODS OR SERVICES; LOSS OF USE, DATA, OR
  * PROFITS; OR BUSINESS INTERRUPTION)HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT
  * , STRICTLIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUTOF THE USE OF T
  * HIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.

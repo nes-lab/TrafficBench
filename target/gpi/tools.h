@@ -89,7 +89,7 @@ TEST_EXPANSION(CONCAT(A, B, C));
 TEST_EXPANSION(CONCAT_NOEXP(A, B, C));
 TEST_EXPANSION(CONCAT(CONCAT_NOEXP(A, B), C));
 */
-	
+
 /// @brief test expansion of a macro
 /// @details This macro is provided as a diagnostic tool for temporary use during development.
 /// It generates an error message that shows the expansion of macro x

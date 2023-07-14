@@ -47,7 +47,7 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /* This file is given to prevent your SW from not compiling with the name changes between nRF52810 and nRF52811 devices.
  * It redefines the old nRF52810 names into the new ones as long as the functionality is still supported. If the
  * functionality is gone, there old names are not defined, so compilation will fail. */
- 
+
 /* Differences between latest nRF52810 headers and nRF52811 headers. */
 
 /* Interrupt service routines handlers. */
@@ -64,4 +64,3 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /*lint --flb "Leave library region" */
 
 #endif /* NRF52810_TO_NRF52811_H */
-

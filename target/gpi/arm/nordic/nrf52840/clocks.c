@@ -165,12 +165,12 @@ Gpi_Hybrid_Reference gpi_tick_hybrid_reference()
 	do
 	{
 		// clear event register
-		_gpi_clocks_rtc->EVENTS_TICK = 0;	
+		_gpi_clocks_rtc->EVENTS_TICK = 0;
 
 		// read slow tick
 		// NOTE: see gpi_tick_slow_native() for details regarding asynchronous clock issues
 		slow = _gpi_clocks_rtc->COUNTER;
-	
+
 		// ATTENTION: The RTC tick event is routed through the PPI which introduces a delay of one
 		// PCLK16 cycle. Additionally the RTC runs with an asynchronous clock (LFCLK), so there is
 		// a good chance that there is some synchronization stage at the event generator introducing
@@ -183,7 +183,7 @@ Gpi_Hybrid_Reference gpi_tick_hybrid_reference()
 		fast = _gpi_clocks_fast_timer->CC[GPI_ARM_NRF_HYBRID_CLOCK_CAPTURE_REG];
     }
 	while (_gpi_clocks_rtc->EVENTS_TICK);
-	
+
 	// unlock interrupts
 	#if (!GPI_CLOCKS_HYBRID_FRAGILE)
 		gpi_int_unlock(ie);
@@ -213,10 +213,10 @@ Gpi_Hybrid_Reference gpi_tick_hybrid_reference()
 		ASSERT_CT((512000000u == (512000000u / GPI_HYBRID_CLOCK_RATE) * GPI_HYBRID_CLOCK_RATE) &&
 			IS_POWER_OF_2(512000000u / GPI_HYBRID_CLOCK_RATE),
 			hybrid_slow_ratio_unsupported);
-	
+
 		t.u32 = gpi_mulu_32x16to64(t.u32, 15625) >> MSB(512000000u / GPI_HYBRID_CLOCK_RATE);
     }
-	
+
 	r.hybrid_tick = t.u32;
 	r.fast_capture = fast;
 
@@ -279,7 +279,7 @@ uint32_t gpi_tick_slow_to_us(Gpi_Slow_Tick_Extended ticks)
 	// result = ticks * 15625 * 64 / GPI_SLOW_CLOCK_RATE = ticks * 15625 / (GPI_SLOW_CLOCK_RATE / 64)
 
 	uint64_t temp;
-	
+
 	temp = gpi_mulu_32x16to64(ticks, 15625);
 	return temp / (GPI_SLOW_CLOCK_RATE / 64);
 }

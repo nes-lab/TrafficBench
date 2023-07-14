@@ -76,14 +76,14 @@
 typedef struct /*__attribute__((packed))*/ Radio_Packet
 {
 	uint8_t		_padding_1[2];			// for alignment (payload should be word-aligned)
-	
+
 	uint8_t		ble_header;				// S0 (see nRF doc. for details)
 	uint8_t		raw_payload_length;		// BLE length field
 
 	union __attribute__((packed))
 	{
 		uint8_t			raw_payload[255];
-		
+
 		// application specific packet format
 		//struct
 		//{
@@ -93,7 +93,7 @@ typedef struct /*__attribute__((packed))*/ Radio_Packet
 	};
 
 	uint32_t	_padding_2[0];			// align trx_status
-	
+
 	union
 	{
 		uint32_t		trx_status;
@@ -106,7 +106,7 @@ typedef struct /*__attribute__((packed))*/ Radio_Packet
 			uint32_t						:  7;
 			uint32_t	is_tx				:  1;	// this is a transmitted packet
 		};
-		
+
 		// if this is a receive packet
 		struct
 		{
@@ -131,7 +131,7 @@ typedef struct /*__attribute__((packed))*/ Radio_Packet
 			uint32_t						:  1;	// is_tx
 		};
 	};
-	
+
 } Radio_Packet;
 
 //**************************************************************************************************
@@ -152,13 +152,13 @@ typedef struct Rx_Queue_Entry
 	};
 
 	// NOTE: timestamp_schedule_global == -1 is reserved as out-of-sync marker. It does not
-	// appear in a sync'd schedule because the scheduler explicitly skips this value when in 
+	// appear in a sync'd schedule because the scheduler explicitly skips this value when in
 	// sync. The latter is a matter of taste, because if the value would appear in sync'd state,
 	// it just declares a single sync'd entry as out-of-sync, which is not that critical.
 	// (We assume that such entries are typically skipped during evaluation).
 	// That said, in general it is not a bad idea to avoid schedules that run for so long to
 	// prevent wrap-around issues / uncertainties when interpreting the results.
-	
+
 } Rx_Queue_Entry;
 
 //**************************************************************************************************

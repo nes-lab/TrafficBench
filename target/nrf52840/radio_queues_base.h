@@ -41,7 +41,7 @@
 
  	@details
 
-	This file contains the simplest implementation (i.e. the minimal required fields) of the 
+	This file contains the simplest implementation (i.e. the minimal required fields) of the
 	radio queue structures. It can be used directly (e.g. for simple applications), however,
 	it is primarily thought as a template that can be extended in an application-specific way
 	(see radio_queues.h).
@@ -78,14 +78,14 @@
 typedef struct /*__attribute__((packed))*/ Radio_Packet
 {
 	uint8_t		_padding_1[2];			// for alignment (payload should be word-aligned)
-	
+
 	uint8_t		ble_header;				// S0 (see nRF doc. for details)
 	uint8_t		raw_payload_length;		// BLE length field
 
 	union __attribute__((packed))
 	{
 		uint8_t			raw_payload[255];
-		
+
 		// application specific packet format
 		//struct
 		//{
@@ -95,7 +95,7 @@ typedef struct /*__attribute__((packed))*/ Radio_Packet
 	};
 
 	uint32_t	_padding_2[0];			// align trx_status
-	
+
 	union
 	{
 		uint32_t		trx_status;
@@ -122,7 +122,7 @@ typedef struct /*__attribute__((packed))*/ Radio_Packet
 			uint32_t						:  5;
 		};
 	};
-	
+
 } Radio_Packet;
 
 //**************************************************************************************************

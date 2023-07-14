@@ -77,10 +77,10 @@ static const __attribute__((section("gpi_profile_info @"), used)) struct __attri
 	uint8_t		marker;
 	uint16_t	size;
 	uint8_t		type;
-	
+
 	uint32_t	timestamp_frequency;
 	uint32_t	timestamp_range;
-	
+
 } gpi_profile_info_setup = {0x81, 12, 2, 64000000, 0x00ffffff};
 
 //**************************************************************************************************
@@ -110,7 +110,7 @@ int_fast8_t gpi_profile_read(Gpi_Profile_Ticket *ticket, const char **module_nam
 	{
 		Gpi_Profile_Buffer_Entry 	*p = &(ticket->desc->buffer[ticket->index]);
 		Gpi_Profile_Buffer_Entry 	*p_end = &(ticket->desc->buffer[ticket->desc->buffer_length]);
-		
+
 		for (; p < p_end; ++p)
 		{
 			if (0 != p->line)
@@ -119,20 +119,20 @@ int_fast8_t gpi_profile_read(Gpi_Profile_Ticket *ticket, const char **module_nam
 
 				register int a, b;
 				register int ie = gpi_int_lock();
-				
+
 				a = p->line;
 				b = p->timestamp;
-				
+
 				gpi_int_unlock(ie);
 
 				*line = a;
 				*timestamp = 0x00ffffff - b;
-				
+
 				ticket->index = ARRAY_INDEX(p, ticket->desc->buffer) + 1;
 				return 1;
 			}
 		}
-		
+
 		ticket->desc = ticket->desc->next;
 		ticket->index = 0;
     }

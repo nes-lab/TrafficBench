@@ -41,9 +41,9 @@
  ***************************************************************************************************
 
  	@details
-	
+
 	TODO
-	
+
  **************************************************************************************************/
 
 #ifndef __GPI_TRACE_H__
@@ -90,7 +90,7 @@
 	#define GPI_TRACE_PRIu	PRIu32
 	#define GPI_TRACE_PRIx	PRIx32
 	typedef uint32_t		Gpi_Trace_Uint_t;
-#endif	
+#endif
 
 //**************************************************************************************************
 
@@ -144,7 +144,7 @@
 				return c;															\
 			return _gpi_trace_filter_path_ ## x (s, a, a + (b - a) / 2);			\
 		}
-		
+
 	_GPI_TRACE_FILTER_PATH_x(0,1)
 	_GPI_TRACE_FILTER_PATH_x(1,2)
 	_GPI_TRACE_FILTER_PATH_x(2,3)
@@ -191,7 +191,7 @@
 
 #else	// GPI_TRACE_FILTER_PATH
 	#define _GPI_TRACE_FILTER_PATH(s)	s
-#endif	
+#endif
 
 //**************************************************************************************************
 //***** Global Defines and Consts ******************************************************************
@@ -317,7 +317,7 @@
 	//			<i> = '1'...'9' or '0' if type is not specified
 
 	// ASSERT_CT can not be used if constant propagation is inactive
-	#if (__OPTIMIZE__)	
+	#if (__OPTIMIZE__)
 		// ATTENTION: since ASSERT_CT generates compile-time errors we must incorporate all checks
 		// (including mode), we cannot rely on the position in the switch-case-block
 		#define _GPI_TRACE_ASSERT_VA(m, ...)		\
@@ -356,7 +356,7 @@
 				'B', '\b', '0' + (char)_GPI_TRACE_TYPE_INDEX(group), '\b'						\
 				}, fmt };																		\
 			_s_ = (const char*)&_s2_;															\
-        }			
+        }
 
 	#define _GPI_TRACE_FMT_FILE		\
 		"%-" GPI_TRACE_STRINGIFY(GPI_TRACE_SIZE_FILE) "." GPI_TRACE_STRINGIFY(GPI_TRACE_SIZE_FILE) "s"
@@ -532,14 +532,14 @@
 				GPI_TRACE_MSG_FAST(GPI_TRACE_LOG_FUNCTION_RETURN_MSG,					\
 					"<- %s() returned " msg, __func__, ##__VA_ARGS__);					\
         } while (0)
-		
+
 	/// log function return/exit with specific message (e.g. return value format)
 	#define GPI_TRACE_RETURN_MSG_FAST(r, msg, ...)					\
 		do {														\
 			GPI_TRACE_RETURN_MSG_INTERNAL(msg, ##__VA_ARGS__);		\
 			return r;												\
 		} while (0)
-	
+
 	/// @copybrief GPI_TRACE_RETURN_MSG_FAST
 	#if (GPI_TRACE_MODE_IS_FLUSH_AUTO)
 		#define GPI_TRACE_RETURN_MSG(r, msg, ...)						\
@@ -552,7 +552,7 @@
 		#define GPI_TRACE_RETURN_MSG(r, msg, ...)						\
 				GPI_TRACE_RETURN_MSG_FAST(r, msg, ##__VA_ARGS__)
 	#endif
-	
+
 // if TRACE disabled
 #else	// GPI_TRACE_MODE
 
@@ -609,7 +609,7 @@
 #endif
 
 #define GPI_TRACE_TYPE_FORMAT_PROGRAM_FLOW		GPI_TRACE_TYPE_FORMAT_VERBOSE
-				
+
 #ifndef GPI_TRACE_TYPE_FORMAT_VERBOSE
 	#if (GPI_TRACE_TYPE_FORMAT == 1)
 		#define GPI_TRACE_TYPE_FORMAT_VERBOSE	"    "

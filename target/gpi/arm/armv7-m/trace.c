@@ -324,7 +324,7 @@ void gpi_trace_print_all_msgs()
 	msg = &s_msg;
 
 	#if (0 != GPI_TRACE_FLUSH_MAX_ENTRIES_PER_CALL)
-	
+
 		unsigned int		num_read_max;
 
 		#if (GPI_TRACE_FLUSH_MAX_ENTRIES_PER_CALL > 0)
@@ -332,9 +332,9 @@ void gpi_trace_print_all_msgs()
 		#else
 			num_read_max = num_read + MIN(-GPI_TRACE_FLUSH_MAX_ENTRIES_PER_CALL, s_msg_queue_num_written - num_read);
 		#endif
-	
+
 	#endif
-	
+
 #endif
 
 	while (num_read != s_msg_queue_num_written)
@@ -356,7 +356,7 @@ void gpi_trace_print_all_msgs()
 			#if (0 != GPI_TRACE_FLUSH_MAX_ENTRIES_PER_CALL)
 				num_read_max = num_read;
 			#endif
-			
+
 			msg->msg = "!!! TRACE buffer overflow, %u message(s) lost !!!\n";
 			msg->var_args[0] = num_open;
 			msg->timestamp = 0;
@@ -388,29 +388,29 @@ void gpi_trace_print_all_msgs()
 				{
 					const char	**file = &(((const char**)&(msg->var_args))[msg->msg[2] - '0']);
 					const char	*s = *file + strlen(*file);
-					
+
 					while (s-- != *file)
 					{
 						if ((*s == '/') || (*s == '\\'))
 							break;
 					}
-					
+
 					*file = ++s;
-					
-					msg->msg += 4;
-					break;
-                }
-				
-				// set message type
-				case 'B':
-				{
-					msg_type = (unsigned char)(msg->msg[2] - '0');
-					
+
 					msg->msg += 4;
 					break;
                 }
 
-				// skip command / arg				
+				// set message type
+				case 'B':
+				{
+					msg_type = (unsigned char)(msg->msg[2] - '0');
+
+					msg->msg += 4;
+					break;
+                }
+
+				// skip command / arg
 				default:
 					msg->msg += 2;
             }
@@ -422,10 +422,10 @@ void gpi_trace_print_all_msgs()
 
 			if (msg_type >= NUM_ELEMENTS(fmt))
 				msg_type = 0;
-						
+
 			printf(fmt[msg_type]);
 		}
-		
+
 		if (!(msg->timestamp & 1))
 			printf("???.???.??? ");
 		else
@@ -448,14 +448,14 @@ void gpi_trace_print_all_msgs()
         }
 
 		vprintf(msg->msg, va);
-		
+
 		if (msg_type >= 0)
 		{
 			#pragma GCC diagnostic push
 			#pragma GCC diagnostic ignored "-Wformat-zero-length"
-			
+
 			printf(GPI_TRACE_TYPE_FORMAT_RESET);
-			
+
 			#pragma GCC diagnostic pop
         }
 

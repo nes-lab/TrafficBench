@@ -157,7 +157,7 @@ static ALWAYS_INLINE uint64_t gpi_mulu_32x32to64(uint32_t a, uint32_t b)
 			uint32_t	u32l;
 			uint32_t	u32h;
         };
-		
+
 	} result;
 
 	asm
@@ -237,7 +237,7 @@ static ALWAYS_INLINE int_fast8_t gpi_get_lsb_32(uint32_t x)
 static ALWAYS_INLINE int_fast8_t gpi_get_lsb_64(uint64_t x)
 {
 	register Generic64	y;
-	
+
 	y.u64 = x;
 
 	if (y.u32_l == 0)
@@ -266,7 +266,7 @@ static ALWAYS_INLINE int_fast8_t gpi_get_msb_32(uint32_t x)
 		: "r"(x)
 	);
 
-	return y;	
+	return y;
 }
 
 //**************************************************************************************************
@@ -274,7 +274,7 @@ static ALWAYS_INLINE int_fast8_t gpi_get_msb_32(uint32_t x)
 static ALWAYS_INLINE int_fast8_t gpi_get_msb_64(uint64_t x)
 {
 	register Generic64	y;
-	
+
 	y.u64 = x;
 
 	if (y.u32_h != 0)

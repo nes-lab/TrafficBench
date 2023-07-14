@@ -84,7 +84,7 @@ GPI_RESOURCE_RESERVE_SHARED(NRF_UARTE, 0);
 
 #define WARNING(msg)	WARNING2(GCC warning msg)
 #define WARNING2(msg)	_Pragma (#msg)
-	
+
 // issue default value warnings (see platform.h for details)
 #ifdef _GPI_STDOUT_UART_BAUDRATE_DEFAULT_WARNING
 	WARNING(_GPI_STDOUT_UART_BAUDRATE_DEFAULT_WARNING)
@@ -193,7 +193,7 @@ static inline void uart_init(uint32_t baudrate)
 			BV_BY_VALUE(UARTE_PSEL_RXD_PORT, 0)	|
 			BV_BY_VALUE(UARTE_PSEL_RXD_PIN, 8)	|
 			BV_BY_NAME(UARTE_PSEL_RXD_CONNECT, Connected);
-		
+
 		// RTS
 		// So far, we do not support flow control in receive direction (= stdin). But:
 		// ATTENTION: Interface MCU on PCA10056 uses RTS to perform dynamic flow control detection
@@ -215,7 +215,7 @@ static inline void uart_init(uint32_t baudrate)
 				BV_BY_NAME(GPIO_PIN_CNF_SENSE, Disabled);
 		#endif
 		NRF_UARTE0->PSEL.RTS = BV_BY_NAME(UARTE_PSEL_RTS_CONNECT, Disconnected);
-		
+
 		// CTS
 		#if GPI_ARM_NRF_STDOUT_UART_FLOWCONTROL_MODE
 			NRF_P0->PIN_CNF[CTS_PIN] =
@@ -227,7 +227,7 @@ static inline void uart_init(uint32_t baudrate)
 					BV_BY_NAME(GPIO_PIN_CNF_PULL, Pulldown)	|
 				#endif
 				BV_BY_NAME(GPIO_PIN_CNF_SENSE, Disabled);
-			NRF_UARTE0->PSEL.CTS = 
+			NRF_UARTE0->PSEL.CTS =
 				BV_BY_VALUE(UARTE_PSEL_CTS_PORT, 0)			|
 				BV_BY_VALUE(UARTE_PSEL_CTS_PIN, CTS_PIN)	|
 				BV_BY_NAME(UARTE_PSEL_CTS_CONNECT, Connected);
@@ -235,7 +235,7 @@ static inline void uart_init(uint32_t baudrate)
 			NRF_UARTE0->PSEL.CTS = BV_BY_NAME(UARTE_PSEL_CTS_CONNECT, Disconnected);
 		#endif
 	}
-	
+
 	// set UART mode: 8 data bits, 1 stop bit, no parity
 	#if GPI_ARM_NRF_STDOUT_UART_FLOWCONTROL_MODE
 		NRF_UARTE0->CONFIG =
@@ -296,7 +296,7 @@ static inline void uart_init(uint32_t baudrate)
 	#else
 		NRF_UARTE0->INTEN = 0;
 	#endif
-	
+
 	// start UART
 	NRF_UARTE0->ENABLE = BV_BY_NAME(UARTE_ENABLE_ENABLE, Enabled);
 }
@@ -401,7 +401,7 @@ void gpi_platform_init()
 
 	// P0.02 / AIN0:  AREF (GPIO)
 	// P0.03 / AIN1:  A0 (GPIO)
-	
+
 	// P0.04 / AIN2:  A1 (GPIO) / CTS_OPTIONAL
 	// reconfigured in uart_init() if used as CTS
 

@@ -111,7 +111,7 @@
 		#define _GPI_ARM_NRF_STDOUT_BUFFER_SLOT_SIZE_DEFAULT_WARNING	\
 			"GPI_ARM_NRF_STDOUT_BUFFER_SLOT_SIZE undefined, default = 4"
 	#endif
-	
+
 #endif
 
 //**************************************************************************************************
@@ -141,7 +141,7 @@
 	// Hence, we provide all such input pins as buttons for simplicity.
 	#define GPI_BUTTON_SIG1		BV(31)	// SIG1
 	#define GPI_BUTTON_SIG2		BV(29)	// SIG2
-	
+
 #else
 
 	#define GPI_LED_NONE		0
@@ -155,7 +155,7 @@
 	static const int __attribute__((deprecated("use GPI_LED_2_B instead"))) GPI_LED_3 = GPI_LED_2_B;
 
 	#define GPI_BUTTON_1		BV(6)		// SW1
-	
+
 #endif
 
 // for details see comments in gpi/platform.h
@@ -280,7 +280,7 @@ void			gpi_nrf_uicr_write(uintptr_t dest, const void *src, size_t size);
 		if (mask)
 			NRF_P0->OUTCLR = mask;
 	}
-		
+
 	static ALWAYS_INLINE void gpi_led_toggle(int mask)
 	{
 		if (mask)
@@ -293,10 +293,10 @@ void			gpi_nrf_uicr_write(uintptr_t dest, const void *src, size_t size);
 	{
 		uint_fast16_t	mask0 = mask;
 		uint_fast16_t	mask1 = mask >> 16;
-		
+
 		if (mask0)
 			NRF_P0->OUTCLR = mask0;
-			
+
 		if (mask1)
 			NRF_P1->OUTCLR = mask1;
 	}
@@ -305,26 +305,26 @@ void			gpi_nrf_uicr_write(uintptr_t dest, const void *src, size_t size);
 	{
 		uint_fast16_t	mask0 = mask;
 		uint_fast16_t	mask1 = mask >> 16;
-		
+
 		if (mask0)
 			NRF_P0->OUTSET = mask0;
-			
+
 		if (mask1)
 			NRF_P1->OUTSET = mask1;
 	}
-		
+
 	static ALWAYS_INLINE void gpi_led_toggle(int mask)
 	{
 		uint_fast16_t	mask0 = mask;
 		uint_fast16_t	mask1 = mask >> 16;
-		
+
 		if (mask0)
 			NRF_P0->OUT ^= mask0;
-			
+
 		if (mask1)
 			NRF_P1->OUT ^= mask1;
 	}
-		
+
 #endif
 
 //**************************************************************************************************
@@ -332,7 +332,7 @@ void			gpi_nrf_uicr_write(uintptr_t dest, const void *src, size_t size);
 static ALWAYS_INLINE uint_fast8_t gpi_button_read(int mask)
 {
 	// NOTE: we assume that mask is valid (= a non-zero combination of GPI_BUTTON_...)
-	
+
 	#if GPI_ARCH_IS_BOARD(nRF_PCA10059_FLOCKLAB)
 		return !!(NRF_P0->IN & mask);
 	#else

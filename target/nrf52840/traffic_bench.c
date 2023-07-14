@@ -112,9 +112,9 @@ struct pt				pt_context[3];
 void PendSV_Handler()
 {
 	GPI_TRACE_FUNCTION_FAST();
-	
+
 	PT_SCHEDULE(execution_thread());
-	
+
 	GPI_TRACE_RETURN_FAST();
 }
 
@@ -124,9 +124,9 @@ void PendSV_Handler()
 void POSTPROC_ISR_NAME()
 {
 	GPI_TRACE_FUNCTION_FAST();
-	
+
 	PT_SCHEDULE(postproc_thread());
-	
+
 	GPI_TRACE_RETURN_FAST();
 }
 
@@ -137,7 +137,7 @@ void POSTPROC_ISR_NAME()
 void scheduler_start(uint8_t node_id)
 {
 	GPI_TRACE_FUNCTION();
-	
+
 	Gpi_Fast_Tick_Native	t1;
 
 	// init global data
@@ -147,7 +147,7 @@ void scheduler_start(uint8_t node_id)
 
 	// ensure that GPI_TRACE_MODE_FLUSH != AUTO (would disturb timing and logging otherwise)
 	ASSERT_CT(GPI_TRACE_MODE_IS_NO_TRACE || GPI_TRACE_MODE_IS_FLUSH_NOAUTO, GPI_TRACE_MODE_FLUSH_AUTO_would_disturb_timing);
-	
+
 	// prepare PendSV exception
 	// NOTE: don't NVIC_EnableIRQ(), PendSV is always enabled (PendSV is a system exception, not an IRQ)
 	ASSERT_CT(__NVIC_PRIO_BITS >= 3);
@@ -185,7 +185,7 @@ void scheduler_start(uint8_t node_id)
 		if (gpi_tick_compare_fast_native(gpi_tick_fast_native(), t1) >= 0)
 		{
 			t1 += GPI_TICK_MS_TO_FAST(500);
-			
+
 			printf("Hello from main scheduler...\n");
 			#if GPI_ARCH_IS_BOARD(nRF_PCA10056)
 				gpi_led_toggle(GPI_LED_2);
@@ -196,7 +196,7 @@ void scheduler_start(uint8_t node_id)
 		//{
 		//}
 	}
-	
+
 	GPI_TRACE_RETURN();
 }
 

@@ -208,7 +208,7 @@ GPI_RESOURCE_RESERVE(NRF_TEMP);
 #define PPI_CHEN_RX_MASK			(PPI_CHEN_TX_MASK |	PPI_CHEN_RX_MASK_EXTRA |	\
 									BV(PPI_READY) | BV(PPI_RSSI_START) |	\
 									BV(PPI_RSSI_END) | BV(PPI_RSSI_MWU) | BV(PPI_RSSI_COUNT))
-	
+
 GPI_RESOURCE_RESERVE_SHARED(NRF_PPI);
 GPI_RESOURCE_RESERVE(NRF_PPI_CH, PPI_START);
 GPI_RESOURCE_RESERVE(NRF_PPI_CH, PPI_READY);
@@ -264,7 +264,7 @@ GPI_RESOURCE_RESERVE(NRF_TIMER_CC, MAIN_TIMER_INDEX, CCI_MAIN_RSSI);
 #else
 	#define LED_ISR(name, led)		void name()
 #endif
-	
+
 //**************************************************************************************************
 // radio timing constants, in timer ticks (PCLK16M)
 
@@ -293,9 +293,9 @@ GPI_RESOURCE_RESERVE(NRF_TIMER_CC, MAIN_TIMER_INDEX, CCI_MAIN_RSSI);
 #define RADIO_RX_EVENT_END_DELAY		156		// 154.1...157.2, mean 155.5, rounding up includes some air time
 
 // RADIO_TX_DISABLE_DELAY can be used to fine-tune shutdown moment of power amplifier.
-// nRF spec. defines TASKS_DISABLE -> EVENTS_DISABLED delay (6us for BLE 1M), but it is 
+// nRF spec. defines TASKS_DISABLE -> EVENTS_DISABLED delay (6us for BLE 1M), but it is
 // unclear at which point in this period the power amp. shuts down. [4413_417 v1.2 6.20.15.8]
-#define RADIO_TX_DISABLE_DELAY			0	
+#define RADIO_TX_DISABLE_DELAY			0
 
 //**************************************************************************************************
 //***** Local Typedefs and Class Declarations ******************************************************
@@ -308,14 +308,14 @@ typedef enum Radio_State
 	RS_BITCOUNTER_ACTIVE	= 0x04,
 	RS_RX_ACTIVE			= 0x40,
 	RS_TX_ACTIVE			= 0x80,
-	
+
 	// state patterns
 	RS_IDLE					= 0x00,
 	RS_RX_RAMP_UP			= 0x41,		// ATTENTION: without RS_BITCOUNTER_ACTIVE
 	//RS_RX_RUNNING			= 0x42,		// ATTENTION: without RS_BITCOUNTER_ACTIVE
 	RS_TX_RAMP_UP			= 0x81,
 	//RS_TX_RUNNING			= 0x82,
-	
+
 } Radio_State;
 
 //**************************************************************************************************
@@ -407,7 +407,7 @@ void __attribute__((naked, section(".fast"))) RSSI_ISR_NAME()
 		"str	r0, [r2], #4				\n"
 #endif
 		"bx		lr							\n"
-		: : 
+		: :
 		// ATTENTION: all assignments must be purely constant
 		// (as this is a naked function, and time-critical moreover)
 		[nw_offset] "J"(offsetof(Rssi_Buffer, num_written) - offsetof(Rssi_Buffer, samples)),
@@ -475,29 +475,29 @@ static void adopt_rssi_isr(void *samples, uint_fast8_t size_msb /*uint_fast32_t 
 
 	//// check if size is a power of 2
 	//assert((size & -size) == size);
-	
+
 	uint16_t * const	isr = (uint16_t*)((uintptr_t)&RSSI_ISR_NAME & ~UINT32_C(1));
 	uintptr_t			blo = (uintptr_t)samples & 0xffff;
 	uintptr_t			bhi = (uintptr_t)samples >> 16;
 	//uint_fast8_t		size_msb = gpi_get_msb(size);
-	
+
 	// check if ISR is placed in code RAM
 	// NOTE: cannot use ASSERT_CT() because ISR address is unknown at compile time (defined by the linker)
-	// NOTE: do not use symbols that are specific for the build environment (e.g. 
+	// NOTE: do not use symbols that are specific for the build environment (e.g.
 	// __RAM_segment_start__ and __RAM_segment_end__). Testing if some address is in RAM or not
 	// is a pure hardware decision and independent of software semantics.
 	static uint16_t * const RAM_SEGMENT_START = (void*)0x00800000;
 	static uint16_t * const RAM_SEGMENT_END   = (void*)0x00840000;
 	assert((RAM_SEGMENT_START <= isr) && (isr < RAM_SEGMENT_END));
-	
+
 	// movw r2, #blo
 	isr[4] = 0xf240 | ((blo & 0x0800) >> 1) | ((blo & 0xf000) >> 12);
 	isr[5] = 0x0200 | ((blo & 0x0700) << 4) | ((blo & 0x00ff) << 0);
-	
+
 	// movt r2, #bhi
 	isr[8] = 0xf2c0 | ((bhi & 0x0800) >> 1) | ((bhi & 0xf000) >> 12);
 	isr[9] = 0x0200 | ((bhi & 0x0700) << 4) | ((bhi & 0x00ff) << 0);
-	
+
 	// bfc r3, #lsb, #32-lsb
 	isr[18] = 0xf36f;
 	isr[19] = 0x031f | ((size_msb & 0x1c) << 10) | ((size_msb & 0x03) << 6);
@@ -506,7 +506,7 @@ static void adopt_rssi_isr(void *samples, uint_fast8_t size_msb /*uint_fast32_t 
 	// NOTE: implicitly contains REORDER_BARRIER()
 	__DSB();
 	__ISB();
-	
+
 	GPI_TRACE_RETURN();
 }
 
@@ -524,9 +524,9 @@ void LED_ISR(RADIO_IRQHandler, LED_RADIO_ISR)
 		NRF_RADIO->INTENCLR = BV_BY_VALUE(RADIO_INTENCLR_READY, 1);
 		NRF_PPI->CHENCLR = BV(PPI_START);
 		// NOTE: INTENCLR takes effect within 4 CPU clock cycles (4413_417 v1.2 p. 100 "Interrupt clearing")
-		
+
 		timestamp_ready = CCR_MAIN_START_READY_END - PPI_DELAY;
-		
+
 		radio_state += RS_RUNNING - RS_RAMP_UP;
 
 		GPI_TRACE_RETURN_MSG_FAST(, "radio ready (ramped up)");
@@ -534,12 +534,12 @@ void LED_ISR(RADIO_IRQHandler, LED_RADIO_ISR)
 
 	//assert(radio_state & RS_RUNNING);
 	//assert(radio_state & (RS_TX_ACTIVE | RS_RX_ACTIVE));
-	
+
 	// if Tx active
 	if (radio_state & RS_TX_ACTIVE)
 	{
 		//assert(BV_TEST_BY_NAME(NRF_RADIO->STATE, RADIO_STATE_STATE, Disabled));
-		
+
 		GPI_TRACE_MSG_FAST(TRACE_VERBOSE, "Tx done, disabling radio");
 
 		// disable radio
@@ -552,11 +552,11 @@ void LED_ISR(RADIO_IRQHandler, LED_RADIO_ISR)
 			BV_BY_VALUE(RADIO_SHORTS_END_DISABLE, 1));
 		NRF_PPI->CHENCLR			= PPI_CHEN_TX_MASK | BV(PPI_TX_CONTROL) | BV(PPI_START);
 		// NOTE: INTENCLR takes effect within 4 CPU clock cycles (4413_417 v1.2 p. 100 "Interrupt clearing")
-		
+
 		#if (DEBUG_GPIO && GPI_ARCH_IS_BOARD(nRF_PCA10056))
 			NRF_GPIOTE->TASKS_CLR[GPIOTE_DEBUG1] = 1;
 		#endif
-		
+
 		// finalize Tx ack entry
 		if (tx_ack.packet->is_tx_no_packet)
 		{
@@ -574,7 +574,7 @@ void LED_ISR(RADIO_IRQHandler, LED_RADIO_ISR)
 		radio_state = RS_IDLE;
 		trigger_radio_event();
 	}
-	
+
 	// if Rx active
 	else
 	{
@@ -588,17 +588,17 @@ void LED_ISR(RADIO_IRQHandler, LED_RADIO_ISR)
 				// NOTE: INTENCLR takes effect within 4 CPU clock cycles (4413_417 v1.2 p. 100 "Interrupt clearing")
 
 				radio_state &= ~RS_BITCOUNTER_ACTIVE;
-				
+
 				// trigger event
 				rx_intermediate_trigger_event = 1;
 				trigger_radio_event();
-	
+
 				GPI_TRACE_RETURN_MSG_FAST(, "bit counter match");
 			}
 		}
-		
+
 		//assert(BV_TEST_BY_NAME(NRF_RADIO->STATE, RADIO_STATE_STATE, RxIdle));
-		
+
 		GPI_TRACE_MSG_FAST(TRACE_INFO, "packet received");
 
 		// disable radio IRQ
@@ -606,16 +606,16 @@ void LED_ISR(RADIO_IRQHandler, LED_RADIO_ISR)
 
 		Rx_Queue_Entry	*q = &rx_queue[rx_queue_num_written_radio % NUM_ELEMENTS(rx_queue)];
 		Rssi_Buffer		*rssi = (Rssi_Buffer*)&rssi_space[q->rssi_space_num_written_begin % NUM_ELEMENTS(rssi_space)];
-		
+
 		// arm delay timer (continue RSSI sampling for post-trigger time)
 		{
 			// 2 * PPI_DELAY: END -> CAPTURE, COMPARE -> DISABLE
-			uint32_t stop_time = 
-				CCR_MAIN_START_READY_END - (2 * PPI_DELAY) - RADIO_RX_EVENT_END_DELAY 
+			uint32_t stop_time =
+				CCR_MAIN_START_READY_END - (2 * PPI_DELAY) - RADIO_RX_EVENT_END_DELAY
 				+ rssi->posttrigger_time;
 
 			uint_fast32_t timeout = MAIN_TIMER->INTENSET & INTEN_MAIN_COMPARE;
-			
+
 			// if timeout enabled: restrict stop_time to timeout
 			// (-> don't touch timeout timer if stop_time would exceed timeout)
 			if (!timeout || (gpi_tick_compare_fast_native(stop_time, CCR_MAIN_COMPARE) < 0))
@@ -623,23 +623,23 @@ void LED_ISR(RADIO_IRQHandler, LED_RADIO_ISR)
 				CCR_MAIN_COMPARE = stop_time;
 				MAIN_TIMER->EVENTS_COMPARE[CCI_MAIN_COMPARE] = 0;
 				MAIN_TIMER->INTENSET = INTEN_MAIN_COMPARE;
-			
+
 				if (gpi_tick_compare_fast_native(gpi_tick_fast_native(), stop_time) >= 0)
 				{
 					NVIC_SetPendingIRQ(MAIN_TIMER_IRQ);
-					
+
 					if (timeout)
-						GPI_TRACE_MSG_FAST(TRACE_WARNING, 
+						GPI_TRACE_MSG_FAST(TRACE_WARNING,
 							"ISR is late (%uus, extends RSSI posttrigger interval)",
 							gpi_tick_fast_to_us(gpi_tick_fast_native() - stop_time));
 				}
-			}			
+			}
 		}
 
 		// update packet status
 		q->packet.timeout_triggered = 0;
 	}
-	
+
 	GPI_TRACE_RETURN_FAST();
 }
 
@@ -655,7 +655,7 @@ void LED_ISR(MAIN_TIMER_ISR_NAME, LED_MAIN_TIMER_ISR)
 	{
 		MAIN_TIMER->INTENCLR = -1u;
 		// INTENCLR takes effect within 4 CPU clock cycles (4413_417 v1.2 p. 100 "Interrupt clearing")
-		
+
 		trigger_radio_event();
 		GPI_TRACE_RETURN_FAST();
 	}
@@ -665,12 +665,12 @@ void LED_ISR(MAIN_TIMER_ISR_NAME, LED_MAIN_TIMER_ISR)
 	{
 		// timer ISR is used to arm carrier_period_2
 		// after carrier_period_1 is complete (and TASKS_START has been triggered)
-		
+
 		MAIN_TIMER->INTENCLR = -1u;
-		
+
 		NRF_PPI->CHENCLR = BV(PPI_TX_CONTROL);
 		CCR_MAIN_COMPARE = tx_ccr_disable;
-		NRF_PPI->CH[PPI_TX_CONTROL].TEP = (uintptr_t)&(NRF_RADIO->TASKS_DISABLE);		
+		NRF_PPI->CH[PPI_TX_CONTROL].TEP = (uintptr_t)&(NRF_RADIO->TASKS_DISABLE);
 		NRF_PPI->CHENSET = BV(PPI_TX_CONTROL);
 
 		GPI_TRACE_MSG(TRACE_VERBOSE, "carrier period 1 passed, arming carrier period 2 (shutdown timer)");
@@ -680,19 +680,19 @@ void LED_ISR(MAIN_TIMER_ISR_NAME, LED_MAIN_TIMER_ISR)
 		if (gpi_tick_compare_fast_native(now, tx_ccr_disable) >= 0)
 		{
 			NRF_RADIO->TASKS_DISABLE = 1;
-			
+
 			GPI_TRACE_MSG_FAST(TRACE_WARNING, "ISR is late (%uus), triggered DISABLE manually",
 				gpi_tick_fast_to_us(now - tx_ccr_disable));
-				
+
 			// NOTE: it is not critical if TASKS_DISABLE gets triggered twice
 		}
 	}
-	
+
 	// if Rx active
 	else
 	{
 		assert(radio_state & RS_RX_ACTIVE);
-	
+
 		// stop RSSI sampling
 		// ATTENTION: It is important to do this "gracefully" (i.e. do not break a sampling cycle)
 		// to ensure that number of trigger events and IRQs is consistent. We realize it as follows:
@@ -709,7 +709,7 @@ void LED_ISR(MAIN_TIMER_ISR_NAME, LED_MAIN_TIMER_ISR)
 		while (!(RSSI_TIMER->EVENTS_COMPARE[2]));
 
 		// stop radio subsystem
-		// NOTE: RSSI_TIMER is stopped (from above). RSSI_TIMER2 is also stopped because we are 
+		// NOTE: RSSI_TIMER is stopped (from above). RSSI_TIMER2 is also stopped because we are
 		// outside of sampling activity (note that sampling IRQ has higher priority). Anyhow,
 		// we add an explicit STOP command to be absolutely safe.
 		// NOTE: Although the radio subsystem is inactive hereafter, it is important to deactivate
@@ -731,21 +731,21 @@ void LED_ISR(MAIN_TIMER_ISR_NAME, LED_MAIN_TIMER_ISR)
 		#if (DEBUG_GPIO && GPI_ARCH_IS_BOARD(nRF_PCA10056))
 			NRF_GPIOTE->TASKS_CLR[GPIOTE_DEBUG1] = 1;
 		#endif
-		
+
 		GPI_TRACE_MSG_FAST(TRACE_VERBOSE, "Rx done, disabling radio");
-	
+
 		// finalize Rx queue entry
 		// ATTENTION: do not rely on rssi_space_num_written_radio because it may get updated in between by radio_drop_rssi_space()
 		uint32_t		nw = rx_queue_num_written_radio;
 		Rx_Queue_Entry	*q = &rx_queue[nw % NUM_ELEMENTS(rx_queue)];
 		Rssi_Buffer		*rssi = (Rssi_Buffer*)&rssi_space[q->rssi_space_num_written_begin % NUM_ELEMENTS(rssi_space)];
-	
+
 		q->packet.crc					= NRF_RADIO->RXCRC;
 		q->packet.header_detected		= NRF_RADIO->EVENTS_ADDRESS;
 		q->packet.crc_ok				= q->packet.header_detected && NRF_RADIO->CRCSTATUS;
 		q->timestamp_ref				= CCR_MAIN_ADDRESS - PPI_DELAY - RADIO_RX_EVENT_ADDRESS_DELAY;
 		q->timestamp_end				= CCR_MAIN_START_READY_END - PPI_DELAY - RADIO_RX_EVENT_END_DELAY;
-	
+
 		rssi->timestamp_rssi_end		= CCR_MAIN_RSSI - PPI_DELAY;
 
 		// ATTENTION: following computation must not produce rounding errors, i.e. ensure
@@ -753,21 +753,21 @@ void LED_ISR(MAIN_TIMER_ISR_NAME, LED_MAIN_TIMER_ISR)
 		// (otherwise ensure correct rounding or add the corresponding offset before division)
 		uint32_t num_expected = (rssi->timestamp_rssi_end - timestamp_ready) / RSSI_SAMPLING_PERIOD;
 		ASSERT_CT_WARN(IS_POWER_OF_2(RSSI_SAMPLING_PERIOD), slow_division_operation);
-	
+
 		rssi->num_missed				= num_expected - rssi->num_written;
 		rssi->status					= 0;
 		rssi->early_readout_detected	= (RSSI_TIMER3->CC[0] != num_expected);
-		rssi->late_readout_detected		= RSSI_TIMER2->EVENTS_COMPARE[1];	
+		rssi->late_readout_detected		= RSSI_TIMER2->EVENTS_COMPARE[1];
 		rssi->temperature				= (NRF_TEMP->EVENTS_DATARDY) ? NRF_TEMP->TEMP : INT16_MIN;
 		rssi_space_num_written_radio	= rssi_space_num_writing;
-	
+
 		rx_queue_num_written_radio = ++nw;
 
 		GPI_TRACE_MSG_FAST(TRACE_VERBOSE, "RSSI ISR monitoring #expected = %u, #written = %u, TIMER3 = %u",
 			num_expected, rssi->num_written, RSSI_TIMER3->CC[0]);
-		GPI_TRACE_MSG_FAST(TRACE_VERBOSE, "RSSI ISR monitoring CC = %3u %3u %3u %3u", 
+		GPI_TRACE_MSG_FAST(TRACE_VERBOSE, "RSSI ISR monitoring CC = %3u %3u %3u %3u",
 			RSSI_TIMER2->CC[0], RSSI_TIMER2->CC[1], RSSI_TIMER2->CC[2], RSSI_TIMER2->CC[3]);
-		GPI_TRACE_MSG_FAST(TRACE_VERBOSE, "RSSI ISR monitoring EV = %3u %3u %3u %3u", 
+		GPI_TRACE_MSG_FAST(TRACE_VERBOSE, "RSSI ISR monitoring EV = %3u %3u %3u %3u",
 			RSSI_TIMER2->EVENTS_COMPARE[0], RSSI_TIMER2->EVENTS_COMPARE[1],
 			RSSI_TIMER2->EVENTS_COMPARE[2], RSSI_TIMER2->EVENTS_COMPARE[3]);
 
@@ -790,12 +790,12 @@ void RSSI_TIMER2_ISR_NAME()
 	RSSI_TIMER2->INTENCLR = -1u;
 
 	GPI_TRACE_MSG_FAST(1, "main CC: %08x %08x %08x", MAIN_TIMER->CC[2], MAIN_TIMER->CC[3], MAIN_TIMER->CC[4]);
-	
+
 	RSSI_TIMER2->TASKS_CAPTURE[3] = 1;
 	GPI_TRACE_MSG_FAST(1, "RSSI_TIMER2 value: %u", RSSI_TIMER2->CC[3]);
-	
+
 	GPI_TRACE_MSG_FAST(1, "samples_num_written: %u", rssi_buffer.samples_num_written);
-	
+
 	GPI_TRACE_RETURN_FAST();
 }
 */
@@ -808,14 +808,14 @@ static Gpi_Fast_Tick_Native radio_start(Gpi_Fast_Tick_Native start_tick, volatil
 
 	Gpi_Fast_Tick_Native	delay = 0;
 	Gpi_Fast_Tick_Native	now;
-	
+
 	REORDER_BARRIER();
-	
+
 	// this part is time-critical
 	// ATTENTION: do not set breakpoints directly on start instructions,
 	// it can disturb the timing (delay in the break handler between
 	// executing the instruction and releasing exceptions / interrupts)
-	
+
 	// enable PPI channel that starts the radio (time-triggered)
 	NRF_PPI->CHENSET = BV(PPI_START);
 
@@ -832,11 +832,11 @@ static Gpi_Fast_Tick_Native radio_start(Gpi_Fast_Tick_Native start_tick, volatil
 		//if ((NRF_RADIO->STATE & RADIO_STATE_STATE_Msk) != ramp_up_state)
 		{
 			register Gpi_Fast_Tick_Native	t1, t2;
-			
+
 			t1 = gpi_tick_fast_native();
 			*start_task = 1;
 			t2 = gpi_tick_fast_native();
-			
+
 			// t1 = (t1 + t2) / 2 (= mean(t1,t2)) with wrap-around handling
 			t1 >>= 1;
 			t2 >>= 1;
@@ -845,17 +845,17 @@ static Gpi_Fast_Tick_Native radio_start(Gpi_Fast_Tick_Native start_tick, volatil
 			t1 += t2;
 
 			delay = t1 - start_tick;
-			
-			GPI_TRACE_MSG(TRACE_WARNING, "missed radio start time, started manually (%uus delayed)", 
+
+			GPI_TRACE_MSG(TRACE_WARNING, "missed radio start time, started manually (%uus delayed)",
 				gpi_tick_fast_to_us(delay));
 		}
 	}
-	else GPI_TRACE_MSG(TRACE_VERBOSE, "armed radio, start time buffer: %uus", 
+	else GPI_TRACE_MSG(TRACE_VERBOSE, "armed radio, start time buffer: %uus",
 			gpi_tick_fast_to_us(start_tick - now));
-			
+
 	GPI_TRACE_RETURN(delay);
 }
-	
+
 //**************************************************************************************************
 //***** Global Functions ***************************************************************************
 
@@ -889,9 +889,9 @@ void radio_init()
 	rssi_space_num_written_radio	= 0;
 
 	radio_state = RS_IDLE;
-		
+
 	assert(BV_TEST_BY_NAME(NRF_RADIO->MODECNF0, RADIO_MODECNF0_RU, Fast));
-	
+
 	// disable FPU context preservation
 	// ATTENTION: Automatic FPU context preservation may increase ISR latency to a value that
 	// is too high for the time critical RSSI sampling routine. It should work with lazy stacking
@@ -909,7 +909,7 @@ void radio_init()
 	    //__DSB();
 	    //__ISB();
 	}
-		
+
 	// connect RADIO shortcuts (those which can stay active all the time)
 	NRF_RADIO->SHORTS =
 		BV_BY_NAME(RADIO_SHORTS_RXREADY_START, Enabled) |
@@ -920,7 +920,7 @@ void radio_init()
 		(NRF_RADIO->PCNF1 & ~RADIO_PCNF1_MAXLEN_Msk) |
 		BV_BY_VALUE(RADIO_PCNF1_MAXLEN, sizeof_field(Radio_Packet, raw_payload));
 
-		
+
 	// configure RSSI sample clock
 	// NOTE: The nRF52840 Product Specification is unclear regarding the timing of the COMPARE->CLEAR
 	// shortcut. In particular, it is unclear if there is a delay between the moment when the timer
@@ -968,13 +968,13 @@ void radio_init()
 	// configure debug/trace GPIOs
 	#if DEBUG_GPIO
 		#if GPI_ARCH_IS_BOARD(FLOCKLAB_nRF5)
-			NRF_GPIOTE->CONFIG[GPIOTE_DEBUG1] = 
+			NRF_GPIOTE->CONFIG[GPIOTE_DEBUG1] =
 				BV_BY_NAME( GPIOTE_CONFIG_MODE, Task) |
 				BV_BY_VALUE(GPIOTE_CONFIG_PSEL, LSB(LED_RSSI_TIMER)) |
 				BV_BY_VALUE(GPIOTE_CONFIG_PORT, 0) |
 				BV_BY_NAME( GPIOTE_CONFIG_POLARITY, Toggle) |
 				BV_BY_NAME( GPIOTE_CONFIG_OUTINIT, Low);
-			NRF_GPIOTE->CONFIG[GPIOTE_DEBUG2] = 
+			NRF_GPIOTE->CONFIG[GPIOTE_DEBUG2] =
 				BV_BY_NAME( GPIOTE_CONFIG_MODE, Task) |
 				BV_BY_VALUE(GPIOTE_CONFIG_PSEL, LSB(LED_RSSI_ACTIVE)) |
 				BV_BY_VALUE(GPIOTE_CONFIG_PORT, 0) |
@@ -988,7 +988,7 @@ void radio_init()
 			//	BV_BY_NAME(GPIO_PIN_CNF_PULL, Disabled)	|
 			//	BV_BY_NAME(GPIO_PIN_CNF_DRIVE, S0S1)	|
 			//	BV_BY_NAME(GPIO_PIN_CNF_SENSE, Disabled);
-			NRF_GPIOTE->CONFIG[GPIOTE_DEBUG1] = 
+			NRF_GPIOTE->CONFIG[GPIOTE_DEBUG1] =
 				BV_BY_NAME( GPIOTE_CONFIG_MODE, Task) |
 				BV_BY_VALUE(GPIOTE_CONFIG_PSEL, GPIO_DEBUG1_PIN) |
 				BV_BY_VALUE(GPIOTE_CONFIG_PORT, GPIO_DEBUG1_PORT) |
@@ -996,8 +996,8 @@ void radio_init()
 				BV_BY_NAME( GPIOTE_CONFIG_OUTINIT, Low);
 		#endif
 	#endif
-	
-	
+
+
 	// make PPI connections
 
 	// MAIN_TIMER.COMPARE[START] -> RADIO.ENABLE etc. (on demand)
@@ -1005,7 +1005,7 @@ void radio_init()
 	NRF_PPI->CH[PPI_START].EEP = (uintptr_t)&(MAIN_TIMER->EVENTS_COMPARE[CCI_MAIN_START_READY_END]);
 	// NRF_PPI->CH[PPI_START].TEP = ...	-> radio_start_rx(), radio_start_tx()
 	NRF_PPI->FORK[PPI_START].TEP = (uintptr_t)&(NRF_TEMP->TASKS_START);
-	
+
 	// RADIO.READY -> RSSI_TIMER.START
 	// RADIO.READY -> MAIN_TIMER.CAPTURE[READY]
 	NRF_PPI->CH[PPI_READY].EEP = (uintptr_t)&(NRF_RADIO->EVENTS_READY);
@@ -1020,11 +1020,11 @@ void radio_init()
 			NRF_PPI->FORK[PPI_ADDRESS].TEP = (uintptr_t)&(NRF_GPIOTE->TASKS_OUT[GPIOTE_DEBUG1]);
 		#endif
 	#endif
-	
+
 //	// RADIO.PAYLOAD -> MAIN_TIMER.CAPTURE[PAYLOAD]
 //	NRF_PPI->CH[PPI_PAYLOAD].EEP = (uintptr_t)&(NRF_RADIO->EVENTS_PAYLOAD);
 //	NRF_PPI->CH[PPI_PAYLOAD].TEP = (uintptr_t)&(MAIN_TIMER->TASKS_CAPTURE[CCI_MAIN_PAYLOAD]);
-	
+
 	// RADIO.END -> MAIN_TIMER.CAPTURE[END]
 	NRF_PPI->CH[PPI_END].EEP = (uintptr_t)&(NRF_RADIO->EVENTS_END);
 	NRF_PPI->CH[PPI_END].TEP = (uintptr_t)&(MAIN_TIMER->TASKS_CAPTURE[CCI_MAIN_START_READY_END]);
@@ -1042,7 +1042,7 @@ void radio_init()
 			NRF_PPI->FORK[PPI_TX_CONTROL].TEP = (uintptr_t)&(NRF_GPIOTE->TASKS_OUT[GPIOTE_DEBUG1]);
 		#endif
 	#endif
-	
+
 	// RSSI_TIMER.COMPARE[0] -> RADIO.RSSISTART
 	// RSSI_TIMER.COMPARE[0] -> MAIN_TIMER.CAPTURE[RSSI_START]
 	NRF_PPI->CH[PPI_RSSI_START].EEP = (uintptr_t)&(RSSI_TIMER->EVENTS_COMPARE[0]);
@@ -1063,7 +1063,7 @@ void radio_init()
 	NRF_PPI->CH[PPI_RSSI_END].EEP = (uintptr_t)&(NRF_RADIO->EVENTS_RSSIEND);
 	NRF_PPI->CH[PPI_RSSI_END].TEP = (uintptr_t)&(RSSI_TIMER2->TASKS_START);
 	NRF_PPI->FORK[PPI_RSSI_END].TEP = (uintptr_t)&(MAIN_TIMER->TASKS_CAPTURE[CCI_MAIN_RSSI]);
-	
+
 	// RSSI_TIMER2.COMPARE[0] -> RSSI_TIMER3.COUNT
 	NRF_PPI->CH[PPI_RSSI_COUNT].EEP = (uintptr_t)&(RSSI_TIMER2->EVENTS_COMPARE[0]);
 	NRF_PPI->CH[PPI_RSSI_COUNT].TEP = (uintptr_t)&(RSSI_TIMER3->TASKS_COUNT);
@@ -1083,29 +1083,29 @@ void radio_init()
 			NRF_PPI->CH[PPI_DEBUG2].TEP = (uintptr_t)&(NRF_GPIOTE->TASKS_CLR[GPIOTE_DEBUG2]);
 		#endif
 	#endif
-	
+
 	// for debugging / profiling: capture RSSI timestamps (instead of radio events)
 	#if 0
 		NRF_PPI->CH[PPI_ADDRESS].EEP = (uintptr_t)&(RSSI_TIMER->EVENTS_COMPARE[0]);
 		NRF_PPI->CH[PPI_PAYLOAD].EEP = (uintptr_t)&(NRF_MWU->EVENTS_REGION[RSSI_MWU_REGION].RA);
 	#endif
-	
+
 	// enable PPI channels -> radio_start_rx() / radio_start_tx()
 	//NRF_PPI->CHENSET = ...;
 
-	
+
 	// arm IRQs
-	
+
 	ASSERT_CT(GPI_ARM_INTLOCK_PRIORITY >= 1);
-	
+
 	NVIC_SetPriority(RADIO_IRQn, 1);
 	NVIC_ClearPendingIRQ(RADIO_IRQn);
 	NVIC_EnableIRQ(RADIO_IRQn);
-	
+
 	NVIC_SetPriority(MAIN_TIMER_IRQ, 1);
 	NVIC_ClearPendingIRQ(MAIN_TIMER_IRQ);
 	NVIC_EnableIRQ(MAIN_TIMER_IRQ);
-	
+
 	NVIC_SetPriority(RSSI_IRQ, 0);
 	NVIC_ClearPendingIRQ(RSSI_IRQ);
 	NVIC_EnableIRQ(RSSI_IRQ);
@@ -1116,15 +1116,15 @@ void radio_init()
 	//NVIC_ClearPendingIRQ(RSSI_TIMER2_IRQ);
 	//NVIC_EnableIRQ(RSSI_TIMER2_IRQ);
 
-	
+
 	GPI_TRACE_RETURN();
 }
 
 //**************************************************************************************************
 
 Gpi_Fast_Tick_Native radio_start_rx(
-						Gpi_Fast_Tick_Native	start_tick, 
-						Gpi_Fast_Tick_Native	timeout, 
+						Gpi_Fast_Tick_Native	start_tick,
+						Gpi_Fast_Tick_Native	timeout,
 						int_fast16_t			intermediate_trigger_pos,
 						uint8_t					intermediate_trigger_preset_content,
 						uint_fast32_t			min_rssi_buffer_size,
@@ -1137,7 +1137,7 @@ Gpi_Fast_Tick_Native radio_start_rx(
 
 	assert(RS_IDLE == radio_state);
 	radio_state = RS_RX_RAMP_UP;
-	
+
 	Gpi_Fast_Tick_Native	start_tick_internal, timeout_tick, delay;
 
 	// account for ramp-up time + PPI delay
@@ -1157,7 +1157,7 @@ Gpi_Fast_Tick_Native radio_start_rx(
 	// NOTE: RSSI_TIMER2->EVENTS_COMPARE[0,2,3] need not be reset to ensure functionality.
 	// They are reset only for the TRACE/log messages printed after Rx has finished.
 	// Do not reset them if you prefer cumulated information.
-	RSSI_TIMER->TASKS_CLEAR			= 1;	
+	RSSI_TIMER->TASKS_CLEAR			= 1;
 	RSSI_TIMER2->TASKS_CLEAR		= 1;
 	RSSI_TIMER3->TASKS_CLEAR		= 1;
 	RSSI_TIMER->CC[2]				= -1u;
@@ -1175,13 +1175,13 @@ Gpi_Fast_Tick_Native radio_start_rx(
 		#else
 			min_rssi_buffer_size = MAX(min_rssi_buffer_size, 1);
 		#endif
-	
+
 		size_msb = gpi_get_msb(min_rssi_buffer_size);
 		size_msb += ((1 << size_msb) != min_rssi_buffer_size) ? 1 : 0;
 		size_msb = MAX(size_msb, 2);	// use word-aligned buffers
 		size_msb = MIN(size_msb, MSB(sizeof(rssi_space) - sizeof(Rssi_Buffer)));
 		sample_buffer_size = 1 << size_msb;
-	
+
 		uint32_t	nw = rssi_space_num_written_radio;
 		uint32_t	size = sizeof(Rssi_Buffer) + sample_buffer_size;
 		uint32_t	space = sizeof(rssi_space) - (nw % sizeof(rssi_space));
@@ -1199,25 +1199,25 @@ Gpi_Fast_Tick_Native radio_start_rx(
 		assert(!(nw % 4));
 		assert(!(rssi_space_num_writing % 4));
 		assert(!(size % 4));
-	
-		GPI_TRACE_MSG(TRACE_VERBOSE, "RSSI buffer: size 0x%x, nw_buf 0x%08x, nw_hot 0x%08x", 
+
+		GPI_TRACE_MSG(TRACE_VERBOSE, "RSSI buffer: size 0x%x, nw_buf 0x%08x, nw_hot 0x%08x",
 			sample_buffer_size, nw, rssi_space_num_writing);
-		
+
 		q->rssi_space_num_written_begin	= nw;
 
 		Rssi_Buffer	*rssi = (Rssi_Buffer*)&rssi_space[nw % NUM_ELEMENTS(rssi_space)];
-	
+
 		rssi->size_msb			= size_msb;
 		rssi->pretrigger_time	= rssi_pretrigger_time;
 		rssi->posttrigger_time	= rssi_posttrigger_time;
 		rssi->num_written		= 0;
-	
+
 		adopt_rssi_isr(rssi->samples, size_msb);
 	}
 
 	// prepare temperature measurement (needed for RSSI temperature compensation)
 	NRF_TEMP->EVENTS_DATARDY		= 0;
-	
+
 	// arm timeout timer
 	CCR_MAIN_COMPARE				= timeout_tick;
 
@@ -1227,7 +1227,7 @@ Gpi_Fast_Tick_Native radio_start_rx(
 
 	// enable PPI channels (except for PPI_START)
 	NRF_PPI->CHENSET				= PPI_CHEN_RX_MASK;
-	
+
 	// arm bitcounter
 	// intermediate_trigger_pos is defined as byte offset relative to raw_payload[0]
 	// TODO: test if CI and TERM1 are counted in 125k and 500k modes
@@ -1240,7 +1240,7 @@ Gpi_Fast_Tick_Native radio_start_rx(
 		radio_state |= RS_BITCOUNTER_ACTIVE;
 	}
 	else NRF_RADIO->BCC = -1u;	// far beyond end of packet
-	
+
 	// clear interrupt events and unmask IRQs
 	NRF_RADIO->EVENTS_READY 		= 0;
 	NRF_RADIO->EVENTS_ADDRESS		= 0;
@@ -1261,13 +1261,13 @@ Gpi_Fast_Tick_Native radio_start_rx(
 	//RSSI_TIMER2->INTENSET = BV_BY_VALUE(TIMER_INTENSET_COMPARE3, 1);
 
 	REORDER_BARRIER();
-	
+
 	// start
 	// this part is time-critical
 	// ATTENTION: do not set breakpoints directly on start instructions,
 	// it can disturb the timing (delay in the break handler between
 	// executing the instruction and releasing exceptions / interrupts)
-	
+
 	if (timeout > 0)
 	{
 		// trigger timeout immediately if timeout_tick is in the past or too close in the future
@@ -1289,10 +1289,10 @@ Gpi_Fast_Tick_Native radio_start_rx(
 
 			NVIC_SetPendingIRQ(MAIN_TIMER_IRQ);
 			GPI_TRACE_MSG(TRACE_WARNING, "timeout triggered immediately");
-			
+
 			if (gpi_tick_compare_fast_native(now, start_tick) >= 0)
 				start_tick = now;
-			
+
 			GPI_TRACE_RETURN(start_tick);
 		}
 
@@ -1308,7 +1308,7 @@ Gpi_Fast_Tick_Native radio_start_rx(
 		NRF_TEMP->TASKS_START = 1;
 		start_tick += delay;
 	}
-	
+
 	GPI_TRACE_RETURN(start_tick);
 }
 
@@ -1328,22 +1328,22 @@ Gpi_Fast_Tick_Native radio_start_tx(
 
 	// assumed state (radio subsystem): initialized, idle (prior Rx/Tx finished)
 	assert(RS_IDLE == radio_state);
-	
+
 	// init ack status
 	tx_ack.packet = packet;
 	tx_ack.done = 0;
-	
-	air_time = (packet->is_tx_no_packet) ? 0 : 
+
+	air_time = (packet->is_tx_no_packet) ? 0 :
 		radio_get_packet_airtime(gpi_radio_get_mode(), packet->raw_payload_length);
-	
+
 	// catch potential timer overruns
 	x = carrier_period_1 + carrier_period_2;
 	assert((x >= carrier_period_1) && (x < (-10000u - air_time)));
-	
+
 	// if there is no frame to send
 	if (packet->is_tx_no_packet)
 	{
-		// merge carrier periods 
+		// merge carrier periods
 		carrier_period_2 += carrier_period_1;
 		carrier_period_1 = 0;
 
@@ -1362,7 +1362,7 @@ Gpi_Fast_Tick_Native radio_start_tx(
 			GPI_TRACE_RETURN(start_tick);
 		}
 	}
-		
+
 	// ensure minimum carrier periods to avoid race conditions
 	// NOTE: oscillator drift is not an issue because transmitter is in sync with itself
 	// ATTENTION: do not change carrier_period_1 (catch only), as this would impact timestamp_ref
@@ -1380,9 +1380,9 @@ Gpi_Fast_Tick_Native radio_start_tx(
 			carrier_period_2, x, gpi_tick_fast_to_us(x));
 		carrier_period_2 = x;
 	}
-	
+
 	radio_state = RS_TX_RAMP_UP;
-	
+
 	// account for ramp-up time + PPI delay
 	start_tick_internal = start_tick - PPI_DELAY - RADIO_TX_RAMP_UP_TIME;
 	cp1_internal = carrier_period_1;
@@ -1397,7 +1397,7 @@ Gpi_Fast_Tick_Native radio_start_tx(
 	{
 		// nRF spec. states that TASKS_TXEN -> EVENTS_READY has a typical jitter of 0.25us
 		// [t_READYJITTER in 4413_417 v1.2 6.20.15.10].
-		// Hence, for the sake of precise timing we avoid using the TXREADY->START shortcut and 
+		// Hence, for the sake of precise timing we avoid using the TXREADY->START shortcut and
 		// trigger TASKS_START manually RADIO_TX_RAMP_UP_TOLERANCE after the nominal ramp-up time.
 		// At the same time we adjust start_tick_internal to compensate the delay (so
 		// RADIO_TX_RAMP_UP_TOLERANCE is visible in an early ramp-up, but it does not shift start_tick).
@@ -1416,7 +1416,7 @@ Gpi_Fast_Tick_Native radio_start_tx(
 	{
 		// + start_tick follows below
 		tx_ccr_disable = carrier_period_1 + air_time + carrier_period_2 - PPI_DELAY - RADIO_TX_DISABLE_DELAY;
-	
+
 		if (!cp1_internal)
 			NRF_PPI->CH[PPI_TX_CONTROL].TEP = (uintptr_t)&(NRF_RADIO->TASKS_DISABLE);
 		// else done in timer ISR
@@ -1425,7 +1425,7 @@ Gpi_Fast_Tick_Native radio_start_tx(
 		// since this is less critical (has no impact on important timestamps).
 	}
 	else NRF_RADIO->SHORTS |= BV_BY_NAME(RADIO_SHORTS_END_DISABLE, Enabled);
-	
+
 	// use CCR_MAIN_START_READY_END to start radio via PPI
 	CCR_MAIN_START_READY_END		= start_tick_internal;
 	NRF_PPI->CH[PPI_START].TEP		= (uintptr_t)&(NRF_RADIO->TASKS_TXEN);
@@ -1444,13 +1444,13 @@ Gpi_Fast_Tick_Native radio_start_tx(
 		BV_BY_VALUE(RADIO_INTENSET_DISABLED, 1);
 
 	REORDER_BARRIER();
-	
+
 	// start
 	// ATTENTION: this part is time-critical
 	// NOTE: after start we have about 40us (ramp-up delay) to complete the following instructions
-	
+
 	start_tick += radio_start(start_tick_internal, &(NRF_RADIO->TASKS_TXEN));
-	
+
 	// NOTE: tx_ccr_disable is used whenever carrier_period_2 > 0
 	tx_ccr_disable += start_tick;
 
@@ -1487,7 +1487,7 @@ Gpi_Fast_Tick_Native radio_start_tx(
 		assert((x < start_tick, 0));
 		while(0);
 	}
-		
+
 	GPI_TRACE_RETURN(start_tick);
 }
 
@@ -1512,7 +1512,7 @@ Gpi_Fast_Tick_Native radio_get_ref_timestamp_offset(Gpi_Radio_Mode mode)
 			GPI_TRACE_MSG(TRACE_ERROR, "invalid radio mode: %d!!!", mode);
 			assert(0);
 	}
-		
+
 	GPI_TRACE_RETURN(ref_delay);
 }
 
@@ -1534,7 +1534,7 @@ Gpi_Fast_Tick_Native radio_get_packet_airtime(Gpi_Radio_Mode mode, uint_fast8_t 
 		// 125k:			80,80us		256us		2,16us	3,24us					192us	3,24us
 		// 500k:			80,80us		256us		2,16us	3,24us					 48us	3, 6us
 		//
-		// PDU:				S0			LENGTH		S1		PAYLOAD	
+		// PDU:				S0			LENGTH		S1		PAYLOAD
 		// always [bit]:	8			8			0		(0...255)*8
 		// (S1 = 8 bit if Constant Tone Extension is used)
 
@@ -1546,7 +1546,7 @@ Gpi_Fast_Tick_Native radio_get_packet_airtime(Gpi_Radio_Mode mode, uint_fast8_t 
 			GPI_TRACE_MSG(TRACE_ERROR, "invalid radio mode: %d!!!", mode);
 			assert(0);
 	}
-		
+
 	GPI_TRACE_RETURN(airtime);
 }
 
@@ -1558,12 +1558,12 @@ void radio_update_rssi_num_written(uint32_t rx_queue_nr, uint32_t rssi_space_nw)
 	GPI_TRACE_FUNCTION();
 
 	register int ie = gpi_int_lock();
-	
+
 	if (!(radio_state & RS_RX_ACTIVE) && (rx_queue_nr == rx_queue_num_written_radio))
 		rssi_space_num_written_radio = rssi_space_nw;
-	
+
 	gpi_int_unlock(ie);
-	
+
 	GPI_TRACE_RETURN();
 }
 
@@ -1578,15 +1578,15 @@ void radio_drop_rssi_space()
 
 	// ATTENTION: this function must not interrupt radio_start_rx()
 	// (if this is required then use gpi_int_lock() in radio_start_rx() too)
-	
+
 	register int ie = gpi_int_lock();
 
 	nw = rssi_space_num_writing + NUM_ELEMENTS(rssi_space);
 	rssi_space_num_writing = nw;
 	rssi_space_num_written_radio = nw;
-	
+
 	gpi_int_unlock(ie);
-	
+
 	GPI_TRACE_RETURN();
 }
 
@@ -1604,13 +1604,13 @@ void radio_wake_at(Gpi_Fast_Tick_Native tick)
 	MAIN_TIMER->EVENTS_COMPARE[CCI_MAIN_COMPARE] = 0;
 
 	int ie = gpi_int_lock();
-	
+
 	MAIN_TIMER->INTENSET = INTEN_MAIN_COMPARE;
 	if (gpi_tick_compare_fast_native(gpi_tick_fast_native(), tick) >= 0)
 		NVIC_SetPendingIRQ(MAIN_TIMER_IRQ);
-		
+
 	gpi_int_unlock(ie);
-	
+
 	GPI_TRACE_RETURN();
 }
 

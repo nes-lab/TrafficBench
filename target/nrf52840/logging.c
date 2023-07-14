@@ -125,14 +125,14 @@ typedef struct __attribute__((packed)) Log_Packet
 	cbor_uint16_t		late_start_delay;
 
 	cbor_uint8_t		trx_status;
-	
+
 	cbor_bstr16_t		packet;
-	
+
 	// the following is added manually after the dynamic-length string
 	// cbor_uint_t		tx_delay;				// 0 in case of Rx
 
 	// TODO: radio mode
-	
+
 } Log_Packet;
 
 // CBOR serialized RSSI data output
@@ -143,10 +143,10 @@ typedef struct __attribute__((packed)) Log_Rssi
 	cbor_uint32_t		num_samples_missed;
 
 	cbor_bstr16_t		samples;
-	
+
 	// the following is added manually after the dynamic-length string
 	// cbor_uint_tiny_t	is_valid;
-	
+
 } Log_Rssi;
 
 //**************************************************************************************************
@@ -191,14 +191,14 @@ static void* base64_encode(void *dest, size_t dest_size, const void* src, size_t
 		'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v',
 		'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '/'
 	};
-	
+
 	static union
 	{
 		uint8_t		a[3];
 		uint32_t	x;
 	}						buffer;
 	static uint_fast8_t		npending = 0;
-	
+
 	const uint8_t	*s = src;
 	uint8_t			*d = dest;
 
@@ -212,17 +212,17 @@ static void* base64_encode(void *dest, size_t dest_size, const void* src, size_t
 		if (0 == len)
 		{
 			assert(dest_size >= 5);
-		
+
 			if (0 != npending)
 			{
 				uint16_t		t = 0;
 				uint_fast8_t	n = 3 - npending;
-			
+
 				d = base64_encode(d, dest_size, &t, n, 0);
-			
+
 				for (; n > 0; n--)
 					d[-n] = '=';
-					
+
 				npending = 0;
 			}
 		}
@@ -233,33 +233,33 @@ static void* base64_encode(void *dest, size_t dest_size, const void* src, size_t
 			{
 				for (; len > 0 && npending < 3; len--)
 					buffer.a[npending++] = *s++;
-			
+
 				if (3 == npending)
 				{
 					asm("rev %0, %1" : "=r"(buffer.x) : "r"(buffer.x));
 						// TODO: move to (gpi_)byteswap_16/32/x()
-				
+
 					*d++ = ALPHABET[buffer.x >> 26]; buffer.x <<= 6;
 					*d++ = ALPHABET[buffer.x >> 26]; buffer.x <<= 6;
 					*d++ = ALPHABET[buffer.x >> 26]; buffer.x <<= 6;
 					*d++ = ALPHABET[buffer.x >> 26];
-			
+
 					//*d++ = ALPHABET[(buffer.x >> 18) & 0x3F];
 					//*d++ = ALPHABET[(buffer.x >> 12) & 0x3F];
 					//*d++ = ALPHABET[(buffer.x >>  6) & 0x3F];
 					//*d++ = ALPHABET[(buffer.x >>  0) & 0x3F];
 
 					dest_size -= 4;
-				
+
 					npending = 0;
 				}
-			}		
-		}	
+			}
+		}
 
 		assert(dest_size > 0);
 		*d = '\0';	// without ++
 	}
-	
+
 	if (ret_sel)
 		return (void*)s;
 	return d;
@@ -276,13 +276,13 @@ static uint16_t fletcher16(const void *data, size_t len)
 	if (NULL == data)
 	{
 		uint32_t c = c0 | (c1 << 8);
-		
+
 		c0 = c1 = 0;
-		
+
 		switch (len)
 		{
 			case 0:	break;
-			case 1: 
+			case 1:
 				// return (-c0 - c1) % 0xff, c1
 				// If these values are appended to the data block (instead of c0, c1 as is),
 				// then the checksum of the extended block becomes 0 (for details see
@@ -291,10 +291,10 @@ static uint16_t fletcher16(const void *data, size_t len)
 				return ((-(c & 0xff) - (c >> 8)) % 0xff) | (c & 0xff00);
 			default: assert(0);
 		}
-		
+
 		return c;
 	}
-	
+
 	else
 	{
 		while (len)
@@ -306,15 +306,15 @@ static uint16_t fletcher16(const void *data, size_t len)
 			//	c1 = cumsum(c0);
 			//	find(c1 >= 2^32, 1) - 1
 			size_t l = MIN(len, 5803);
-			
+
 			len -= l;
-			
+
 			while (l--)
 			{
 				c0 += *s++;
 				c1 += c0;
 			}
-			
+
 			#if 1
 				c0 %= 0xff;
 				c1 %= 0xff;
@@ -327,7 +327,7 @@ static uint16_t fletcher16(const void *data, size_t len)
 			#endif
 		}
 	}
-	
+
 	return c0 | (c1 << 8);
 }
 */
@@ -353,14 +353,14 @@ static uint32_t fletcher32(const void *data, size_t len)
 		if ((int32_t)buffer_state >= 0)
 			c = fletcher32(&padding, sizeof(padding));
 		else c = c0 | (c1 << 16);
-		
+
 		c0 = c1 = 0;
 		buffer_state = 0xaaaaaaaa;
-		
+
 		switch (len)
 		{
 			case 0:	break;
-			case 1: 
+			case 1:
 				// return (-c0 - c1) % 0xffff, c1
 				// If these values are appended to the data block (instead of c0, c1 as is),
 				// then the checksum of the extended block becomes 0 (for details see
@@ -369,10 +369,10 @@ static uint32_t fletcher32(const void *data, size_t len)
 				return ((-(c & 0xffff) - (c >> 16)) % 0xffff) | (c & 0xffff0000);
 			default: assert(0);
 		}
-		
+
 		return c;
 	}
-	
+
 	else
 	{
 		while (len)
@@ -384,15 +384,15 @@ static uint32_t fletcher32(const void *data, size_t len)
 			//	c1 = cumsum(c0);
 			//	find(c1 >= 2^32, 1) - 1
 			size_t l = MIN(len, 361);
-			
+
 			len -= l;
-			
+
 			while (l--)
 			{
 				buffer <<= 8;
 				buffer |= *s++;
 				buffer_state = (buffer_state << 1) | (buffer_state >> 31);	// rotate left
-			
+
 				if ((int32_t)buffer_state < 0)
 				{
 					c0 += buffer;
@@ -412,7 +412,7 @@ static uint32_t fletcher32(const void *data, size_t len)
 			#endif
 		}
 	}
-	
+
 	return c0 | (c1 << 16);
 }
 
@@ -428,11 +428,11 @@ static inline size_t _print(const char *s)
 	// The following replacement is really dirty, but at least it does what we want.
 
 	ASSERT_CT(GPI_ARCH_IS_CRT(SEGGER2));
-	
+
 	size_t n = strlen(s);
-	
+
 	__SEGGER_RTL_X_file_write(stdout, s, n);
-	
+
 	// Since we need it here anyhow, we return the length of s (can be used by the caller).
 	return n;
 }
@@ -471,10 +471,10 @@ static size_t flush_log(void *start, void *end)
 	{
 		if (MAX_LINE_LEN)
 			line_free = max_line_len;
-			
+
 		return 0;
 	}
-	
+
 	// update checksum
 	fletcher32(start, len);
 
@@ -501,18 +501,18 @@ static size_t flush_log(void *start, void *end)
 				#endif
 				line_free = max_line_len;
 			}
-			
+
 			s = base64_encode(d, MIN(space, line_free), s, d - s, 1);
 			line_free -= _print(d);
 		}
-		
+
 		else
 		{
 			s = base64_encode(d, space, s, d - s, 1);
 			_print(d);
 		}
 	}
-	
+
 	return len;
 }
 
@@ -531,7 +531,7 @@ PT_THREAD(log_thread())
 	PT_BEGIN(pt);
 
 	rx_queue_num_read = rx_queue_num_written_postproc;
-	
+
 	// first call = init
 	TRACE_MSG(TRACE_INFO, "log thread started");
 	PT_YIELD(pt);
@@ -562,7 +562,7 @@ PT_THREAD(log_thread())
 
 		REORDER_BARRIER();
 
-		// catch potential concurrent rx_queue overflow 
+		// catch potential concurrent rx_queue overflow
 		n = rx_queue_num_writing - rx_queue_num_read;
 		if (n >= NUM_ELEMENTS(rx_queue))
 		{
@@ -580,9 +580,9 @@ PT_THREAD(log_thread())
 		uint8_t			*cp;
 		cbor_bstr16_t	*chunk_str;
 		size_t			len = 0;
-		
+
 		cp = log_buffer;
-		
+
 		// start chunk list (outer CBOR format)
 		cp = cbor_encode_array_tiny(*cp, -1);
 
@@ -596,7 +596,7 @@ PT_THREAD(log_thread())
 		// records not only due to losses in the log file, but also due to rx_queue overruns
 		{
 			Log_Packet *cpacket = (Log_Packet*)cp;
-		
+
 			cbor_encode_uint(cpacket->record_counter,				rx_queue_num_read);
 			cbor_encode_uint(cpacket->node_id,						my_node_id);
 			cbor_encode_uint(cpacket->timestamp_schedule_global,	q->timestamp_schedule_global);
@@ -606,10 +606,10 @@ PT_THREAD(log_thread())
 			cbor_encode_int (cpacket->timestamp_ref_deviation,		q->timestamp_ref_deviation);
 			cbor_encode_uint(cpacket->late_start_delay,				q->late_start_delay);
 			cbor_encode_uint(cpacket->trx_status,					q->packet.trx_status >> 24);
-		
+
 			cp = cbor_encode_bstr(cpacket->packet, &(q->packet.ble_header), 2 + payload_length + 3);
 			memcpy(cp - 3, &(q->packet.trx_status), 3);
-			
+
 			cp = cbor_encode_uint_by_value(*cp, is_rx ? 0 : q->tx_delay);
 		}
 
@@ -628,7 +628,7 @@ PT_THREAD(log_thread())
 		base64_encode(NULL, 0, NULL, 0, 0);
 		fletcher32(NULL, 0);
 		flush_log(NULL, NULL);
-		
+
 		// start transmission (print transmission header)
 		{
 			// add human-readable timestamp before the record
@@ -641,11 +641,11 @@ PT_THREAD(log_thread())
 			_print(timestamp);
 		}
 		_print(BEGIN_RECORD "TRX:\n");
-		
+
 		// start message segment (character chunk)
 		// maybe move this to flush_log() if segments need to be interleaved with TRACE messages
 		_print(BEGIN_CHUNK);
-		
+
 		// log RSSI data
 		if (is_rx && (-1u != rssi_nw_begin))
 		{
@@ -664,28 +664,28 @@ PT_THREAD(log_thread())
 
 			if (rssi_space_num_writing - rssi_nw_begin >= NUM_ELEMENTS(rssi_space))
 				nsamples = 0;
-			
+
 			cp = cbor_encode_bstr(crssi->samples, NULL, nsamples);
 
 			if (nsamples > 0)
 			{
 				// close current chunk
 				cbor_encode_bstr(*chunk_str, NULL, cp - (uint8_t*)(chunk_str + 1));
-				
+
 				len += flush_log(log_buffer, cp);
 				cp = log_buffer;
-				
+
 				// start compressed chunk
 				cp = cbor_encode_uint_tiny(*cp, 1);
 				cp = cbor_encode_bstr_envelope(*cp);
-				
+
 				len += flush_log(log_buffer, cp);
 				cp = log_buffer;
-				
+
 				// prepare bstr block
 				chunk_str = (cbor_bstr16_t*)cp;
 				cp = cbor_encode_bstr(*chunk_str, NULL, 0);
-				
+
 				// init deflate
 				deflate(NULL, 0, NULL, 0, NULL, NULL, NULL, NULL);
 
@@ -703,23 +703,23 @@ PT_THREAD(log_thread())
 					len += flush_log(log_buffer, cp + nwritten);
 					nwritten_cum += nwritten;
 				}
-				
+
 				while (nsamples > 0)
 				{
 					deflate(cp, log_buffer_end - cp, src, nsamples, NULL, rssi->samples, &nwritten, &nread);
 
 					src += nread;
 					nsamples -= nread;
-					
+
 					if (0 == nsamples)
 					{
 						ASSERT_CT((intptr_t)(&log_buffer[sizeof(log_buffer)] - log_buffer_end) > 8);
-						
+
 						nread = nwritten;
 						deflate(cp + nwritten, 8, NULL, 0, DEFLATE_FLUSH, NULL, &nwritten, NULL);
 						nwritten += nread;
 					}
-					
+
 					assert(0 != nwritten);
 					cbor_encode_bstr(*chunk_str, NULL, nwritten);
 					len += flush_log(log_buffer, cp + nwritten);
@@ -732,10 +732,10 @@ PT_THREAD(log_thread())
 						nread, nwritten_cum, 100 - ((nwritten_cum * 100) / nread));
 
 				cp = log_buffer;
-				
+
 				// close compressed chunk (bstr envelope)
 				cp = cbor_encode_break(*cp);
-				
+
 				// start uncompressed chunk
 				cp = cbor_encode_uint_tiny(*cp, 0);
 				chunk_str = (cbor_bstr16_t*)cp;
@@ -769,7 +769,7 @@ PT_THREAD(log_thread())
 			cp = cbor_encode_uint_tiny(*cp, 0);
 			cp = cbor_encode_bstr8(*cp, NULL, 0);
 		}
-		
+
 		// close chunk list
 		cp = cbor_encode_break(*cp);
 
@@ -785,22 +785,22 @@ PT_THREAD(log_thread())
 		// append checksum
 		cp = cbor_encode_uint32(*cp, fletcher32(cp, 0));
 		flush_log(&log_buffer[offsetof(cbor_uint32_t, val)], cp);
-		
+
 		// flush BASE64 buffer
 		base64_encode(log_buffer, sizeof(log_buffer), NULL, 0, 0);
 		_print(log_buffer);
-		
+
 		// end message segment (character chunk)
 		// maybe move this to flush_log() if segments need to be interleaved with TRACE messages
 		_print(END_CHUNK "\n");
-		
+
 		// end transmission
 		// NOTE: trailing CR makes this invisible at a terminal
 		_print(END_RECORD "\r");
 
 		// go to next rx_queue entry (done with current entry)
 		rx_queue_num_read += 1;
-		
+
 		#if TRACE_INTERMEDIATE_FLUSH
 			GPI_TRACE_FLUSH();
 		#endif

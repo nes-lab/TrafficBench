@@ -71,7 +71,7 @@
 	#define ROOT_NODE_ID				1
 #endif
 
-#define RX_QUEUE_SIZE					128 //256		// num. entries 
+#define RX_QUEUE_SIZE					128 //256		// num. entries
 #define RSSI_SPACE_SIZE					(128 * 1024)	// bytes
 #define LOG_BUFFER_SIZE					1024			// bytes
 

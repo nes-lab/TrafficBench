@@ -40,7 +40,7 @@
  ***************************************************************************************************
 
  	@details
-	
+
 	TODO
 
  **************************************************************************************************/
@@ -71,7 +71,7 @@
 // con: uses an interrupt (interrupts must be enabled, "asynchronous" execution)
 #ifndef GPI_TRACE_USE_DSR
 	#define GPI_TRACE_USE_DSR			GPI_HYBRID_CLOCK_USE_VHT
-	
+
 	ASSERT_CT_WARN_STATIC(GPI_TRACE_USE_DSR ||
 		(!GPI_HYBRID_CLOCK_USE_VHT && sizeof(Gpi_Hybrid_Tick) == sizeof(Gpi_Fast_Tick_Native)),
 		enabling_GPI_TRACE_USE_DSR_could_be_beneficial);
@@ -112,7 +112,7 @@
 
 	#define GPI_TRACE_DSR_IRQ					CRYPTOCELL_IRQn
 	#define GPI_TRACE_DSR_VECTOR				CRYPTOCELL_IRQHandler
-	
+
 	static inline void gpi_trace_trigger_dsr()	{ NVIC->STIR = GPI_TRACE_DSR_IRQ;		}
 
 #endif

@@ -123,7 +123,7 @@ static inline uint32_t usub8(uint32_t a, uint32_t b)
 	uint32_t	r;
 
 	asm("usub8 %0, %1, %2" : "=r"(r) : "r"(a), "r"(b));
-	
+
 	return r;
 }
 
@@ -134,7 +134,7 @@ static inline uint32_t usub8(uint32_t a, uint32_t b)
 PT_THREAD(postproc_thread())
 {
 	struct pt * const	pt = pt_postprocess;
-	
+
 	static uint32_t		rssi_space_num_written_postproc;
 
 	uint32_t			rx_queue_num_read = rx_queue_num_written_postproc;	// faster because non-volatile
@@ -142,7 +142,7 @@ PT_THREAD(postproc_thread())
 	PT_BEGIN(pt);
 
 	rssi_space_num_written_postproc = rssi_space_num_written_radio;
-	
+
 	// first call = init
 	GPI_TRACE_MSG(TRACE_INFO, "postprocessing thread started");
 	PT_YIELD(pt);
@@ -151,7 +151,7 @@ PT_THREAD(postproc_thread())
 	{
 		Rx_Queue_Entry		*q;
 		uint32_t			n;
-	
+
 		// wait until data available
 		PT_WAIT_UNTIL(pt, rx_queue_num_read != rx_queue_num_written_trx);
 
@@ -174,7 +174,7 @@ PT_THREAD(postproc_thread())
 		{
 			// ATTENTION: do not advance beyond rx_queue_num_written_trx
 			n = rx_queue_num_written_trx - rx_queue_num_read;
-			
+
 			GPI_TRACE_MSG(TRACE_WARNING, "rx queue overflow, %u entries lost", n);
 			rx_queue_num_read += n;
 			rx_queue_num_written_postproc = rx_queue_num_read;
@@ -192,11 +192,11 @@ PT_THREAD(postproc_thread())
 
 			// copy critical data to local variables (to ensure consistency)
 			memcpy(hdr, src_buf, sizeof(hdr_data));
-			
+
 			REORDER_BARRIER();
 
 			GPI_TRACE_MSG(TRACE_INFO, "postprocessing Rx packet [%u]", rx_queue_num_read);
-			
+
 			// check rssi_space overflow
 
 			// we expect rssi_space_num_written_postproc behind rssi_space_nw_begin
@@ -211,9 +211,9 @@ PT_THREAD(postproc_thread())
 			// NOTE: one reason for this is overflow during last postproc. cycle (see below)
 			if (rssi_space_num_writing - rssi_space_num_written_postproc > NUM_ELEMENTS(rssi_space))
 			{
-				GPI_TRACE_MSG(TRACE_VERBOSE, "adjusting rssi_nw_postproc (+%u)", 
+				GPI_TRACE_MSG(TRACE_VERBOSE, "adjusting rssi_nw_postproc (+%u)",
 					rssi_space_nw_begin - rssi_space_num_written_postproc);
-					
+
 				rssi_space_num_written_postproc = rssi_space_nw_begin;
 			}
 
@@ -224,11 +224,11 @@ PT_THREAD(postproc_thread())
 				GPI_TRACE_MSG(TRACE_WARNING, "RSSI space overflow (q)");
 				hdr->num_written = 0;		// drop rssi samples
 			}
-			
+
 			uint32_t	src_buf_size = 1 << hdr->size_msb;	// pure sample buffer
 			uint32_t	rssi_nw_end	= hdr->num_written;
 			uint32_t	dst_size;	// full buffer (incl. header)
-			
+
 			// DEBUG: test for invalid RSSI samples when reading the buffer
 			// (indicates that something went wrong, e.g. with buffer management)
 			#if 0
@@ -265,49 +265,49 @@ PT_THREAD(postproc_thread())
 			assert(!(rssi_space_num_written_postproc % 4));
 			assert(!(rssi_space_nw_begin % 4));
 			assert(!(src_buf_size % 4));
-			
+
 #if 0
 	trace_dump("RSSI hdr: ", hdr, sizeof(Rssi_Buffer));
 	trace_dump("RSSI:", src_buf->samples, MIN(rssi_nw_end, src_buf_size));
 #endif
-			
+
 			// determine window with relevant samples
 			{
 				uint32_t	n1;
-				
+
 				n = MIN(rssi_nw_end, src_buf_size);
 				n1 = 0;
 
 				GPI_TRACE_MSG(TRACE_VERBOSE, "%u samples available (nw_end 0x%08x)", n, rssi_nw_end);
-				
+
 				// cut excess samples after packet
 				if (!is_timeout)
 				{
 					n1 = gpi_tick_fast_to_us(hdr->timestamp_rssi_end - timestamp_end);
 					GPI_TRACE_MSG(TRACE_VERBOSE, "%u posttrigger samples available", MIN(n, n1));
-					
+
 					// +3 as the subsequent alignment step can cut up to 3 samples
 					n1 -= gpi_tick_fast_to_us(hdr->posttrigger_time) + 3;
 					n1 = ((int32_t)n1 > 0) ? MIN(n, n1) : 0;
 				}
-					
+
 				// align end at word boundary
 				n1 += MIN(n - n1, (rssi_nw_end - n1) % sizeof(uint32_t));
 
 				if (n1 > 0)
 				{
 					GPI_TRACE_MSG(TRACE_VERBOSE, "cutting %u posttrigger samples", n1);
-					
+
 					hdr->timestamp_rssi_end -= n1 * GPI_TICK_US_TO_FAST(1);
 					rssi_nw_end -= n1;
 					n -= n1;
 				}
-				
+
 				// cut excess samples before packet
 				if (is_header)
 				{
 					ASSERT_CT(GPI_FAST_CLOCK_RATE >= 1000000);
-					
+
 					// n1 = timestamp_start
 					// NOTE: compute n1 based on timestamp_ref (not timestamp_end)
 					// to minimize the influence of clock drift between transmitter and receiver
@@ -315,16 +315,16 @@ PT_THREAD(postproc_thread())
 					// get appreciable in case of long packets, especially in BLE 125K mode)
 					n1 = timestamp_ref - radio_get_ref_timestamp_offset(gpi_radio_get_mode());
 					//n1 = timestamp_end - radio_get_packet_airtime(payload_length);
-					
+
 					// n1 = num. samples to keep
 					// +1 as gpi_tick_fast_to_us() may round towards 0 (floor)
 					// +3 as the subsequent alignment step can cut up to 3 samples
-					n1 = gpi_tick_fast_to_us(hdr->timestamp_rssi_end - n1) + 1 
+					n1 = gpi_tick_fast_to_us(hdr->timestamp_rssi_end - n1) + 1
 						+ gpi_tick_fast_to_us(hdr->pretrigger_time) + 3;
-					
+
 					// n1 = num. samples to cut
 					n1 = n - n1;
-					
+
 					if ((int32_t)n1 >= 0)
 					{
 						// >= as the subsequent alignment step can cut additional samples (up to 3)
@@ -333,7 +333,7 @@ PT_THREAD(postproc_thread())
 					}
 					else GPI_TRACE_MSG(TRACE_INFO, "lacking %u samples to fulfill pre-/posttrigger time", -n1);
 				}
-				
+
 				// align size (and implicitly begin) at word boundary
 				n -= n % sizeof(uint32_t);
 				//n &= ~(sizeof(uint32_t) - 1);
@@ -343,11 +343,11 @@ PT_THREAD(postproc_thread())
 			dst_size = sizeof(Rssi_Buffer) + n;
 			{
 				uint32_t space = NUM_ELEMENTS(rssi_space) - (rssi_space_num_written_postproc % NUM_ELEMENTS(rssi_space));
-			
+
 				if (dst_size > space)
 				{
 					rssi_space_num_written_postproc += space;
-					
+
 					ASSERT_ELSE((int32_t)(rssi_space_nw_begin - rssi_space_num_written_postproc) >= 0)
 					{
 						GPI_TRACE_MSG(TRACE_ERROR, "assertion failed, dropping RSSI samples");
@@ -357,13 +357,13 @@ PT_THREAD(postproc_thread())
 			}
 
 			dst_buf = (Rssi_Buffer*)&rssi_space[rssi_space_num_written_postproc % NUM_ELEMENTS(rssi_space)];
-			
-			GPI_TRACE_MSG(TRACE_VERBOSE, "postprocessing %u samples, dst_buf 0x%05x", 
+
+			GPI_TRACE_MSG(TRACE_VERBOSE, "postprocessing %u samples, dst_buf 0x%05x",
 				n, rssi_space_num_written_postproc % NUM_ELEMENTS(rssi_space));
 
 //trace_dump("hdr:", hdr, sizeof(Rssi_Buffer));
 //trace_dump("buf before:", src_buf, sizeof(Rssi_Buffer) + src_buf_size);
-			
+
 			// postprocess data
 			// NOTE: this can damage other data in case of buffer overflow, which is handled below
 			{
@@ -374,7 +374,7 @@ PT_THREAD(postproc_thread())
 				uint32_t			*d, *s, *s_end;
 				uint32_t			x, y;
 				uint8_t				y_prev = 0;
-			
+
 				// ATTENTION: n and rssi_nw_end must be word-aligned (which is established above)
 				n /= sizeof(uint32_t);
 
@@ -392,10 +392,10 @@ PT_THREAD(postproc_thread())
 					{
 						if (*s & 0x80808080)
 						{
-							GPI_TRACE_MSG(TRACE_ERROR, "invalid sample at 0x%05x (0x%05x, n1 = %u, n = %u)!", 
+							GPI_TRACE_MSG(TRACE_ERROR, "invalid sample at 0x%05x (0x%05x, n1 = %u, n = %u)!",
 								(uint8_t*)s - src_buf->samples, (uint8_t*)s - rssi_space, n1, n);
 						}
-						
+
 						if (++s >= s_buf_end)
 							s = s_buf;
 					}
@@ -408,7 +408,7 @@ PT_THREAD(postproc_thread())
 				d     = (uint32_t*)&(dst_buf->samples[0]);
 				s     = (uint32_t*)&(src_buf->samples[rssi_nw_begin & (src_buf_size - 1)]);
 				s_end = (uint32_t*)&(src_buf->samples[((rssi_nw_end - 1) & (src_buf_size - 1)) + 1]);
-				
+
 				// process samples
 				while (n)
 				{
@@ -419,17 +419,17 @@ PT_THREAD(postproc_thread())
 
 					// find buffer constellations that can be handled with simple memcpy()-style
 					// processing in forward direction (this is most efficient)
-					
+
 					// dest before source buffer
 					if (d < s_buf)
 						n1 = MIN(s_seg_len, s_buf - d);
 					else if (0
-							
+
 						// dest before single (contiguous) source segment
 						|| ((d < s) && (s < s_end))
-						
+
 						// dest in second (wrapped-around) source segment -> handled below
-							
+
 						// dest between source segments
 						|| ((d < s) && (d >= s_end))
 
@@ -438,10 +438,10 @@ PT_THREAD(postproc_thread())
 						|| (d == s)
 
 						// dest in first (non-wrapped) / single source segment -> handled below
-						
+
 						// dest behind single (contiguous) source segment
 						|| ((d >= s_end) && (s < s_end))
-						
+
 						// dest behind source buffer
 						|| (d >= s_buf_end)
 					)
@@ -455,17 +455,17 @@ PT_THREAD(postproc_thread())
 						{
 							// differential format (store differences)
 							y = *s++;
-							*d++ = usub8(y, (y << 8) | y_prev);		
+							*d++ = usub8(y, (y << 8) | y_prev);
 							y_prev = y >> 24;
 							CHECK_SAMPLES(y);
-						}				
-					
+						}
+
 						if (s == s_buf_end)
 							s = s_buf;
 					}
 
 					// handle more painful buffer constellations
-						
+
 					// dest in first (non-wrapped) / single source segment
 					else if (d > s)	// && d < s_seg_end (follows from above)
 					{
@@ -478,13 +478,13 @@ PT_THREAD(postproc_thread())
 						// Solution 1) is faster, so we choose this one.
 
 						#if 1
-						
+
 							d += s_seg_len;
 							s += s_seg_len;
-						
+
 							x = *(--s);
 							uint8_t y_prev_next = x >> 24;
-						
+
 							for (n1 = s_seg_len; n1-- > 0;)
 							{
 								y = x;
@@ -492,24 +492,24 @@ PT_THREAD(postproc_thread())
 								*(--d) = usub8(y, (y << 8) | (x >> 24));
 								CHECK_SAMPLES(y);
 							}
-						
+
 							y_prev = y_prev_next;
-						
+
 							d += s_seg_len;
-							
-						#else						
-						
+
+						#else
+
 							// ATTENTION: this has not been tested so far
-							
+
 							typeof(s)	s_start = s;
 							typeof(s)	s_stop  = d;
 							typeof(s)	d_stop  = d + s_seg_len;
-						
+
 							while (d < d_stop)
 							{
 								s = s_start;
 								s_stop = s + MIN(s_stop - s, d_stop - d);
-							
+
 								// process with exchange of data blocks
 								while (s < s_stop)
 								{
@@ -521,14 +521,14 @@ PT_THREAD(postproc_thread())
 									CHECK_SAMPLES(y);
 								}
 							}
-							
+
 						#endif
-						
+
 						// either s = s_buf or don't care (if n == 0)
 						s = s_buf;
 						n -= s_seg_len;
 					}
-	
+
 					// dest in second (wrapped-around) source segment
 					else
 					{
@@ -546,14 +546,14 @@ PT_THREAD(postproc_thread())
 							const size_t	STOP_THRESHOLD = 64 / sizeof(uint32_t);
 							int				stop = 0;
 
-							//GPI_TRACE_MSG(TRACE_VERBOSE, 
-							//	"d=%p, s_buf=%p, s_end=%p, s=%p, s_buf_end=%p, n=%u", 
+							//GPI_TRACE_MSG(TRACE_VERBOSE,
+							//	"d=%p, s_buf=%p, s_end=%p, s=%p, s_buf_end=%p, n=%u",
 							//	d, s_buf, s_end, s, s_buf_end, n);
-							
+
 							while ((n > 0) && !stop)
 							{
 								typeof(s)	sx = s;
-								
+
 								// buffer layout:
 								//
 								//    s_buf       s_end       s       s_buf_end
@@ -570,7 +570,7 @@ PT_THREAD(postproc_thread())
 									// exchange, flush
 									n1 = s_buf_end - s;
 									s_buf += n1;
-									
+
 									// before:
 									//  d=s_buf       s_end       s       s_buf_end
 									//    |           |           |       |
@@ -585,7 +585,7 @@ PT_THREAD(postproc_thread())
 									//   |0 1 2 3|8 9|           |4 5 6 7|
 									// +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 								}
-								
+
 								// if free space is so small that exchanging free space
 								// is faster than leaving the loop
 								else if ((s - s_end < STOP_THRESHOLD) && (s_buf_end - s >= s - d))
@@ -610,7 +610,7 @@ PT_THREAD(postproc_thread())
 									//      |0 1 2 3|9 A|   |4 5 6 7 8|
 									//    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 								}
-								
+
 								// segment 1 >= segment 2
 								else
 								{
@@ -620,7 +620,7 @@ PT_THREAD(postproc_thread())
 									s += n1;
 									s_end = s;
 									stop = ((d + n1) != s_buf);
-									
+
 									// before:
 									// d=s_buf  s_end     s                 s_buf_end
 									//      |   |         |                 |
@@ -634,7 +634,7 @@ PT_THREAD(postproc_thread())
 									//   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 									//     |0 1|         |9 A|2 3 4 5 6 7 8|
 									//   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-									
+
 									// before:
 									//  d=s_buf       s_end   s       s_buf_end
 									//    |           |       |       |
@@ -649,7 +649,7 @@ PT_THREAD(postproc_thread())
 									//   |0 1 2 3|           |4 5 6 7|
 									// +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 									// (s* = s after wrap-around (follows below))
-									
+
 									// before:
 									//  d=s_buf   s_end=s     s_buf_end
 									//    |       |           |
@@ -665,16 +665,16 @@ PT_THREAD(postproc_thread())
 									// +-+-+-+-+-+-+-+-+-+-+-+-+
 								}
 
-								// stop after wrap-around because remaining single segment 
+								// stop after wrap-around because remaining single segment
 								// will be handled efficiently above
 								if (s == s_buf_end)
 								{
 									s = s_buf;
 									stop = 1;
 								}
-								
+
 								//assert(n1 > 0);
-								
+
 								// exchange and process
 								n -= n1;
 								while (n1--)
@@ -686,14 +686,14 @@ PT_THREAD(postproc_thread())
 									y_prev = y >> 24;
 									CHECK_SAMPLES(y);
 								}
-								
-								//GPI_TRACE_MSG(TRACE_VERBOSE, 
-								//	"d=%p, s_buf=%p, s_end=%p, s=%p, s_buf_end=%p, n=%u", 
+
+								//GPI_TRACE_MSG(TRACE_VERBOSE,
+								//	"d=%p, s_buf=%p, s_end=%p, s=%p, s_buf_end=%p, n=%u",
 								//	d, s_buf, s_end, s, s_buf_end, n);
-							}							
+							}
 						}
-						
-						else 
+
+						else
 						{
 							// if there is enough space for an intermediate buffer
 							if (s - s_end >= s_end - s_buf)
@@ -717,9 +717,9 @@ PT_THREAD(postproc_thread())
 									if (s_mid - s_left <= s_right - s_mid)
 									{
 										n1 = s_mid - s_left;
-								
+
 										// exchange(s_left, s_mid, n1); s_left += n1; s_mid += n1;
-										while (n1--)	
+										while (n1--)
 										{
 											x = *s_left;
 											y = *s_mid;
@@ -727,14 +727,14 @@ PT_THREAD(postproc_thread())
 											*s_left++ = y;
 										}
 									}
-							
+
 									// fix right part
 									else
 									{
 										n1 = s_right - s_mid;
-								
+
 										// exchange(s_mid - n1, s_mid, n1); s_right -= n1; s_mid -= n1;
-										while (n1--)	
+										while (n1--)
 										{
 											x = *(--s_right);
 											y = *(--s_mid);
@@ -744,14 +744,14 @@ PT_THREAD(postproc_thread())
 									}
 								}
 							}
-						
+
 							// contiguous segment at end of buffer
 							s = s_buf_end - n;
 							s_end = s_buf_end;
 						}
 					}
 				}
-					
+
 				rssi_nw_end -= rssi_nw_begin;
 
 				// temperature compensation (see 4413_510 v1.4 erratum [153] for details)
@@ -764,10 +764,10 @@ PT_THREAD(postproc_thread())
 					i = hdr->temperature;
 					i = MAX(-30 * 4, i);
 					i = MIN( 71 * 4, i);
-				
+
 					i = (i + (30 * 4) + (20 * 4) - 1) / (20 * 4);
 					offset = OFFSET_LUT[i];
-				
+
 					//i = q->temperature;
 					//if (i <= -(30 * 4))
 					//	offset = 3;
@@ -795,12 +795,12 @@ PT_THREAD(postproc_thread())
 				register uint32_t	nw = (0 == rssi_nw_end) ? -1u : rssi_space_num_written_postproc;
 
 				COMPUTE_BARRIER(nw);
-				
+
 				register int ie = gpi_int_lock();
-				
+
 				if (rx_queue_num_writing - nr <= NUM_ELEMENTS(rx_queue))
 					q->rssi_space_num_written_begin = nw;
-					
+
 				gpi_int_unlock(ie);
 
 				// copy updated header data to destination buffer
@@ -821,8 +821,8 @@ PT_THREAD(postproc_thread())
 			// check for rssi_space overflow during postprocessing
 			if ((0 != rssi_nw_end) && (rssi_space_num_writing - rssi_space_num_written_postproc > NUM_ELEMENTS(rssi_space)))
 			{
-				GPI_TRACE_MSG(TRACE_WARNING, 
-					"RSSI space overflow (postproc), nw_hot 0x%08x, nw_pp 0x%08x", 
+				GPI_TRACE_MSG(TRACE_WARNING,
+					"RSSI space overflow (postproc), nw_hot 0x%08x, nw_pp 0x%08x",
 					rssi_space_num_writing, rssi_space_num_written_postproc);
 
 				// drop all rssi data because we might have damaged samples from other packets
@@ -843,20 +843,20 @@ PT_THREAD(postproc_thread())
 					GPI_TRACE_MSG(TRACE_ERROR, "invalid RSSI samples found! (%u, 0x%08x, 0x%08x)",
 						rssi_nw_end, rssi_space_num_writing, rssi_space_num_written_postproc);
 				}
-				
+
 				rssi_space_num_written_postproc += dst_size;
 
 				// update rssi_space_num_written_radio whenever possible (to save space)
 				radio_update_rssi_num_written(rx_queue_num_read + 1, rssi_space_num_written_postproc);
-				
-				GPI_TRACE_MSG(TRACE_VERBOSE, 
+
+				GPI_TRACE_MSG(TRACE_VERBOSE,
 					"postproc done, RSSI space: nw_hot 0x%08x, nw_pp 0x%08x, nw_radio 0x%08x",
 					rssi_space_num_writing, rssi_space_num_written_postproc, rssi_space_num_written_radio);
 			}
-		}			
+		}
 
 		REORDER_BARRIER();
-			
+
 		rx_queue_num_written_postproc = ++rx_queue_num_read;
 	}
 
