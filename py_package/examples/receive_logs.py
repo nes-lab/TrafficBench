@@ -5,10 +5,8 @@ from pathlib import Path
 
 from trafficbench import receive_serial
 
-# CONFIG
-duration_s = 60
-baud_rate = 230400
-files_log = Path(__file__).parent
-
-
-receive_serial(files_log, None, duration_s, baud_rate)
+receive_serial(
+    file_path=Path(__file__).parent,
+    serial_ports=None,
+    duration_s=30,
+    baud_rate=230400)

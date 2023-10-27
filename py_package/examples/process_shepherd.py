@@ -2,10 +2,11 @@
 script searches for .log-files in this folder and analyzes them
 Log-Files contain the uart-output of the trafficbench-nodes
 """
+import sys
 from pathlib import Path
 
 import tables as tbl
-from shepherd_data import Reader
+from shepherd_core import Reader
 from trafficbench import analyze_trx
 from trafficbench import dump_trx
 from trafficbench import filter_logfile
@@ -17,6 +18,9 @@ file_b64 = Path("trx.b64")
 file_h5 = Path("trx.h5")
 
 # scp -r user@shepherd.cfaed.tu-dresden.de:/var/shepherd/experiments/ ./experiment/
+if not dir_input.exists():
+    print("No Shepherd-Files found - will exit")
+    sys.exit(0)
 
 # extract uart
 files_shp = get_files(dir_input, suffix=".h5")
