@@ -1,11 +1,30 @@
-
 # directories
 
 # RSSISpy repo used to merge RSSISpy updates
 target/rssispy/
 
-
 # files
 README_internal.txt
 target/gpi/.git*
 *.pyc
+
+# python
+.eggs/
+build/
+dist/
+*.egg-info/
+__pycache__
+
+# files below should only be added manually after consideration
+*.h5
+*.b64
+*.yml
+*.yaml
+*.png
+*.csv
+*.log
+
+*.hex
+*.elf
+*.pickle
+.coverage

@@ -1,0 +1,64 @@
+name: Build nRF52
+
+on:
+  push:
+    branches: [ "main", "dev" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_call:
+
+jobs:
+
+  build_segger:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        subproject:
+          - nrf52_rf_survey
+
+    env:
+      SEGGER_LINK: https://www.segger.com/downloads/embedded-studio/Setup_EmbeddedStudio_ARM_v732_linux_x64.tar.gz
+      SEGGER_UNPACK: "${{ github.workspace }}/arm_segger_embedded_studio_v732_linux_x64/"
+      SEGGER_PATH: "${{ github.workspace }}/segger_studio/"
+      # updates: https://www.segger.com/downloads/embedded-studio/
+      SCHEDULER_PATH: "${{ github.workspace }}/nrf52_rf_survey/schedule_builder/"
+      PROJECT_FILE: "${{ github.workspace }}/target/nrf52840/project_ses/TrafficBench.emProject"
+      PROJECT_ELF: "${{ github.workspace }}/target/nrf52840/project_ses/Output/Release/Exe/TrafficBench.elf"
+      PROJECT_HEX: "${{ github.workspace }}/target/nrf52840/project_ses/Output/Release/Exe/TrafficBench.hex"
+
+    steps:
+      - name: Checkout 🛎️
+        uses: actions/checkout@v3
+
+      - name: Install dependencies 🔧
+        run: sudo apt update && sudo apt install -y build-essential wget unzip
+
+      - name: Download Segger Embedded Studio 🔽
+        run: "wget -q --tries 3 ${{ env.SEGGER_LINK }} --output-document=segger_studio.tar.gz"
+        working-directory: "${{ github.workspace }}"
+      - name: Extract Archive ⚔
+        run: "tar -xf segger_studio.tar.gz"
+        working-directory: "${{ github.workspace }}"
+      - name: Install Studio
+        run: "yes 'yes' | ./install_segger_embedded_studio --copy-files-to ${{ env.SEGGER_PATH }}"
+        working-directory: "${{ env.SEGGER_UNPACK }}"
+      - name: Update Package-Manager
+        run: "./bin/pkg update"
+        working-directory: "${{ env.SEGGER_PATH }}"
+      - name: Install CMSIS-Core Package ⚔
+        run: "yes 'y' | ./bin/pkg install CMSIS-CORE_V5"
+        working-directory: "${{ env.SEGGER_PATH }}"
+
+      - name: Build the project "${{ matrix.subproject }}" 🧱
+        run: "./bin/emBuild -config 'Release' ${{ env.PROJECT_FILE }}"
+        working-directory: "${{ env.SEGGER_PATH }}"
+
+      - run: "mkdir -p content/${{ matrix.subproject }}/"
+      - run: "cp ${{ env.PROJECT_ELF }} content//${{ matrix.subproject }}/build.elf"
+      - run: "cp ${{ env.PROJECT_HEX }} content//${{ matrix.subproject }}/build.hex"
+
+      - name: Upload artifacts to github 🔼
+        uses: actions/upload-artifact@v3
+        with:
+          name: "${{ matrix.subproject }}"
+          path: "content/${{ matrix.subproject }}/"
