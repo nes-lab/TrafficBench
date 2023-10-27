@@ -1,7 +1,5 @@
 # TrafficBench
 
----
-
 **Main Repo**: [https://gitlab.com/nes-lab/trafficbench](https://gitlab.com/nes-lab/trafficbench)
 
 ---
@@ -40,7 +38,7 @@ Installation steps:
 
 1. Install [SEGGER Embedded Studio for ARM](https://www.segger.com/downloads/embedded-studio/#ESforARM) (SES).[^fn-ses]
    In our tests we have used SES version V7.30 and developed on V6.34.
-   Upon first compilation the software will ask for the package "CMSIS 5 CMSIS-Core Support".
+   Upon first compilation the software will ask for the package `CMSIS 5 CMSIS-Core Support`.
    Install package and restart the software.
    You do not need the nRF Connect SDK.
    Depending on your test environment, you may need the
