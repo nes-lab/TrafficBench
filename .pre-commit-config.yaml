@@ -1,0 +1,84 @@
+# install:
+#  pip3 install pre-commit
+#  sudo apt install cppcheck build-essential
+# run:
+#  pre-commit run -a
+# update deps:
+#  pre-commit autoupdate
+
+repos:
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+      - id: check-yaml
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+      - id: check-executables-have-shebangs
+      - id: detect-private-key
+      - id: mixed-line-ending
+      - id: check-added-large-files
+      - id: check-case-conflict
+      - id: check-docstring-first
+      - id: check-merge-conflict
+      - id: check-symlinks
+      - id: check-toml
+      - id: fix-byte-order-marker
+
+  - repo: https://github.com/pre-commit/pygrep-hooks
+    rev: v1.10.0
+    hooks:
+      - id: python-check-blanket-noqa
+      - id: python-use-type-annotations
+      - id: python-no-log-warn
+      - id: rst-backticks
+      - id: rst-directive-colons
+      - id: rst-inline-touching-normal
+      - id: text-unicode-replacement-char
+
+  - repo: https://github.com/charliermarsh/ruff-pre-commit
+    rev: 'v0.4.4'
+    hooks:
+      - id: ruff
+        args: ["--fix", "--exit-non-zero-on-fix"]
+      - id: ruff-format
+
+  - repo: https://github.com/igorshubovych/markdownlint-cli
+    rev: v0.40.0
+    hooks:
+      - id: markdownlint
+        args: ["--disable", "MD013"] # ignore line length
+
+
+  - repo: https://github.com/codespell-project/codespell
+    rev: "v2.2.6"
+    hooks:
+      - id: codespell
+
+  # cpp-check comes last! fails if uninstalled
+  - repo: https://github.com/pocc/pre-commit-hooks
+    rev: "v1.3.5"
+    hooks:
+      - id: cppcheck
+        args:
+          - "--enable=all"
+          - "--std=c99"
+          - "--platform=unix32"
+          - "--verbose"
+          - "-q"
+          - "--max-ctu-depth=10"
+          - "--suppress=unusedFunction"
+          - "--suppress=variableScope"
+          - "--suppress=unreadVariable"
+          - "--suppress=missingInclude"
+          - "--suppress=unmatchedSuppression"
+
+#  - repo: https://github.com/pre-commit/mirrors-clang-format
+#    rev: 'v17.0.3'
+#    hooks:
+#      - id: clang-format
+#        types_or: [c++, c]
+
+#     - id: clang-tidy
+#       args: [ "-checks=bugprone-,cert-,performance-,portability-"]
+# TODO: add more c-linters, but there are to many false positives
