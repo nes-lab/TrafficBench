@@ -11,10 +11,6 @@ jobs:
 
   build_segger:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        subproject:
-          - nrf52_rf_survey
 
     env:
       SEGGER_LINK: https://www.segger.com/downloads/embedded-studio/Setup_EmbeddedStudio_ARM_v732_linux_x64.tar.gz
