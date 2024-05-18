@@ -26,7 +26,7 @@ jobs:
           # NOTE: cppcheck is needed for pre-commit
 
       - name: Run Pre-Commit Tests 🧪
-        uses: pre-commit/action@v3.0.0
+        uses: pre-commit/action@v3.0.1
 
       - name: Analyze the code with pylint 🧐
         run: pylint $(git ls-files '*.py') || pylint-exit $?
