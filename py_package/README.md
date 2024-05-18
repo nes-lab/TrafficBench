@@ -67,6 +67,7 @@ see [examples](./examples)
 
 ## TODO
 
+- publish on PyPI
 - further break down long functions
 - implement streaming-functionality -> a set of generators?
   - uart -> filter -> dump -> analyze
