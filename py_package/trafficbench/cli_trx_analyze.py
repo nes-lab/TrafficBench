@@ -4,6 +4,7 @@ and add result data to the same file
 
 Author: Carsten Herrmann
 """
+
 import base64
 import functools
 import numbers
@@ -104,9 +105,7 @@ def analyze_trx(
         trx_table.cols._f_col(idx).remove_index()
 
     logger.info("creating RX info catalog")
-    rx_info_table = h5file.create_table(
-        "/catalogs", "rx_info", RxInfoRecord, title="RX actions"
-    )
+    rx_info_table = h5file.create_table("/catalogs", "rx_info", RxInfoRecord, title="RX actions")
 
     logger.info("creating transactions catalog")
     trans_table = h5file.create_table(
@@ -206,9 +205,7 @@ def analyze_trx(
     h5file.create_array("/catalogs", "nodes", nodes)
     h5file.flush()
     if n_skip > 0:
-        logger.info(
-            "skipped %d TRX record(s) because schedule_gts = -1 (out of sync)", n_skip
-        )
+        logger.info("skipped %d TRX record(s) because schedule_gts = -1 (out of sync)", n_skip)
     logger.info(
         "found %d nodes, %d transactions, %d transmissions, %d receptions (CRC ok)",
         len(nodes),
@@ -249,10 +246,7 @@ def analyze_trx(
 
             warn_rssi(r)
 
-            if (
-                r["trx_status"]["crc_ok"]
-                and r["packet_content_raw"] == t["packet_content_raw"]
-            ):
+            if r["trx_status"]["crc_ok"] and r["packet_content_raw"] == t["packet_content_raw"]:
                 rssi = split_rssi(r, rssi_heap)
 
                 for x in rx_info_table.where(
@@ -271,9 +265,7 @@ def analyze_trx(
                     x["rssi_noise"] = rssi["noise_mean"]
 
                     range_ = rssi["noise_range"]
-                    (x["rssi_range_noise1_begin"], x["rssi_range_noise1_len"]) = range_[
-                        0
-                    ]
+                    (x["rssi_range_noise1_begin"], x["rssi_range_noise1_len"]) = range_[0]
                     if len(range_) > 1:
                         (
                             x["rssi_range_noise2_begin"],
@@ -398,9 +390,7 @@ def analyze_trx(
             # TODO: select method via command line param
             rx_power = np.zeros(len(indexes_tx))
             if True:
-                rx_power = link_matrix[
-                    id_map[trx["node_id"][indexes_tx]], id_map[r["node_id"]]
-                ]
+                rx_power = link_matrix[id_map[trx["node_id"][indexes_tx]], id_map[r["node_id"]]]
             else:
                 if r["schedule_gts"].dtype != np.uint32:
                     raise AssertionError()
@@ -435,9 +425,7 @@ def analyze_trx(
             s = None
 
             if r["trx_status"]["crc_ok"]:
-                S = np.flatnonzero(
-                    trx[indexes_tx]["packet_content_raw"] == r["packet_content_raw"]
-                )
+                S = np.flatnonzero(trx[indexes_tx]["packet_content_raw"] == r["packet_content_raw"])
 
             # same packet from multiple transmitters
             if len(S) > 1:
@@ -457,9 +445,7 @@ def analyze_trx(
                 # find transmitter(s) with smallest Hamming distance
                 if len(indexes_tx) > 1:
                     with warnings.catch_warnings():
-                        warnings.filterwarnings(
-                            "ignore", "overflow encountered in uint_scalars"
-                        )
+                        warnings.filterwarnings("ignore", "overflow encountered in uint_scalars")
 
                         dst_bits = np.unpackbits(
                             np.frombuffer(
@@ -479,16 +465,14 @@ def analyze_trx(
                                 ),
                                 bitorder="little",
                             )
-                            ts_shift = np.int32(
-                                r["packet_lts"] - r["schedule_lts"]
-                            ) - np.int32(t["packet_lts"] - t["schedule_lts"])
+                            ts_shift = np.int32(r["packet_lts"] - r["schedule_lts"]) - np.int32(
+                                t["packet_lts"] - t["schedule_lts"]
+                            )
                             bitshift = np.int32(np.rint(ts_shift / TICKS_PER_US))
                             if bitshift < 0:
                                 src_bits = np.concatenate(
                                     (
-                                        np.full(
-                                            min(-bitshift, len(dst_bits)), 2, np.uint8
-                                        ),
+                                        np.full(min(-bitshift, len(dst_bits)), 2, np.uint8),
                                         src_bits,
                                     )
                                 )
@@ -496,9 +480,7 @@ def analyze_trx(
                                 src_bits = src_bits[bitshift:]
 
                             lmin = min(len(src_bits), len(dst_bits))
-                            dist[itx] = np.count_nonzero(
-                                src_bits[:lmin] != dst_bits[:lmin]
-                            )
+                            dist[itx] = np.count_nonzero(src_bits[:lmin] != dst_bits[:lmin])
 
                             # if lengths do not match: count extra bits only if length field has been received correctly.
                             # otherwise we would penalize bit errors in length field more severely than other bit errors
@@ -511,18 +493,14 @@ def analyze_trx(
             # use margin since synchronization has limited precision
             if len(S) > 1:
                 with warnings.catch_warnings():
-                    warnings.filterwarnings(
-                        "ignore", "overflow encountered in uint_scalars"
-                    )
+                    warnings.filterwarnings("ignore", "overflow encountered in uint_scalars")
                     S1 = S
                     for itx in S1:
                         t = trx[indexes_tx[itx]]
-                        ts_shift = np.int32(
-                            r["packet_lts"] - r["schedule_lts"]
-                        ) - np.int32(t["packet_lts"] - t["schedule_lts"])
-                        if (
-                            ts_shift < -10 * TICKS_PER_US
-                        ):  # TODO: make this a commandline arg
+                        ts_shift = np.int32(r["packet_lts"] - r["schedule_lts"]) - np.int32(
+                            t["packet_lts"] - t["schedule_lts"]
+                        )
+                        if ts_shift < -10 * TICKS_PER_US:  # TODO: make this a commandline arg
                             S = np.setdiff1d(S, itx)
                         if len(S) < 2:
                             break
@@ -532,13 +510,12 @@ def analyze_trx(
                 if len(S) == 1:
                     if rx_power_isnan[S[0]]:
                         rxi["source_uncertainty"] = SourceUncertainty.WEAK
-                else:
-                    if rx_power_isnan[S].all():
-                        rxi["source_uncertainty"] = SourceUncertainty.STRONG
-                        S1 = S[0:1]
-                    elif rx_power_isnan[S].any():
-                        rxi["source_uncertainty"] = SourceUncertainty.WEAK
-                        S1 = S[rx_power_isnan[S] == False]
+                elif rx_power_isnan[S].all():
+                    rxi["source_uncertainty"] = SourceUncertainty.STRONG
+                    S1 = S[0:1]
+                elif rx_power_isnan[S].any():
+                    rxi["source_uncertainty"] = SourceUncertainty.WEAK
+                    S1 = S[rx_power_isnan[S] == False]
 
                 s = S1[rx_power[S1].argmax()] if len(S1) > 0 else None
                 if s is not None:
@@ -575,9 +552,7 @@ def analyze_trx(
                 rxi["rssi_noise"] = rssi["noise_mean"]
 
                 range_ = rssi["noise_range"]
-                (rxi["rssi_range_noise1_begin"], rxi["rssi_range_noise1_len"]) = range_[
-                    0
-                ]
+                (rxi["rssi_range_noise1_begin"], rxi["rssi_range_noise1_len"]) = range_[0]
                 if len(range_) > 1:
                     (
                         rxi["rssi_range_noise2_begin"],
@@ -629,9 +604,7 @@ def analyze_trx(
                     rxi["SNR_min_dB"] = power_W_to_dBm(sigint_now_min) - noise_dBm
                     rxi["SNR_max_dB"] = power_W_to_dBm(sigint_now_max) - noise_dBm
 
-                    rxi["SINR_link_dB"] = power_W_to_dBm(
-                        sig_link / (int_link + noise_W)
-                    )
+                    rxi["SINR_link_dB"] = power_W_to_dBm(sig_link / (int_link + noise_W))
 
             # theoretically, fastest way to update should be modify_columns(), as this
             # only updates columns that are really touched, which avoids unnecessary
@@ -662,9 +635,7 @@ def analyze_trx(
     # estimate oscillator drifts
     # ATTENTION: this is a very imprecise method provided only as a coarse hint that comes at no extra costs
     logger.info("estimating oscillator drifts")
-    for trx in trx_table.where(
-        f"(schedule_gts != 0xffffffff) & (operation == {TRX_Operation.RX})"
-    ):
+    for trx in trx_table.where(f"(schedule_gts != 0xffffffff) & (operation == {TRX_Operation.RX})"):
         # TODO: flatten trx_status and integrate this into where() clause
         x = trx.fetch_all_fields()
         if not x["trx_status"]["header_detected"] or x["trx_status"]["timeout"]:
@@ -832,10 +803,7 @@ def analyze_trx(
         logger.info(
             "\tSINR (link):   %s",
             fmtx(
-                [
-                    (f"{x[0]:5.1f}", x[1]) if isinstance(x[0], numbers.Number) else x
-                    for x in SINRs
-                ]
+                [(f"{x[0]:5.1f}", x[1]) if isinstance(x[0], numbers.Number) else x for x in SINRs]
             ),
         )
         logger.info(

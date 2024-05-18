@@ -13,9 +13,7 @@ def warn_rssi(r):  # TODO: hint interface
     rssi = r["rssi"]
 
     if rssi["num_samples"] == 0:
-        logger.debug(
-            "%3d @ %010x : no RSSI data available", r["node_id"], r["schedule_gts"]
-        )
+        logger.debug("%3d @ %010x : no RSSI data available", r["node_id"], r["schedule_gts"])
     else:
         if rssi["early_readout_detected"]:
             logger.warning(
@@ -81,9 +79,7 @@ def split_rssi(trx, rssi_heap):  # TODO: hint interface
     if rssi["num_samples"] < 2:
         return results
 
-    rssi_samples = rssi_heap.read(
-        rssi["data_anchor"], rssi["data_anchor"] + rssi["num_samples"]
-    )
+    rssi_samples = rssi_heap.read(rssi["data_anchor"], rssi["data_anchor"] + rssi["num_samples"])
 
     noise = np.array([], dtype=np.int8)
     signal = np.array([])
@@ -127,9 +123,7 @@ def split_rssi(trx, rssi_heap):  # TODO: hint interface
         def lts_to_gts(value: float):
             return value - trx["schedule_lts"] + trx["schedule_gts"]
 
-        n = (
-            ts_start - GUARD_TICKS_NOISE_TO_START - ts_rssi_start
-        ) // TICKS_PER_RSSI_SAMPLE
+        n = (ts_start - GUARD_TICKS_NOISE_TO_START - ts_rssi_start) // TICKS_PER_RSSI_SAMPLE
         if n > 0:
             noise = np.concatenate((noise, rssi_samples[:n]))
             noise_range.append((lts_to_gts(ts_rssi_start + TICKS_PER_RSSI_SAMPLE), n))
@@ -150,9 +144,7 @@ def split_rssi(trx, rssi_heap):  # TODO: hint interface
         n = (ts_rssi_end - (ts_end + GUARD_TICKS_END_TO_NOISE)) // TICKS_PER_RSSI_SAMPLE
         if n > 0:
             noise = np.concatenate((noise, rssi_samples[-n:]))
-            noise_range.append(
-                (lts_to_gts(ts_rssi_end - (n - 1) * TICKS_PER_RSSI_SAMPLE), n)
-            )
+            noise_range.append((lts_to_gts(ts_rssi_end - (n - 1) * TICKS_PER_RSSI_SAMPLE), n))
         else:
             logger.info(
                 "%3d @ %010x : RSSI epilogue interval (%f us) < guard time (%f us)",
@@ -162,14 +154,8 @@ def split_rssi(trx, rssi_heap):  # TODO: hint interface
                 GUARD_TICKS_END_TO_NOISE // TICKS_PER_US,
             )
 
-        n0 = (
-            max(0, ts_start + GUARD_TICKS_START_TO_SIGNAL - ts_rssi_start)
-            // TICKS_PER_RSSI_SAMPLE
-        )
-        n1 = (
-            max(0, ts_end - GUARD_TICKS_SIGNAL_TO_END - ts_rssi_start)
-            // TICKS_PER_RSSI_SAMPLE
-        )
+        n0 = max(0, ts_start + GUARD_TICKS_START_TO_SIGNAL - ts_rssi_start) // TICKS_PER_RSSI_SAMPLE
+        n1 = max(0, ts_end - GUARD_TICKS_SIGNAL_TO_END - ts_rssi_start) // TICKS_PER_RSSI_SAMPLE
         signal = rssi_samples[range(n0, n1)]
         signal_range.append(
             (lts_to_gts(ts_rssi_start + (n0 + 1) * TICKS_PER_RSSI_SAMPLE), len(signal))

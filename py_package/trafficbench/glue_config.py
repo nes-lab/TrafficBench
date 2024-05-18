@@ -221,12 +221,8 @@ def read_trx(file_name):
         # by explicitly combining source/destination_node_id with schedule_gts.
 
         trx.add_component(src_id(trx["node_id"], trx["operation"]), "source_node_id")
-        trx.add_component(
-            dst_id(trx["node_id"], trx["operation"]), "destination_node_id"
-        )
-        trx.add_component(
-            node_key(trx["schedule_gts"], trx["source_node_id"]), "source_node_key"
-        )
+        trx.add_component(dst_id(trx["node_id"], trx["operation"]), "destination_node_id")
+        trx.add_component(node_key(trx["schedule_gts"], trx["source_node_id"]), "source_node_key")
         trx.add_component(
             node_key(trx["schedule_gts"], trx["destination_node_id"]),
             "destination_node_key",
@@ -264,13 +260,9 @@ def read_trx(file_name):
             s["anchor_offset"][a : (a + n)] = np.arange(0, n)
 
         # add plain RSSI data object
-        data.append(
-            Data(label="rssi_data", **{name: s[name] for name in s.dtype.names})
-        )
+        data.append(Data(label="rssi_data", **{name: s[name] for name in s.dtype.names}))
         rssi_data = data[-1]
-        rssi_data["anchor"] = (
-            rssi_data.coordinate_components[0] - rssi_data.id["anchor_offset"]
-        )
+        rssi_data["anchor"] = rssi_data.coordinate_components[0] - rssi_data.id["anchor_offset"]
 
         # add RSSI-by-node data objects
         x = np.array(
@@ -384,8 +376,7 @@ def read_trx(file_name):
                 rxi = [
                     x
                     for x in rxi_array
-                    if x["schedule_gts"] == trx["schedule_gts"]
-                    and x["destination_node_id"] == node
+                    if x["schedule_gts"] == trx["schedule_gts"] and x["destination_node_id"] == node
                 ]
                 if not rxi:  # e.g. because schedule_gts == -1
                     continue
@@ -419,9 +410,7 @@ def read_trx(file_name):
                         bitorder="little",
                     )
                 dst_bits = np.unpackbits(
-                    np.frombuffer(
-                        base64.b16decode(trx["packet_content_raw"]), dtype=np.uint8
-                    ),
+                    np.frombuffer(base64.b16decode(trx["packet_content_raw"]), dtype=np.uint8),
                     bitorder="little",
                 )
 
@@ -440,10 +429,7 @@ def read_trx(file_name):
                     ) / len(dst_bits)
                     if trx_tx is not None:
                         bitshift = 0
-                        if (
-                            rxi["ambiguous_source"] != b""
-                            and rxi["ambiguous_source"] in b"?!!"
-                        ):
+                        if rxi["ambiguous_source"] != b"" and rxi["ambiguous_source"] in b"?!!":
                             ts_shift = np.int64(ts_pdu_begin) - np.int64(
                                 trx_tx["packet_lts"] - trx_tx["schedule_lts"]
                             )
@@ -539,14 +525,10 @@ def read_trx(file_name):
             # add dummy components to establish "viewer compatibility" with RSSI data
             # NOTE: the source for const_nan() is a dummy, so any field can be used
             x.add_component_link(
-                ComponentLink(
-                    [x.id["schedule_gts"]], ComponentID("rssi_dBm"), using=const_nan
-                )
+                ComponentLink([x.id["schedule_gts"]], ComponentID("rssi_dBm"), using=const_nan)
             )
             x.add_component_link(
-                ComponentLink(
-                    [x.id["schedule_gts"]], ComponentID("rssi_mW"), using=const_nan
-                )
+                ComponentLink([x.id["schedule_gts"]], ComponentID("rssi_mW"), using=const_nan)
             )
 
     return data
@@ -713,7 +695,7 @@ rx_viewer = custom_viewer(
     rx_symbol="att(rx_symbol)",
     rx_error="att(rx_error)",
     timestamp_unit=["Ticks", "us", "s"],
-    linear_rssi=False
+    linear_rssi=False,
     # save_to_files   = ['', 'glue_plot.tikz']
 )
 

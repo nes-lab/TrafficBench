@@ -6,6 +6,7 @@ typer is currently a big compromise, missing features (as of v0.9:
     - https://pypi.org/project/clidantic/
     - would allow loading parameters from file (json, yaml), also storing it
 """
+
 import signal
 import sys
 from contextlib import ExitStack

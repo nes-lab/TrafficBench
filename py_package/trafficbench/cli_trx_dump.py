@@ -9,6 +9,7 @@ All options (i) to (iii) can be enabled or disabled individually.
 
 Author: Carsten Herrmann
 """
+
 import base64
 import io
 import itertools
@@ -37,9 +38,7 @@ def bin_out(x: float, node_id: int, gain: float = 1, offset: float = 0) -> float
     return x * gain + node_id * offset
 
 
-def bin_list_out(
-    x: List[float], node_id: int, gain: float = 1, offset: float = 0
-) -> List[float]:
+def bin_list_out(x: List[float], node_id: int, gain: float = 1, offset: float = 0) -> List[float]:
     return [bin_out(x_elem, node_id, gain, offset) for x_elem in x]
 
 
@@ -200,9 +199,7 @@ def dump_trx(
             if rssi_test_samples:
                 i = [i for i in range(2, len(x)) if x[i] != 1]
                 if i:
-                    i = ", ".join(
-                        map(str, i[:3] + ["..."] + i[-3:] if len(i) > 10 else i)
-                    )
+                    i = ", ".join(map(str, i[:3] + ["..."] + i[-3:] if len(i) > 10 else i))
                     logger.warning(
                         "warning: %d @ %010x: RSSI sample test failed at position(s) %d",
                         node_id,
@@ -216,13 +213,7 @@ def dump_trx(
             rc1 = record_counters[node_id] + 1
             if record_counter != rc1:
                 print(
-                    "warning: {} record(s) lost at node {} before gts {:#010x} (record_counter = {}, expected {})".format(
-                        (record_counter - rc1) % 65_536,
-                        node_id,
-                        schedule_gts,
-                        record_counter,
-                        rc1,
-                    ),
+                    f"warning: {(record_counter - rc1) % 65_536} record(s) lost at node {node_id} before gts {schedule_gts:#010x} (record_counter = {record_counter}, expected {rc1})",
                     file=sys.stderr,
                 )
         record_counters[node_id] = record_counter
@@ -268,21 +259,15 @@ def dump_trx(
             # file_db.trx_record["packet_content_raw"] = packet + b'#'
 
             file_db.trx_record["trx_status/timeout"] = trx_status["timeout"]
-            file_db.trx_record["trx_status/header_detected"] = trx_status[
-                "header_detected"
-            ]
+            file_db.trx_record["trx_status/header_detected"] = trx_status["header_detected"]
             file_db.trx_record["trx_status/crc_ok"] = trx_status["crc_ok"]
             file_db.trx_record["trx_status/content_ok"] = trx_status["content_ok"]
 
             if rssi_valid:
                 file_db.trx_record["rssi/end_lts"] = rssi_end_lts
                 file_db.trx_record["rssi/num_samples"] = len(rssi_samples)
-                file_db.trx_record["rssi/early_readout_detected"] = (
-                    rssi_status_field & 0x01
-                )
-                file_db.trx_record["rssi/late_readout_detected"] = (
-                    rssi_status_field & 0x02
-                )
+                file_db.trx_record["rssi/early_readout_detected"] = rssi_status_field & 0x01
+                file_db.trx_record["rssi/late_readout_detected"] = rssi_status_field & 0x02
                 file_db.trx_record["rssi/num_samples_missed"] = rssi_num_samples_missed
 
                 if len(rssi_samples):
@@ -317,12 +302,8 @@ def dump_trx(
                 rssi_status = (
                     "\r".join(
                         (
-                            "early readout detected"
-                            if (rssi_status_field & 0x01)
-                            else "",
-                            "late readout detected"
-                            if (rssi_status_field & 0x02)
-                            else "",
+                            "early readout detected" if (rssi_status_field & 0x01) else "",
+                            "late readout detected" if (rssi_status_field & 0x02) else "",
                             f"{rssi_num_samples_missed} samples missed"
                             if rssi_num_samples_missed
                             else "",
@@ -349,9 +330,7 @@ def dump_trx(
                                 map(
                                     str,
                                     rssi_samples[
-                                        len(rssi_samples) // 2
-                                        - 2 : len(rssi_samples) // 2
-                                        + 3
+                                        len(rssi_samples) // 2 - 2 : len(rssi_samples) // 2 + 3
                                     ],
                                 )
                             ),
@@ -386,9 +365,7 @@ def dump_trx(
                 )
                 for x in packet
             ]
-            pdu_bits = [
-                0.0 if not x else 1.0 for x in itertools.chain.from_iterable(pdu_bits)
-            ]
+            pdu_bits = [0.0 if not x else 1.0 for x in itertools.chain.from_iterable(pdu_bits)]
             # pdu_bits = np.unpackbits(np.frombuffer(packet, dtype=np.uint8), bitorder='little')
 
             # choose dummy timestamps in case no packet has been detected
@@ -434,11 +411,7 @@ def dump_trx(
                 )
 
             # send RSSI data
-            if (
-                rssi_valid
-                and (rssi_num_samples_missed == 0)
-                and (rssi_status_field == 0)
-            ):
+            if rssi_valid and (rssi_num_samples_missed == 0) and (rssi_status_field == 0):
                 ts_rssi_last = np.uint32(rssi_end_lts - schedule_lts)
                 ts_rssi_last = int(ts_rssi_last) + schedule_gts
                 ts_rssi_first = ts_rssi_last - (len(rssi_samples) - 1) * TICKS_PER_BIT

@@ -5,10 +5,12 @@ run this script after compilation (with segger studio), it will
 - build hex-files with patched node-id
 
 """
+
 import os
 import shutil
 import sys
 from pathlib import Path
+
 from shepherd_core import fw_tools
 
 # CONFIG
@@ -16,8 +18,7 @@ from shepherd_core import fw_tools
 node_count: int = 5
 path_local = Path(__file__).parent
 path_src: Path = (
-    path_local.parent.parent
-    / "target/nrf52840/project_ses/Output/Release/Exe/TrafficBench.elf"
+    path_local.parent.parent / "target/nrf52840/project_ses/Output/Release/Exe/TrafficBench.elf"
 )
 path_elf = path_local / "build.elf"
 

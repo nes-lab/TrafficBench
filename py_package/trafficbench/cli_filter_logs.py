@@ -3,6 +3,7 @@ Extract special data records from log files
 
 Author: Carsten Herrmann
 """
+
 import base64
 import re
 import sys
@@ -105,23 +106,18 @@ def filter_logfile(
     infile: Annotated[Optional[Path], typer.Argument(help=filter_h["inf"])] = None,
     outfile: Annotated[Optional[Path], typer.Argument(help=filter_h["out"])] = None,
     unbuffered: Annotated[bool, typer.Option(help=filter_h["buf"])] = False,
-    control_chars: Annotated[
-        Optional[List[str]], typer.Option(help=filter_h["cch"])
-    ] = None,
+    control_chars: Annotated[Optional[List[str]], typer.Option(help=filter_h["cch"])] = None,
     max_record_size: Annotated[
         int,
         typer.Option(help=filter_h["mrz"]),
-    ] = 256
-    * 1024,
+    ] = 256 * 1024,
     source_id_pattern: Annotated[
         Optional[str],
         typer.Option(help=filter_h["sip"]),
     ] = None,
     # record_spec: Annotated[Optional[Dict[str, str]], typer.Option(help="")] = None,
     # TODO: https://typer.tiangolo.com/tutorial/multiple-values/multiple-options/
-    record_spec: Annotated[
-        Optional[List[str]], typer.Option(help=filter_h["rsp"])
-    ] = None,
+    record_spec: Annotated[Optional[List[str]], typer.Option(help=filter_h["rsp"])] = None,
     checksum: Annotated[bool, typer.Option(help=filter_h["csu"])] = True,
     checksum_min_len: Annotated[int, typer.Option(help="")] = 4,
     checksum_pos: Annotated[
@@ -258,9 +254,7 @@ def _filter_logfile(
     re_record = re.compile(
         BEGIN_RECORD + rb"(\w+):([^" + BEGIN_RECORD + END_RECORD + rb"]*)" + END_RECORD
     )
-    re_chunk = re.compile(
-        BEGIN_CHUNK + rb"([^" + BEGIN_CHUNK + END_CHUNK + rb"]*)" + END_CHUNK
-    )
+    re_chunk = re.compile(BEGIN_CHUNK + rb"([^" + BEGIN_CHUNK + END_CHUNK + rb"]*)" + END_CHUNK)
     re_source_id = (
         re.compile(source_id_pattern.encode(), flags=re.MULTILINE)
         if source_id_pattern is not None
@@ -391,9 +385,7 @@ def _filter_logfile(
 
                     # test checksum
                     if checksum:
-                        test_checksum(
-                            x, checksum_pos, checksum_byteorder, checksum_min_len
-                        )
+                        test_checksum(x, checksum_pos, checksum_byteorder, checksum_min_len)
 
                 except ValueError as err:
                     line = line_number - buffer.count(b"\n", record_match.start(0))
@@ -405,9 +397,7 @@ def _filter_logfile(
 
                 # if ok: write output text
                 else:
-                    outfile.write(
-                        record_spec[record_match.group(1)] + chunk_data + b"\n"
-                    )
+                    outfile.write(record_spec[record_match.group(1)] + chunk_data + b"\n")
                     if unbuffered:
                         outfile.flush()
 

@@ -6,9 +6,7 @@ TICKS_PER_BIT = 16
 TICKS_PER_S = 16_000_000
 
 # TODO: check if CRC bits have big-endian bitorder
-header_bits = [0.5] * (
-    8 + 32
-)  # preamble + access address, value 0.5 = unknown (only timing)
+header_bits = [0.5] * (8 + 32)  # preamble + access address, value 0.5 = unknown (only timing)
 pdu_bits = [
     (
         x & 0x01,
@@ -40,16 +38,12 @@ if not trx_status["crc_ok"]:
     ts_header_begin = ts_pdu_begin - (len(header_bits) * TICKS_PER_BIT)
     dt = TICKS_PER_BIT / TICKS_PER_S
 else:
-    ts_header_begin = ts_pdu_begin - (
-        len(header_bits) * (ts_pdu_end - ts_pdu_begin)
-    ) / len(pdu_bits)
+    ts_header_begin = ts_pdu_begin - (len(header_bits) * (ts_pdu_end - ts_pdu_begin)) / len(
+        pdu_bits
+    )
     dt = ((ts_pdu_end - ts_pdu_begin) / len(pdu_bits)) / TICKS_PER_S
 ts_header_begin = np.uint32(ts_header_begin)
-if (
-    (ts_header_begin >= ts_pdu_begin)
-    or (ts_pdu_begin >= ts_pdu_end)
-    or (ts_pdu_end >= 0x8000_0000)
-):
+if (ts_header_begin >= ts_pdu_begin) or (ts_pdu_begin >= ts_pdu_end) or (ts_pdu_end >= 0x8000_0000):
     raise AssertionError()
 ts_header_begin = int(ts_header_begin) + schedule_gts
 ts_end = int(ts_pdu_end) + schedule_gts

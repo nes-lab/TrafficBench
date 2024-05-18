@@ -2,6 +2,7 @@
 script searches for .log-files in this folder and analyzes them
 Log-Files contain the uart-output of the trafficbench-nodes
 """
+
 import sys
 from pathlib import Path
 

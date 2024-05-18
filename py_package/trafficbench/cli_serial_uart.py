@@ -52,9 +52,7 @@ def receive_serial_thread(
 ) -> None:
     file_path = file_path.with_stem(file_path.stem + "_" + uart_port)
     try:
-        with serial.Serial(uart_port, baudrate, timeout=0) as uart, open(
-            file_path, "wb"
-        ) as log:
+        with serial.Serial(uart_port, baudrate, timeout=0) as uart, open(file_path, "wb") as log:
             time_end = time() + duration
             logger.info("started logging for %s", uart_port)
             while time() < time_end:
@@ -63,7 +61,7 @@ def receive_serial_thread(
                 sleep(0.1)
 
     except ValueError as e:
-        logger.error(  # noqa: G200
+        logger.error(
             "[UartMonitor] PySerial ValueError '%s' - "
             "couldn't configure serial-port '%s' "
             "with baudrate=%d -> will not be logged",
@@ -73,7 +71,7 @@ def receive_serial_thread(
         )
 
     except serial.SerialException as e:
-        logger.error(  # noqa: G200
+        logger.error(
             "[UartMonitor] pySerial SerialException '%s - "
             "Couldn't open Serial-Port '%s' to target -> will not be logged",
             e,
@@ -95,9 +93,7 @@ receive_h = {
 @app.command("receive")
 def receive_serial(
     file_path: Annotated[Path, typer.Argument(help=receive_h["fp"])],
-    serial_ports: Annotated[
-        Optional[List[str]], typer.Option(help=receive_h["sp"])
-    ] = None,
+    serial_ports: Annotated[Optional[List[str]], typer.Option(help=receive_h["sp"])] = None,
     duration_s: Annotated[int, typer.Option(help=receive_h["du"])] = 600,
     baud_rate: Annotated[int, typer.Option(help=receive_h["br"], min=9_600)] = 230_400,
 ) -> None:
