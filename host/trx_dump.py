@@ -267,7 +267,7 @@ if args.outfile:
     )
     trx_record = trx_table.row
 
-    # examplary compression ratios (achieved in a test example):
+    # exemplary compression ratios (achieved in a test example):
     # 601016 trx_data_uncompressed.h5
     # 160372 trx_data_zlib1.h5
     # 134569 trx_data_zlib9.h5

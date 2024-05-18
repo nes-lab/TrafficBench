@@ -39,7 +39,7 @@ patterns = input(f"extract data from log file(s) {BASENAME}<pattern>.log [enter 
 if not patterns:
     sys.exit(0)
 
-# ATTENTION: Concatening multiple log files can produce corrupt TRX entries, namely if one file
+# ATTENTION: Concatenating multiple log files can produce corrupt TRX entries, namely if one file
 # ends in the middle of a TRX block and the next file starts in the middle of a TRX block.
 # For this reason we avoid concatenating multiple log files and process each file for its own.
 # That said, it is not likely that concatenating two incomplete fragments results in a valid

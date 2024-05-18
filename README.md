@@ -39,7 +39,7 @@ You can also use the [Windows Subsystem for Linux](https://docs.microsoft.com/en
 Installation steps:
 
 1. Install [SEGGER Embedded Studio for ARM](https://www.segger.com/downloads/embedded-studio/#ESforARM) (SES).[^fn-ses]
-   In our tests we have used SES version V7.30 and developed on V6.34.
+   In our tests we use SES version V7.32 and developed on V6.34.
    Upon first compilation the software will ask for the package `CMSIS 5 CMSIS-Core Support`.
    Install package and restart the software.
    You do not need the nRF Connect SDK.
@@ -47,7 +47,7 @@ Installation steps:
    [nRF Command Line Tools](https://www.nordicsemi.com/Products/Development-tools/nrf-command-line-tools)
    to program the target devices.
 
-2. Setup a [Python 3](https://www.python.org/) environment (we have used Python 3.8 for our tests).
+2. Set up a [Python 3](https://www.python.org/) environment (we have used Python 3.8 for our tests).
    We recommend to use a Python virtual environment, which can be
    created with `python3 -m venv <name_of_virtualenv>`
    and activated with `source <path_to_virtualenv>/bin/activate`.

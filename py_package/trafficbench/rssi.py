@@ -41,7 +41,7 @@ def split_rssi(trx, rssi_heap):  # TODO: hint interface
     split RSSI stream into noise and signal segments and estimate power values
     ATTENTION: current implementation assumes that there is a noise segment, followed by a signal
     segment, followed by another noise segment. This means that there is no special handling for
-    overlayed packets with different lengths or time-shifts as well as transmissions with
+    overlaid packets with different lengths or time-shifts as well as transmissions with
     tx_carrier_period_1/2 > 0. The results will be wrong in such cases.
     TODO: detect mentioned situations and warn if function is used in such cases
 
