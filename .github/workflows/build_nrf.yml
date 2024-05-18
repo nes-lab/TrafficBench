@@ -55,7 +55,7 @@ jobs:
 
       - run: "mkdir -p content/${{ matrix.subproject }}/"
       - run: "cp ${{ env.PROJECT_ELF }} content//${{ matrix.subproject }}/build.elf"
-      - run: "cp ${{ env.PROJECT_HEX }} content//${{ matrix.subproject }}/build.hex"
+      #- run: "cp ${{ env.PROJECT_HEX }} content//${{ matrix.subproject }}/build.hex"
 
       - name: Upload artifacts to github 🔼
         uses: actions/upload-artifact@v4

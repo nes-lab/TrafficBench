@@ -3,7 +3,7 @@ skip = target/nrf52840/project_ses/nRF/Device/*,
 
 builtin = clear,rare,informal,usage,code,en-GB_to_en-US
 
-ignore-words-list = stdio,master,slave,endcode,stoped,overriden,unstall,hist,clen,ect,pris
+ignore-words-list = stdio,master,slave,endcode,stoped,overriden,unstall,hist,clen,ect,pris,arange,astroid,ws
 
 # options without argument
 check-filenames =
