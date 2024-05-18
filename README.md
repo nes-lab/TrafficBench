@@ -1,6 +1,8 @@
 # TrafficBench
 
-**Main Repo**: [https://gitlab.com/nes-lab/trafficbench](https://gitlab.com/nes-lab/trafficbench)
+**Main Repo**: <https://github.com/nes-lab/trafficbench>
+
+GitLab Mirror: <https://gitlab.com/nes-lab/trafficbench>
 
 ---
 
