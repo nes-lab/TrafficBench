@@ -163,7 +163,7 @@ int main()
 
 		// in the following we assume that program runs on nRF DK nodes on developer's desk
 
-		// pressing Button 1 during bootup can be used to enforce console prompt
+		// pressing Button 1 during boot-up can be used to enforce console prompt
 		if (gpi_button_read(GPI_BUTTON(1)))
 			data[0] = 0;
 		else
