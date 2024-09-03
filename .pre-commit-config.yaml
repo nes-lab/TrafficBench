@@ -37,21 +37,21 @@ repos:
       - id: text-unicode-replacement-char
 
   - repo: https://github.com/charliermarsh/ruff-pre-commit
-    rev: 'v0.4.4'
+    rev: 'v0.6.3'
     hooks:
       - id: ruff
         args: ["--fix", "--exit-non-zero-on-fix"]
       - id: ruff-format
 
   - repo: https://github.com/igorshubovych/markdownlint-cli
-    rev: v0.40.0
+    rev: v0.41.0
     hooks:
       - id: markdownlint
         args: ["--disable", "MD013"] # ignore line length
 
 
   - repo: https://github.com/codespell-project/codespell
-    rev: "v2.2.6"
+    rev: "v2.3.0"
     hooks:
       - id: codespell
 
