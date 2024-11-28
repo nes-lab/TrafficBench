@@ -9,12 +9,12 @@ class ByteOrder(str, Enum):
 
 
 def fletcher32(data: bytes) -> int:
-    """compute Fletcher-32 checksum
+    """Compute Fletcher-32 checksum
     :param data:
     :return:
     """
     if not isinstance(data, bytes) or (len(data) & 1):
-        raise AssertionError()
+        raise AssertionError
 
     len1_ = len(data)
     idx = 0
@@ -37,7 +37,7 @@ def fletcher32(data: bytes) -> int:
 def test_checksum(
     data: bytes, position: list, byteorder: ByteOrder.big_endian, min_length: int
 ) -> None:
-    """raises exception on mismatch
+    """Raises exception on mismatch
 
     :param data:
     :param position:
@@ -57,7 +57,7 @@ def test_checksum(
     elif byteorder == "le":
         c1 = (c1[0] << 0) | (c1[1] << 8) | (c1[2] << 16) | (c1[3] << 24)
     else:
-        raise AssertionError()
+        raise AssertionError
 
     c2 = fletcher32(data[: position[0]])
 

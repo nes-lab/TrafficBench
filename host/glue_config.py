@@ -813,11 +813,11 @@ def rx_viewer_plot_data(
     ]  # [0] can contain 'axes' (depending on what we do in rx_viewer_setup())
     ret = []
 
-    if "us" == timestamp_unit:
+    if timestamp_unit == "us":
         gts = gts_us
         ax2.set_xlabel("global timestamp [us]")
         state.x_to_ticks = gts_us_to_ticks
-    elif "s" == timestamp_unit:
+    elif timestamp_unit == "s":
         gts = gts_s
         ax2.set_xlabel("global timestamp [s]")
         state.x_to_ticks = gts_s_to_ticks

@@ -117,7 +117,7 @@ def split_rssi(trx, rssi_heap):  # TODO: hint interface
         # check if oscillator drift and event timing uncertainty is "acceptable"
         # TODO: fine-tune the critical value (in case of problems)
         if abs(ts_start - ts_start2) >= 8:
-            raise AssertionError()
+            raise AssertionError
 
         # ATTENTION: add lts to gts rate adaptation if necessary
         def lts_to_gts(value: float):

@@ -97,7 +97,7 @@ def receive_serial(
     duration_s: Annotated[int, typer.Option(help=receive_h["du"])] = 600,
     baud_rate: Annotated[int, typer.Option(help=receive_h["br"], min=9_600)] = 230_400,
 ) -> None:
-    """collect logs from trafficbench-nodes (uart -> .log)"""
+    """Collect logs from trafficbench-nodes (uart -> .log)"""
     if isinstance(file_path, Path) and file_path.is_dir():
         file_path = file_path / "trafficbench.log"
 

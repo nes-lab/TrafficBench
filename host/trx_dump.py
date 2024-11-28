@@ -115,7 +115,7 @@ try:
 
     bitswap = lambda x: (x * 0x0202020202 & 0x010884422010) % 1023
 
-    bitswap_lut = bytes.maketrans(bytes(range(0, 256)), bytes(bitswap(x) for x in range(0, 256)))
+    bitswap_lut = bytes.maketrans(bytes(range(256)), bytes(bitswap(x) for x in range(256)))
 
     def crc(data):
         return crc_core_function(data).to_bytes(3, "big").translate(bitswap_lut)
@@ -319,12 +319,12 @@ for b64 in args.infile:
 
     # extract inner CBOR data
     for x in zip(chunks[0::2], chunks[1::2]):
-        if 0 == x[0]:
+        if x[0] == 0:
             data.append(x[1])
-        elif 1 == x[0]:
+        elif x[0] == 1:
             data.append(zlib.decompress(x[1], wbits=-15))
         else:
-            raise ValueError()
+            raise ValueError
 
     # close encapsulating array
     data.append(b"\xff")
@@ -353,7 +353,7 @@ for b64 in args.infile:
         tx_delay,
     ) = data[0:11]
 
-    operation = not not (trx_status_field & 0x80)
+    operation = bool(trx_status_field & 128)
 
     trx_status = {
         "timeout": (trx_status_field & 0x88 == 0x08),
@@ -372,7 +372,7 @@ for b64 in args.infile:
     schedule_gts += h << 32
 
     # if transmitter: compute CRC
-    if "TX" == TRX_Operation(operation):
+    if TRX_Operation(operation) == "TX":
         packet = packet[0:-3] + crc(packet[0:-3])
 
     # NOTE: data[-1] of RSSI data = is_valid flag
@@ -597,7 +597,7 @@ for b64 in args.infile:
             )
 
         # send RSSI data
-        if rssi_valid and (0 == rssi_num_samples_missed) and (0 == rssi_status_field):
+        if rssi_valid and (rssi_num_samples_missed == 0) and (rssi_status_field == 0):
             ts_rssi_last = np.uint32(rssi_end_lts - schedule_lts)
             ts_rssi_last = int(ts_rssi_last) + schedule_gts
             ts_rssi_first = ts_rssi_last - (len(rssi_samples) - 1) * TICKS_PER_BIT

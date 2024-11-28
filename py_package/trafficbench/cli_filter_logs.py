@@ -345,7 +345,7 @@ def _filter_logfile(
                         start = buffer.rfind(b"\n", 0, record_match.start(0)) + 1
                         end = buffer.find(b"\n", record_match.end(0)) + 1
                         x = re_source_id.findall(buffer, start, end)
-                        if 1 != len(set(x)):
+                        if len(set(x)) != 1:
                             raise ValueError(
                                 f'inconsistent source id(s) {",".join(map(bytes.decode, x))}'
                             )

@@ -490,7 +490,7 @@ for row in trx_table.itersorted("schedule_gts", checkCSI=True):
     schedule_gts = row["schedule_gts"]
 
     # skip records where node was out of sync
-    if -1 == np.int32(schedule_gts):
+    if np.int32(schedule_gts) == -1:
         logging.debug(f"skipping TRX record {row.nrow} because schedule_gts = -1 (out of sync)")
         n_skip += 1
         continue
@@ -834,7 +834,7 @@ for trans in trans_table:
             if s is not None:
                 rxi["source_node_id"] = trx[I_tx[s]]["node_id"]
 
-            if (Source_Uncertainty.STRONG == rxi["source_uncertainty"]) and (
+            if (rxi["source_uncertainty"] == Source_Uncertainty.STRONG) and (
                 rxi["ambiguous_source"] in b"*!!"
             ):
                 n = trx["node_id"][I_tx[S[rx_power_isnan[S]]]]

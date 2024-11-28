@@ -18,7 +18,7 @@ app = typer.Typer()
 
 
 def exit_stack() -> ExitStack:
-    """offers cleaner exit and handler for entering contexts (with ... as .. :)
+    """Offers cleaner exit and handler for entering contexts (with ... as .. :)
 
     :return: stack, use with .enter_context(obj)
     """

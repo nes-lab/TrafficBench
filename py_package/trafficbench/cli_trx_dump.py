@@ -73,8 +73,7 @@ def dump_trx(
     logn_bin_gain: Annotated[float, typer.Option(help=dump_h["lcg"])] = 1,
     logn_bin_offset: Annotated[float, typer.Option(help=dump_h["lco"])] = 0,
 ) -> None:
-    """decode TRX messages and import them into PyTables HDF5 file (.b64 -> .h5)"""
-
+    """Decode TRX messages and import them into PyTables HDF5 file (.b64 -> .h5)"""
     if isinstance(infile, Path):
         infile = open(infile)
     else:
@@ -115,7 +114,7 @@ def dump_trx(
             chunks = decoder.decode()
             checksum = decoder.decode()
             if checksum != fletcher32(x[:-4]):
-                raise AssertionError()
+                raise AssertionError
         except BaseException:
             # TODO: print detailed error message and continue
             logger.warning("CBOR error")
@@ -131,7 +130,7 @@ def dump_trx(
             elif x[0] == 1:
                 data.append(zlib.decompress(x[1], wbits=-15))
             else:
-                raise ValueError()
+                raise ValueError
 
         # close encapsulating array
         data.append(b"\xff")
@@ -229,7 +228,7 @@ def dump_trx(
                 if x["schedule_gts"] == schedule_gts
             ]
             if x:
-                raise AssertionError()
+                raise AssertionError
 
             if schedule_gts >= 2**32:
                 # print("dropped a record - because of prior Operation (high part gts)")
@@ -394,7 +393,7 @@ def dump_trx(
                 or (ts_pdu_begin >= ts_pdu_end)
                 or (ts_pdu_end >= 0x8000_0000)
             ):
-                raise AssertionError()
+                raise AssertionError
             ts_header_begin = int(ts_header_begin) + schedule_gts
             ts_end = int(ts_pdu_end) + schedule_gts
 

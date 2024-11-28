@@ -29,7 +29,6 @@ class FileWriter:
             120223 trx_data_blosczstd9.h5
 
         """
-
         comp_def = tbl.Filters(complevel=1, complib="blosc:zstd")
 
         self.h5file = tbl.open_file(file_name.as_posix(), mode="w", title="TRX data")

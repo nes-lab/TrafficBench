@@ -80,7 +80,7 @@ mpl.rcParams["pgf.texsystem"] = "pdflatex"
 # that it also extends the field names (and the type of the return value).
 def flatten_dtype(dtype, sep="_", prefix=""):
     if dtype.alignment != 1:
-        raise AssertionError()
+        raise AssertionError
     if dtype.names is None:
         desc = [(prefix, dtype)]
     else:
@@ -121,7 +121,7 @@ def node_key(gts, id_):
     x = np.full(len(gts), -1, dtype=np.float64)
     if not np.isscalar(id_):
         if len(id_) != len(gts):
-            raise AssertionError()
+            raise AssertionError
         mask = id_ >= 0
         x[mask] = (id_[mask] / 100000) + gts[mask]
     elif id_ >= 0:
@@ -149,7 +149,7 @@ def read_trx(file_name):
     with tbl.open_file(file_name, mode="r") as h5file:
         # check enum types
         if TRxOperation != h5file.root.trx_data.trx.get_enum("operation"):
-            raise AssertionError()
+            raise AssertionError
 
         path_to_label = {
             "/trx_data/trx": "trx",
@@ -381,7 +381,7 @@ def read_trx(file_name):
                 if not rxi:  # e.g. because schedule_gts == -1
                     continue
                 if len(rxi) != 1:
-                    raise AssertionError()
+                    raise AssertionError
                 rxi = rxi[0]
 
                 # get transmitter's TRX entry
@@ -395,7 +395,7 @@ def read_trx(file_name):
                         and x["node_id"] == rxi["source_node_id"]
                     ]
                     if len(x) != 1:
-                        raise AssertionError()
+                        raise AssertionError
                     trx_tx = x[0]
 
                 # extract bitstreams
@@ -436,7 +436,7 @@ def read_trx(file_name):
                             bitshift = np.int32(np.rint(gts_ticks_to_us(ts_shift)))
                         # print(f"{rxi['schedule_gts']=}; {rxi['destination_node_id']=}; {rxi['source_node_id']=}; {rxi['ambiguous_source']=}; {bitshift=}")
                 else:  # BLE modes != 1M
-                    raise AssertionError()
+                    raise AssertionError
                     # TODO: CI, TERM1, TERM2 (in long range modes)
                     # ts_pdu_begin = (trx['packet_lts'] - trx['schedule_lts']) + CI / TERM1
                     # ts_pdu_end   = (trx['end_lts'] - trx['schedule_lts']) - TERM2

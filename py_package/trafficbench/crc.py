@@ -16,7 +16,7 @@ try:
     def bitswap(num: int) -> int:
         return (num * 0x02_0202_0202 & 0x0108_8442_2010) % 1023
 
-    bitswap_lut = bytes.maketrans(bytes(range(0, 256)), bytes(bitswap(x) for x in range(0, 256)))
+    bitswap_lut = bytes.maketrans(bytes(range(256)), bytes(bitswap(x) for x in range(256)))
 
     def calc_crc(data: bytes) -> bytes:
         return crc_core_function(data).to_bytes(3, "big").translate(bitswap_lut)

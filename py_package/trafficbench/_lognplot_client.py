@@ -44,7 +44,7 @@ else:
     dt = ((ts_pdu_end - ts_pdu_begin) / len(pdu_bits)) / TICKS_PER_S
 ts_header_begin = np.uint32(ts_header_begin)
 if (ts_header_begin >= ts_pdu_begin) or (ts_pdu_begin >= ts_pdu_end) or (ts_pdu_end >= 0x8000_0000):
-    raise AssertionError()
+    raise AssertionError
 ts_header_begin = int(ts_header_begin) + schedule_gts
 ts_end = int(ts_pdu_end) + schedule_gts
 
@@ -61,7 +61,7 @@ if trx_status["header_detected"]:
     )
 
 # send RSSI data
-if rssi_valid and (0 == rssi_num_samples_missed) and (0 == rssi_status_field):
+if rssi_valid and (rssi_num_samples_missed == 0) and (rssi_status_field == 0):
     ts_rssi_last = np.uint32(rssi_end_lts - schedule_lts)
     ts_rssi_last = int(ts_rssi_last) + schedule_gts
     ts_rssi_first = ts_rssi_last - (len(rssi_samples) - 1) * TICKS_PER_BIT
