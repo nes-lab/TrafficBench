@@ -2,10 +2,8 @@ from enum import Enum
 
 
 class ByteOrder(str, Enum):
-    be = "be"
-    big_endian = "be"
-    le = "le"
-    little_endian = "le"
+    be = big_endian = "be"
+    le = little_endian = "le"
 
 
 def fletcher32(data: bytes) -> int:
