@@ -22,9 +22,9 @@ classifiers = [
 ]
 requires-python = ">= 3.8"
 dependencies = [
-    "numpy<2.0.0",
-    "tables<=3.9.0",
-    "cbor2",
+    "numpy<2.0.0",  # constructs like tbl.UInt32Col(dflt=-1, pos=0) fail due to out-of-bound-error
+    "tables",
+    "cbor2<5.5.0",  # newer versions create CBOR-Errors
     "crcmod",
     "chromalog",
     "pyserial",
