@@ -7,7 +7,7 @@ name = "pypi"
 # QA
 pre-commit = "*"
 # Examples
-trafficbench = {editable = true, extras = ["glue","lognplot","dev","test"], path = "./py_package"}
+trafficbench = {editable = true, extras = ["glue","lognplot","dev","test"], path = "py_package/."}
 # useful tools
 vitables = "*"  # plain PyTables viewer (for details see https://vitables.org)
 
