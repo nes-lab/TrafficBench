@@ -37,7 +37,7 @@ def test_and_warn(
     strict: bool = True,
 ) -> None:
     """
-    test text and warn if it contains any special control characters (in case --strict is enabled)
+    Test text and warn if it contains any special control characters (in case --strict is enabled)
 
     t = s[start:end]
     if (BEGIN_RECORD in t) or (BEGIN_CHUNK in t) or (END_CHUNK in t) or (END_RECORD in t):
@@ -347,7 +347,7 @@ def _filter_logfile(
                         x = re_source_id.findall(buffer, start, end)
                         if len(set(x)) != 1:
                             raise ValueError(
-                                f'inconsistent source id(s) {",".join(map(bytes.decode, x))}'
+                                f"inconsistent source id(s) {','.join(map(bytes.decode, x))}"
                             )
 
                     # extract data chunks

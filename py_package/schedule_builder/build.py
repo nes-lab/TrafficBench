@@ -9,7 +9,7 @@ from pathlib import Path
 
 node_count: int = 20
 path_local = Path(__file__).parent
-path_schedule = path_local.parent.parent / "/target/nrf52840/project_ses/schedule.inc"
+path_schedule = path_local.parent.parent / "target/nrf52840/project_ses/schedule.inc"
 
 # Schedule-builder
 

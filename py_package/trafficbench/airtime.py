@@ -9,7 +9,7 @@ def get_packet_airtime(
     pdu_crc_length: Union[int, float, np.nditer],
 ) -> Union[int, float, np.nditer]:
     """
-    compute nominal packet airtime
+    Compute nominal packet airtime
     TODO: make it dependent from radio mode
 
     field lengths:	PREAMBLE	ADDRESS		CI		TERM1		PDU			CRC		TERM2

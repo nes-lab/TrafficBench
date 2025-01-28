@@ -362,7 +362,7 @@ for line in args.infile:
                     x = re_source_id.findall(buffer, start, end)
                     if len(set(x)) != 1:
                         raise ValueError(
-                            f'inconsistent source id(s) {",".join(map(bytes.decode, x))}'
+                            f"inconsistent source id(s) {','.join(map(bytes.decode, x))}"
                         )
 
                 # extract data chunks

@@ -38,7 +38,7 @@ def warn_rssi(r):  # TODO: hint interface
 
 def split_rssi(trx, rssi_heap):  # TODO: hint interface
     """
-    split RSSI stream into noise and signal segments and estimate power values
+    Split RSSI stream into noise and signal segments and estimate power values
     ATTENTION: current implementation assumes that there is a noise segment, followed by a signal
     segment, followed by another noise segment. This means that there is no special handling for
     overlaid packets with different lengths or time-shifts as well as transmissions with

@@ -25,7 +25,7 @@ def test_example_scripts(example_path: Path, file: str) -> None:
     subprocess.check_call(f"python {example_path / file}", shell=True)
 
 
-def test_schedule_builder(example_path: Path, file: str) -> None:
+def test_schedule_builder() -> None:
     path = Path(__file__).resolve().parent.parent / "schedule_builder/"
     os.chdir(path)
-    subprocess.check_call(f"python {example_path / 'build.py'}", shell=True)
+    subprocess.check_call(f"python {path / 'build.py'}", shell=True)

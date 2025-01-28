@@ -9,7 +9,7 @@ from .table_records import TRXRecord
 class FileWriter:
     def __init__(self, file_name: Path, num_lines: Optional[int]) -> None:
         """
-        see <https://www.pytables.org/usersguide/libref/helper_classes.html#the-filters-class>
+        See <https://www.pytables.org/usersguide/libref/helper_classes.html#the-filters-class>
         for details regarding compression
         use zlib if you want to use external tools like HDFView
         and blosc if you want it to be fast

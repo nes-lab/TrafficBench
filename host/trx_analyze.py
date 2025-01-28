@@ -584,7 +584,7 @@ for trans in trans_table.where("num_transmitters == 1"):
             rssi = split_rssi(r)
 
             for x in rx_info_table.where(
-                f'(schedule_gts == {schedule_gts}) & (destination_node_id == {r["node_id"]})'
+                f"(schedule_gts == {schedule_gts}) & (destination_node_id == {r['node_id']})"
             ):
                 # K = rx_info_table.get_where_list(f'(schedule_gts == {schedule_gts}) & (destination_node_id == {r["node_id"]})')
                 # assert(len(K) == 1)
@@ -704,7 +704,7 @@ for trans in trans_table:
         r = trx[i]
 
         k = rx_info_table.get_where_list(
-            f'(schedule_gts == {schedule_gts}) & (destination_node_id == {r["node_id"]})'
+            f"(schedule_gts == {schedule_gts}) & (destination_node_id == {r['node_id']})"
         )
         assert len(k) == 1
         k = k[0]
@@ -730,9 +730,9 @@ for trans in trans_table:
                     map(
                         fmap,
                         rx_info_table.where(
-                            'is_link_measurement'
-                            f' & (destination_node_id == {r["node_id"]})'
-                            f' & (source_node_id == {trx[k]["node_id"]})'
+                            "is_link_measurement"
+                            f" & (destination_node_id == {r['node_id']})"
+                            f" & (source_node_id == {trx[k]['node_id']})"
                         ),
                     ),
                     (0x7FFFFFFF, np.nan),
@@ -947,7 +947,7 @@ for trx in trx_table.where(f"(schedule_gts != 0xffffffff) & (operation == {TRX_O
         continue
 
     for rxi in rx_info_table.where(
-        f'(schedule_gts == {trx["schedule_gts"]}) & (destination_node_id == {trx["node_id"]})'
+        f"(schedule_gts == {trx['schedule_gts']}) & (destination_node_id == {trx['node_id']})"
     ):
         packet_len = len(trx["packet_content_raw"]) // 2  # field is BASE16 encoded
         ts_end = trx["end_lts"]
@@ -997,7 +997,7 @@ rx_info_table.flush()
 for desc in args.add_markers:
     where_clause = desc["condition"].replace("#", "(" + desc["expression"] + ")")
 
-    logging.info(f'creating markers: {desc["name"]} (where {where_clause})')
+    logging.info(f"creating markers: {desc['name']} (where {where_clause})")
 
     source_table = h5file.get_node("/", desc["table"])
 
@@ -1068,7 +1068,7 @@ for trans in trans_table:
         r = trx[i]
 
         rxi = rx_info_table.read_where(
-            f'(schedule_gts == {schedule_gts}) & (destination_node_id == {r["node_id"]})'
+            f"(schedule_gts == {schedule_gts}) & (destination_node_id == {r['node_id']})"
         )
         assert len(rxi) == 1
         rxi = rxi[0]

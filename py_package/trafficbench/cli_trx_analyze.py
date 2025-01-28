@@ -249,7 +249,7 @@ def analyze_trx(
                 rssi = split_rssi(r, rssi_heap)
 
                 for x in rx_info_table.where(
-                    f'(schedule_gts == {schedule_gts}) & (destination_node_id == {r["node_id"]})'
+                    f"(schedule_gts == {schedule_gts}) & (destination_node_id == {r['node_id']})"
                 ):
                     # K = rx_info_table.get_where_list(f'(schedule_gts == {schedule_gts}) & (destination_node_id == {r["node_id"]})')
                     # assert(len(K) == 1)
@@ -376,7 +376,7 @@ def analyze_trx(
             r = trx[idx]
 
             k = rx_info_table.get_where_list(
-                f'(schedule_gts == {schedule_gts}) & (destination_node_id == {r["node_id"]})'
+                f"(schedule_gts == {schedule_gts}) & (destination_node_id == {r['node_id']})"
             )
             if len(k) != 1:
                 raise AssertionError
@@ -410,8 +410,8 @@ def analyze_trx(
                             fmap,
                             rx_info_table.where(
                                 "is_link_measurement"
-                                f' & (destination_node_id == {r["node_id"]})'
-                                f' & (source_node_id == {trx[k]["node_id"]})'
+                                f" & (destination_node_id == {r['node_id']})"
+                                f" & (source_node_id == {trx[k]['node_id']})"
                             ),
                         ),
                         (0x7FFFFFFF, np.nan),
@@ -641,7 +641,7 @@ def analyze_trx(
             continue
 
         for rxi in rx_info_table.where(
-            f'(schedule_gts == {trx["schedule_gts"]}) & (destination_node_id == {trx["node_id"]})'
+            f"(schedule_gts == {trx['schedule_gts']}) & (destination_node_id == {trx['node_id']})"
         ):
             packet_len = len(trx["packet_content_raw"]) // 2  # field is BASE16 encoded
             ts_end = trx["end_lts"]
@@ -765,7 +765,7 @@ def analyze_trx(
             r = trx[idx]
 
             rxi = rx_info_table.read_where(
-                f'(schedule_gts == {schedule_gts}) & (destination_node_id == {r["node_id"]})'
+                f"(schedule_gts == {schedule_gts}) & (destination_node_id == {r['node_id']})"
             )
             if len(rxi) != 1:
                 raise AssertionError
