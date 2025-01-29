@@ -1,5 +1,11 @@
 # DEV
 
+## Releasing a new Version
+
+- make sure the unittests run through (run `pytest` in `./py_package`)
+- tag the actual commit with `v*.*.*` i.e. `v1.2.1` mirroring version specified in `./py_package/trafficbench/__init__.py`
+- from here GitHub runs the CI that tests, compiles c-code, drafts the release and publishes to PyPI 
+
 ## Push to all Remote Repos
 
 ```Shell

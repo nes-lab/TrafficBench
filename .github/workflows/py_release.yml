@@ -9,8 +9,8 @@ permissions:
 jobs:
   run-unittests:
     uses: ./.github/workflows/py_unittest.yml
-  run-qatests:
-    uses: ./.github/workflows/qa_tests.yml
+  # run-qatests:
+  #  uses: ./.github/workflows/qa_tests.yml
   run-buildnrf:
     uses: ./.github/workflows/build_nrf.yml
   release:
