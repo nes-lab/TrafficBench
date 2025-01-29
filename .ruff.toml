@@ -35,10 +35,18 @@ exclude= [  # external projects
 ]
 
 [lint.per-file-ignores]
-"*/tests/**" = ["ARG", "S", "D", "T201"]
+"*/tests/**" = [
+    "ARG",
+    "S",
+    "D",
+    "T201",   # allow print
+]
 "*/examples/**" = [
     "INP001", # no namespace
     "T201",   # allow print
+]
+"*/schedule_builder/**" = [
+    "INP001", # no namespace
 ]
 
 [lint.mccabe]

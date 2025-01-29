@@ -1,7 +1,4 @@
-"""
-this script assembles a schedule for measuring link-quality in the shepherd-testbed
-
-"""
+"""Assemble a schedule for measuring link-quality in the shepherd-testbed."""
 
 from pathlib import Path
 

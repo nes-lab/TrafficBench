@@ -1,12 +1,13 @@
 """
-run this script after compilation (with segger studio), it will
+Alter the embedded node ID of a given elf-firmware.
+
+It will
 
 - update the elf-file in this directory
 - build hex-files with patched node-id
 
 """
 
-import os
 import shutil
 import sys
 from pathlib import Path
@@ -29,7 +30,7 @@ if not path_src.exists():
 # make local copy of elf-file
 shutil.copy(path_src, path_elf)
 
-# patch node id and prepare hex-file
+# patch node id and prepare hex-file, TODO: better use tempfile.TemporaryFile()
 
 for node in range(node_count):
     path_elf_node = path_local / f"build_{node}.elf"
@@ -37,4 +38,4 @@ for node in range(node_count):
     shutil.copy(path_elf, path_elf_node)
     fw_tools.modify_uid(path_elf_node, node)
     fw_tools.elf_to_hex(path_elf_node)
-    os.remove(path_elf_node)
+    path_elf_node.unlink()

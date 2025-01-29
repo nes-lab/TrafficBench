@@ -1,5 +1,7 @@
 """
-Log-Files contain the uart-output of the trafficbench-nodes
+Listen on available COM-Ports for trafficbench-chatter and log output into files.
+
+Serial ports can either be auto-discovered (default) or handed to the routine.
 """
 
 from pathlib import Path

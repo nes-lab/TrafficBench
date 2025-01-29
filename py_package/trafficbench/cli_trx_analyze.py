@@ -10,13 +10,13 @@ import functools
 import numbers
 import warnings
 from pathlib import Path
-from typing import Annotated
 from typing import List
 from typing import Optional
 
 import numpy as np
 import tables as tbl
 import typer
+from typing_extensions import Annotated
 
 from .airtime import get_packet_airtime
 from .airtime import get_ref_delay

@@ -15,7 +15,7 @@ def power_W_to_dBm(power_W: Union[float, np.ndarray]) -> Union[float, np.ndarray
 
 
 def dB_to_factor(value_dB: Union[float, np.ndarray]) -> Union[float, np.ndarray]:
-    pass  # TODO
+    pass
 
 
 def factor_to_dB(value_lin: Union[float, np.ndarray]) -> Union[float, np.ndarray]:

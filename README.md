@@ -21,7 +21,7 @@ TrafficBench consist of two major parts:
   Semiconductor [nRF52840](https://www.nordicsemi.com/Products/nRF52840) devices in
   Bluetooth Low Energy (BLE) mode.
 
-* Python scripts that can be used to extract, analyze, and visualize the recorded data.
+* a Python tool to receive, extract, analyze, and visualize the recorded data.
 
 To learn more about TrafficBench, please read on. You can also have a look at our
 [EWSN'22 demo abstract](https://nes-lab.org/wordpress/wp-content/uploads/2022/08/herrmann22trafficbench.pdf)
@@ -36,7 +36,7 @@ TrafficBench on other platforms should not be a big deal. On Windows, you should
 sure that `*.py` files are started with Python and `*.xsh` files with Xonsh, respectively.
 You can also use the [Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/about).
 
-Installation steps:
+### Installation steps
 
 1. Install [SEGGER Embedded Studio for ARM](https://www.segger.com/downloads/embedded-studio/#ESforARM) (SES).[^fn-ses]
    In our tests we use SES version V7.32 and developed on V6.34.
@@ -47,7 +47,7 @@ Installation steps:
    [nRF Command Line Tools](https://www.nordicsemi.com/Products/Development-tools/nrf-command-line-tools)
    to program the target devices.
 
-2. Set up a [Python 3](https://www.python.org/) environment (we have used Python 3.8 for our tests).
+2. Set up a [Python 3](https://www.python.org/) environment (we use Python 3.8 to 3.12 for our tests).
    We recommend to use a Python virtual environment, which can be
    created with `python3 -m venv <name_of_virtualenv>`
    and activated with `source <path_to_virtualenv>/bin/activate`.
@@ -64,6 +64,24 @@ ViTables (`vitables`), and Glue (`glue.xsh` in the [`host`](host/) subfolder).
 [^fn-ses]: SES is free for Nordic customers,
   see [here](https://www.segger.com/news/segger-embedded-studio-ide-now-free-for-nordic-sdk-users/)
   and [here](https://www.nordicsemi.com/Products/Development-tools/Segger-Embedded-Studio).
+
+### Alternative Python tool
+
+Functionality of the mentioned scripts has been largely ported to a Python package usable as library or CLI-tool.
+Current exceptions in functionality are the interfaces for Glue & ViTables.
+
+The tool can either be installed from PyPI or from git-sources with your weapon of choice. 
+Installing into a virtual environment is recommended.
+The pip commands are:
+
+```shell
+# from PyPI
+pip install -U trafficbench
+# or with git as source:
+pip install -U git+https://github.com/nes-lab/TrafficBench.git@dev#subdirectory=py_package -U
+```
+
+Further information can be found on the [package-website](https://pypi.org/project/trafficbench)
 
 ### Problems and Troubleshooting
 

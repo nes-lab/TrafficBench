@@ -668,11 +668,11 @@ h5file.flush()
 h5file.create_carray("/catalogs", "link_matrix_dBm", obj=10 * np.log10(link_matrix))
 h5file.flush()
 
-print("link matrix:")
-print("       {}".format("  ".join(map(lambda x: f"{x:4d}", nodes))))
-print("     +-{}".format("--" * (len(nodes) - 1) + "----" * len(nodes)))
+logger.info("link matrix:")
+logger.info("       {}".format("  ".join(map(lambda x: f"{x:4d}", nodes))))
+logger.info("     +-{}".format("--" * (len(nodes) - 1) + "----" * len(nodes)))
 for x in enumerate(link_matrix):
-    print(
+    logger.info(
         "{:4d} | {}".format(
             nodes[x[0]],
             "  ".join(map(lambda x: "    " if np.isnan(x) else f"{x:4.0f}", 10 * np.log10(x[1]))),
@@ -1055,7 +1055,7 @@ for trans in trans_table:
     # assert(len(set(trx["node_id"])) == len(trx))
     # assert(len(I_tx) + len(I_rx) == len(trx))
 
-    print(f"\ntransaction at {schedule_gts:#010x}:")
+    logger.info(f"\ntransaction at {schedule_gts:#010x}:")
 
     actions = [("-", "")] * len(trx)
     SNRs = [(None, None)] * len(trx)
@@ -1095,9 +1095,9 @@ for trans in trans_table:
 
     fmt = lambda c: " | ".join(map(lambda x: f"{x:^6}", c))
     fmtx = lambda c: " | ".join(map(lambda x: "{:^6}".format("".join(map(str, x))), c))
-    print("\tnode:          {}".format(fmt(trx["node_id"])))
-    print(f"\treceive from:  {fmtx(actions)}")
-    print(
+    logger.info("\tnode:          {}".format(fmt(trx["node_id"])))
+    logger.info(f"\treceive from:  {fmtx(actions)}")
+    logger.info(
         "\tSINR (link):   {}".format(
             fmtx(
                 map(

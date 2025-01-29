@@ -1,5 +1,5 @@
-"""
-script searches for .log-files in this folder and analyzes them
+"""Search for .log-files in parent folder and analyze them.
+
 Log-Files contain the uart-output of the trafficbench-nodes
 """
 

@@ -16,12 +16,12 @@ import itertools
 import sys
 import zlib
 from pathlib import Path
-from typing import Annotated
 from typing import List
 from typing import Optional
 
 import cbor2
 import typer
+from typing_extensions import Annotated
 
 from .checksum import fletcher32
 from .cli_proto import app
@@ -75,7 +75,7 @@ def dump_trx(
 ) -> None:
     """Decode TRX messages and import them into PyTables HDF5 file (.b64 -> .h5)"""
     if isinstance(infile, Path):
-        infile = open(infile)
+        infile = infile.open()
     else:
         infile = sys.stdin
 
@@ -86,7 +86,7 @@ def dump_trx(
         file_db = None
 
     if logfile:
-        logfile = open(logfile, "w")
+        logfile = logfile.open("w")
     else:
         logfile = sys.stdout
 
@@ -211,9 +211,8 @@ def dump_trx(
         if node_id in record_counters:
             rc1 = record_counters[node_id] + 1
             if record_counter != rc1:
-                print(
+                logger.warning(
                     f"warning: {(record_counter - rc1) % 65_536} record(s) lost at node {node_id} before gts {schedule_gts:#010x} (record_counter = {record_counter}, expected {rc1})",
-                    file=sys.stderr,
                 )
         record_counters[node_id] = record_counter
 
@@ -231,7 +230,7 @@ def dump_trx(
                 raise AssertionError
 
             if schedule_gts >= 2**32:
-                # print("dropped a record - because of prior Operation (high part gts)")
+                logger.debug("dropped a record - because of prior Operation (high part gts)")
                 schedule_gts = schedule_gts % 2**32
 
             file_db.trx_record["ident"] = ident

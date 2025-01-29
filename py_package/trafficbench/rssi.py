@@ -5,6 +5,8 @@ from .airtime import get_ref_delay
 from .constants import TICKS_PER_RSSI_SAMPLE
 from .constants import TICKS_PER_US
 from .logger import logger
+from .table_records import Rssi
+from .table_records import TRXRecord
 from .unit_conversion import power_dBm_to_W
 from .unit_conversion import power_W_to_dBm
 
@@ -36,18 +38,16 @@ def warn_rssi(r):  # TODO: hint interface
             )
 
 
-def split_rssi(trx, rssi_heap):  # TODO: hint interface
-    """
-    Split RSSI stream into noise and signal segments and estimate power values
-    ATTENTION: current implementation assumes that there is a noise segment, followed by a signal
+def split_rssi(trx: TRXRecord, rssi_heap) -> dict:  # TODO: hint interface
+    """Split RSSI stream into noise and signal segments and estimate power values.
+
+    ATTENTION:
+    current implementation assumes that there is a noise segment, followed by a signal
     segment, followed by another noise segment. This means that there is no special handling for
     overlaid packets with different lengths or time-shifts as well as transmissions with
     tx_carrier_period_1/2 > 0. The results will be wrong in such cases.
     TODO: detect mentioned situations and warn if function is used in such cases
 
-    :param trx:
-    :param rssi_heap:
-    :return:
     """
     # guard times used to mask the rise and fall times of the RSSI measurements
     # The slew rate is limited by a low-pass filter in nRF52840's RSSI sampling block (single-pole
@@ -58,14 +58,14 @@ def split_rssi(trx, rssi_heap):  # TODO: hint interface
     # The following values have been selected based on manual evaluation of RSSI vs. bitstream plots.
     # ATTENTION: So far, the selected values have been checked only with BLE 1M mode.
     # They may need adaptations in case of other BLE modes.
-    GUARD_TICKS_NOISE_TO_START = 20 * TICKS_PER_US
-    GUARD_TICKS_START_TO_SIGNAL = (
+    GUARD_TICKS_NOISE_TO_START: int = 20 * TICKS_PER_US
+    GUARD_TICKS_START_TO_SIGNAL: int = (
         20 * TICKS_PER_US
     )  # skips potential overshoot (hard to say if present)
-    GUARD_TICKS_SIGNAL_TO_END = 0 * TICKS_PER_US
-    GUARD_TICKS_END_TO_NOISE = 35 * TICKS_PER_US
+    GUARD_TICKS_SIGNAL_TO_END: int = 0 * TICKS_PER_US
+    GUARD_TICKS_END_TO_NOISE: int = 35 * TICKS_PER_US
 
-    results = {
+    results: dict = {
         "rx_mean": np.nan,
         "rx_min": np.nan,
         "rx_max": np.nan,
@@ -74,17 +74,17 @@ def split_rssi(trx, rssi_heap):  # TODO: hint interface
         "noise_range": [(-1, 0)],
     }
 
-    rssi = trx["rssi"]
+    rssi: Rssi() = trx["rssi"]
 
     if rssi["num_samples"] < 2:
         return results
 
     rssi_samples = rssi_heap.read(rssi["data_anchor"], rssi["data_anchor"] + rssi["num_samples"])
 
-    noise = np.array([], dtype=np.int8)
-    signal = np.array([])
-    noise_range = []
-    signal_range = []
+    noise: np.ndarray = np.array([], dtype=np.int8)
+    signal: np.ndarray = np.array([])
+    noise_range: list = []
+    signal_range: list = []
 
     if rssi["num_samples_missed"] > 0:
         logger.warning(
@@ -120,7 +120,7 @@ def split_rssi(trx, rssi_heap):  # TODO: hint interface
             raise AssertionError
 
         # ATTENTION: add lts to gts rate adaptation if necessary
-        def lts_to_gts(value: float):
+        def lts_to_gts(value: int) -> int:
             return value - trx["schedule_lts"] + trx["schedule_gts"]
 
         n = (ts_start - GUARD_TICKS_NOISE_TO_START - ts_rssi_start) // TICKS_PER_RSSI_SAMPLE
@@ -163,35 +163,34 @@ def split_rssi(trx, rssi_heap):  # TODO: hint interface
 
     # the following condition is true in case of a broken packet header (for instance)
     if not noise.size or not signal.size:
-        min_ = rssi_samples.min()
-        max_ = rssi_samples.max()
-        hist = np.histogram(rssi_samples, 1 + max_ - min_, (min_, max_ + 1))
-        (y, x) = hist
-        if len(x) < 2:
+        _min = rssi_samples.min()
+        _max = rssi_samples.max()
+        hist_values, hist_edges = np.histogram(rssi_samples, 1 + _max - _min, (_min, _max + 1))
+        if len(hist_edges) < 2:
             return results
-        S = y.sum() * 0.95
+        S = hist_values.sum() * 0.95
         s = 0
         n = 0
         while s < S:
-            s += y[n]
+            s += hist_values[n]
             n += 1
-            s += y[-n]
+            s += hist_values[-n]
 
     if True:  # TODO: use commandline switch
         # compute mean on linear scale, i.e. arithmetic mean
-        def mean_(value_dBm):
-            return power_W_to_dBm(power_dBm_to_W(value_dBm).mean())
+        def mean_(values_dBm: np.ndarray) -> float:
+            return power_W_to_dBm(power_dBm_to_W(values_dBm).mean())
 
-        def mean_from_hist(value_dBm, y_):
-            return power_W_to_dBm(np.dot(power_dBm_to_W(value_dBm), y_) / np.sum(y_))
+        def mean_from_hist(values_dBm: np.ndarray, histogram: np.ndarray) -> float:
+            return power_W_to_dBm(np.dot(power_dBm_to_W(values_dBm), histogram) / np.sum(histogram))
 
     else:
         # compute mean on logarithmic scale, i.e. geometric mean
-        def mean_(x):
-            return x.mean()
+        def mean_(values_dBm: np.ndarray) -> float:
+            return values_dBm.mean()
 
-        def mean_from_hist(x, y_):
-            return np.dot(x, y_) / np.sum(y_)
+        def mean_from_hist(values_dBm: np.ndarray, histogram: np.ndarray) -> float:
+            return np.dot(values_dBm, histogram) / np.sum(histogram)
 
     if noise.size:
         results["noise_mean"] = mean_(noise)
@@ -202,9 +201,9 @@ def split_rssi(trx, rssi_heap):  # TODO: hint interface
             trx["node_id"],
             trx["schedule_gts"],
             n,
-            len(x),
+            len(hist_edges),
         )
-        results["noise_mean"] = mean_from_hist(x[:n], y[:n])
+        results["noise_mean"] = mean_from_hist(hist_edges[:n], hist_values[:n])
         noise_range = [(-1, -n)]
 
     if signal.size:
@@ -218,13 +217,13 @@ def split_rssi(trx, rssi_heap):  # TODO: hint interface
             trx["node_id"],
             trx["schedule_gts"],
             n,
-            len(x),
+            len(hist_edges),
         )
-        results["rx_mean"] = mean_from_hist(x[-n:], y[-n:])
-        x = x[-n:]
-        x = x[y[-n:] != 0]
-        results["rx_min"] = x.min()
-        results["rx_max"] = x.max()
+        results["rx_mean"] = mean_from_hist(hist_edges[-n:], hist_values[-n:])
+        hist_edges = hist_edges[-n:]
+        hist_edges = hist_edges[hist_values[-n:] != 0]
+        results["rx_min"] = hist_edges.min()
+        results["rx_max"] = hist_edges.max()
         signal_range = [(-1, -n)]
 
     results["noise_range"] = noise_range

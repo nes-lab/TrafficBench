@@ -1,5 +1,5 @@
 """
-Extract special data records from log files
+Extract special data records from log files.
 
 Author: Carsten Herrmann
 """
@@ -10,7 +10,6 @@ import sys
 from io import BufferedReader
 from io import BufferedWriter
 from pathlib import Path
-from typing import Annotated
 from typing import BinaryIO
 from typing import Dict
 from typing import List
@@ -18,6 +17,7 @@ from typing import Optional
 from typing import Union
 
 import typer
+from typing_extensions import Annotated
 
 from .checksum import ByteOrder
 from .checksum import test_checksum
@@ -101,7 +101,7 @@ filter_h = {
 }
 
 
-@app.command("filter-log")
+@app.command("extract")
 def filter_logfile(
     infile: Annotated[Optional[Path], typer.Argument(help=filter_h["inf"])] = None,
     outfile: Annotated[Optional[Path], typer.Argument(help=filter_h["out"])] = None,
@@ -150,10 +150,10 @@ def filter_logfile(
     if outfile is None:
         outfile = sys.stdout.buffer
     elif outfile.exists() and append_data:
-        outfile = open(outfile, "ab")
+        outfile = outfile.open("ab")
         stack.enter_context(outfile)
     else:
-        outfile = open(outfile, "wb")
+        outfile = outfile.open("wb")
         stack.enter_context(outfile)
     if outfile.isatty():
         # automatically enable unbuffered mode if outfile is a TTY stream
@@ -192,7 +192,7 @@ def filter_logfile(
     for file_in in files_in:
         if isinstance(file_in, Path):
             logger.info("Filtering %s", file_in.name)
-            file_rh = open(file_in, "rb")
+            file_rh = file_in.open("rb")
         else:
             file_rh = file_in
 

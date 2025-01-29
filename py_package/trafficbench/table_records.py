@@ -22,7 +22,7 @@ class Rssi(tbl.IsDescription):
 
 
 class TRXRecord(tbl.IsDescription):
-    """PyTables TRX record specification used in outfile (HDF5)
+    """PyTables TRX record specification used in outfile (HDF5).
 
     NOTE:
     * ident field's primary purpose is to support the human reader when looking for the source of the entry.
@@ -59,7 +59,8 @@ SourceUncertainty = tbl.Enum({"EXTERNAL": 0, "WEAK": 1, "STRONG": 2})
 
 
 class RxInfoRecord(tbl.IsDescription):
-    """
+    """PyTables RxInfo record specification used in outfile (HDF5).
+
     NOTE:
     * The combination of schedule_gts and (source_/destination_)node_id
       is a unique identifier for corresponding TRX entries.

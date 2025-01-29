@@ -4,12 +4,12 @@ import threading
 from pathlib import Path
 from time import sleep
 from time import time
-from typing import Annotated
 from typing import List
 from typing import Optional
 
 import serial
 import typer
+from typing_extensions import Annotated
 
 from .cli_proto import app
 from .logger import logger
@@ -52,7 +52,7 @@ def receive_serial_thread(
 ) -> None:
     file_path = file_path.with_stem(file_path.stem + "_" + uart_port)
     try:
-        with serial.Serial(uart_port, baudrate, timeout=0) as uart, open(file_path, "wb") as log:
+        with serial.Serial(uart_port, baudrate, timeout=0) as uart, file_path.open("wb") as log:
             time_end = time() + duration
             logger.info("started logging for %s", uart_port)
             while time() < time_end:
@@ -97,7 +97,7 @@ def receive_serial(
     duration_s: Annotated[int, typer.Option(help=receive_h["du"])] = 600,
     baud_rate: Annotated[int, typer.Option(help=receive_h["br"], min=9_600)] = 230_400,
 ) -> None:
-    """Collect logs from trafficbench-nodes (uart -> .log)"""
+    """Collect logs from trafficbench-nodes (uart -> .log-files)"""
     if isinstance(file_path, Path) and file_path.is_dir():
         file_path = file_path / "trafficbench.log"
 
