@@ -53,3 +53,5 @@ jobs:
         working-directory: "./py_package"
       - name: Publish trafficbench-package 🥳
         uses: pypa/gh-action-pypi-publish@release/v1 # always newest stable
+        with:
+          packages-dir: py_package/dist/
