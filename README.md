@@ -70,7 +70,7 @@ ViTables (`vitables`), and Glue (`glue.xsh` in the [`host`](host/) subfolder).
 Functionality of the mentioned scripts has been largely ported to a Python package usable as library or CLI-tool.
 Current exceptions in functionality are the interfaces for Glue & ViTables.
 
-The tool can either be installed from PyPI or from git-sources with your weapon of choice. 
+The tool can either be installed from PyPI or from git-sources with your weapon of choice.
 Installing into a virtual environment is recommended.
 The pip commands are:
 

@@ -1,5 +1,4 @@
-"""
-"""
+""" """
 
 from .cli_extract import filter_logfile
 from .cli_serial_uart import receive_serial
