@@ -49,6 +49,7 @@ glue = [
     "matplotlib",
 ]
 lognplot = ["lognplot"]
+vitables = ["vitables"]
 dev = [
     "twine",
     "pre-commit",
@@ -59,6 +60,7 @@ test = [
     "coverage",
     "shepherd-core[elf]",
 ]
+all = ["trafficbench[glue,lognplot,vitables,dev,test]"]
 
 [project.scripts]
 trafficbench = "trafficbench.cli:app"

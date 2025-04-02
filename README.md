@@ -78,7 +78,30 @@ The pip commands are:
 # from PyPI
 pip install -U trafficbench
 # or with git as source:
-pip install -U git+https://github.com/nes-lab/TrafficBench.git@dev#subdirectory=py_package -U
+pip install -U git+https://github.com/nes-lab/TrafficBench.git@main#subdirectory=py_package -U
+```
+
+**Note:** there are different configurations tailored to the users needs:
+- `dev`: linters, packaging, release-tools
+- `test`: dependencies to run the unittests
+- `lognplot`
+- `vitables`
+- `all`: combines everything above
+
+These configurations can be selected during install, i.e. `trafficbench[test]`.
+
+With the alternative [uv](https://docs.astral.sh/uv/) you can easily install into a virtual environment:
+
+```shell
+# optional creation and activation of venv, if needed
+uv venv
+source .venv/bin/activate
+# source from PyPI
+uv pip install trafficbench
+# source from GitHub
+uv pip install git+https://github.com/nes-lab/TrafficBench.git@main#subdirectory=py_package
+# source from local repo
+uv pip install ./py-package/.
 ```
 
 Further information can be found on the [package-website](https://pypi.org/project/trafficbench)

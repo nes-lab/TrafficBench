@@ -41,7 +41,7 @@ jobs:
         run: python -m build
         working-directory: "./py_package"
       - name: Install trafficbench-package 🧱
-        run: pip install .[glue,lognplot,dev,test]
+        run: pip install .[glue,lognplot,test]
         working-directory: "./py_package"
 
 
