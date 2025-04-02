@@ -66,7 +66,10 @@ see [examples](./examples)
 
 ## TODO
 
-- publish on PyPI
+- update CBOR & Numpy
+- test CLI
+- add changelog
+
 - further break down long functions
 - implement streaming-functionality -> a set of generators?
   - uart -> filter -> dump -> analyze

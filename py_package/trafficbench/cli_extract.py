@@ -274,7 +274,7 @@ def _filter_logfile(
 
         # drop everything outside records
         # NOTE: this increases performance if infile contains a lot of other stuff
-        if not (len(buffer) or BEGIN_RECORD in line):
+        if not (buffer or BEGIN_RECORD in line):
             test_and_warn(line_number, control_chars, line, strict=strict)
             continue
 
