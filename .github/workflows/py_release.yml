@@ -21,7 +21,7 @@ jobs:
       - run-buildnrf
     steps:
       - name: Checkout 🛎️
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Release
         uses: softprops/action-gh-release@v2
