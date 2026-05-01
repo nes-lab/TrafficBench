@@ -8,7 +8,7 @@ crcmod >= 1.7
 
 # xonsh shell (for details see https://xon.sh)
 # required if user wants to use helper scripts like extract_data.xsh
-xonsh >= 0.13.1
+xonsh >= 0.23.3
 
 # ViTables, a plain PyTables viewer (for details see https://vitables.org)
 # not required, helpful for inspection and debugging
