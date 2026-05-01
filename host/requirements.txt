@@ -1,7 +1,7 @@
 # core libs used in the scripts
 numpy >= 1.21.3
 tables >= 3.6.1
-cbor2 >= 5.4.2
+cbor2 >= 6.0.1
 crcmod >= 1.7
 # crc can be used as alternative for crcmod
 #crc >= 1.2.0
