@@ -12,7 +12,7 @@ xonsh >= 0.13.1
 
 # ViTables, a plain PyTables viewer (for details see https://vitables.org)
 # not required, helpful for inspection and debugging
-ViTables >= 3.0.2
+ViTables >= 3.1.0
 
 # Glue data exploration framework (for details see https://glueviz.org)
 # not required, but explicitly supported
