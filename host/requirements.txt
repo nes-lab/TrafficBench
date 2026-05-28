@@ -24,7 +24,7 @@ ViTables >= 3.0.2
 #	2. RuntimeError: Duplicate custom viewer detected <class 'glue.viewers.custom.qt.custom_viewer.TrafficBenchRxViewerDataViewer'>
 # )
 glue-core <= 1.25.0
-glueviz >= 1.2.0
+glueviz >= 1.4.0
 
 # lognplot is optionally supported by trx_dump.py, do not install it by default
 # lognplot >= 0.1.1
